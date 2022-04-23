@@ -20,17 +20,256 @@
 # ----------------------------------------------------------------------
 
 from collections.abc import Iterable
+from collections import namedtuple
+from typing import Optional
 
 import numpy as np
 import torch
 from torch import nn
 
-from nupic.research.frameworks.dendrites.modules.dendritic_layers import (
-    AbsoluteMaxGatingDendriticLayer,
-    OneSegmentDendriticLayer,
-)
-from nupic.torch.modules import KWinners, SparseWeights, rezero_weights
+from .sparse_weights import SparseWeights, rezero_weights
+from .k_winners import KWinners
 
+dendrite_output = namedtuple("dendrite_output", ["values", "indices"])
+dendrite_output.__doc__ = """
+A named tuple for outputs modified by `apply_dendrites`_.
+:attr values: output tensor after being modulated by dendrite activations
+:attr indices: the indices of the winning segments used to modulate the output tensor
+.. _apply_dendrites: nupic.research.frameworks.dendrites.functional.apply_dendrites
+"""
+
+
+@torch.jit.script
+def dendritic_bias_1d(y, dendrite_activations):
+    """
+    Returns the sum of the feedforward output and the max of the dendrite
+    activations along each segment.
+    :param y: torch Tensor with shape (b, n) where the axes represent the batch
+              size and number of units, respectively.
+    :param dendrite_activations: torch Tensor with shape (b, n, s) where the
+                                 axes represent the batch size, number of units, and
+                                 number of segments respectively.
+    """
+    # Take max along each segment.
+    winning_activations, indices = dendrite_activations.max(dim=2)
+    return dendrite_output(y + winning_activations, indices)
+
+
+@torch.jit.script
+def gather_activations(dendrite_activations, indices):
+    """
+    Gathers dendritic activations from the given indices.
+    :param indices: tensor of indices of winning segments;
+                    shape of batch_size x num_units
+    :param indices: tensor of dendritic activations;
+                    shape of batch_size x num_units x num_segments
+    """
+    unsqueezed = indices.unsqueeze(dim=2)
+    dendrite_activations = torch.gather(dendrite_activations, dim=2, index=unsqueezed)
+    dendrite_activations = dendrite_activations.squeeze(dim=2)
+    return dendrite_activations
+
+
+@torch.jit.script
+def dendritic_gate_1d(y, dendrite_activations, indices: Optional[torch.Tensor] = None):
+    """
+    Returns the product of the feedforward output and sigmoid of the the max
+    of the dendrite activations along each segment.
+    :param y: torch Tensor with shape (b, n) where the axes represent the batch
+              size and number of units, respectively.
+    :param dendrite_activations: torch Tensor with shape (b, n, s) where the
+                                 axes represent the batch size, number of units, and
+                                 number of segments, respectively.
+    :param indices: (optional) indices of winning segments;
+                    shape of batch_size x num_units
+    """
+    # Select winner by max activations, or use given indices as winners.
+    if indices is None:
+        winning_activations, indices = dendrite_activations.max(dim=2)
+    else:
+        winning_activations = gather_activations(dendrite_activations, indices)
+
+    # Multiple by the sigmoid of the max along each segment.
+    return dendrite_output(y * torch.sigmoid(winning_activations), indices)
+
+
+@torch.jit.script
+def dendritic_absolute_max_gate_1d(y, dendrite_activations):
+    """
+    Returns the product of the feedforward output and the sigmoid of the
+    absolute max of the dendrite activations along each segment.
+    :param y: torch Tensor with shape (b, n) where the axes represent the batch
+              size and number of units, respectively.
+    :param dendrite_activations: torch Tensor with shape (b, n, s) where the
+                                 axes represent the batch size, number of units, and
+                                 number of segments, respectively.
+    """
+    indices = dendrite_activations.abs().max(dim=2).indices
+    return dendritic_gate_1d(y, dendrite_activations, indices=indices)
+
+
+@torch.jit.script
+def dendritic_gate_2d(y, dendrite_activations, indices: Optional[torch.Tensor] = None):
+    """
+    Returns the output of the max gating convolutional dendritic layer by
+    multiplying all values in each output channel by the selected dendrite
+    activations. Dendrite activations are selected based on the maximum
+    activations (keeping the sign) across all segments for each channel. Each
+    channel has its own set of dendritic weights, and the selected activation is
+    based on the the max value.
+    :param y: output of the convolution operation (a torch tensor with shape
+              (b, c, h, w) where the axes represent the batch, channel, height, and
+              width dimensions respectively)
+    :param dendrite_activations: the dendrite activation values (a torch tensor
+                                 with shape (b, c, d) where the axes represent the
+                                 batch size, number of channels, and number of segments
+                                 respectively)
+    :param indices: (optional) indices of winning segments;
+                    shape of batch_size x num_units
+    """
+    if indices is None:
+        winning_activations, indices = dendrite_activations.max(dim=2)
+    else:
+        winning_activations = gather_activations(dendrite_activations, indices)
+
+    # The following operation uses `torch.einsum` to multiply each channel by a
+    # single scalar value
+    #    * b => the batch dimension
+    #    * i => the channel dimension
+    #    * jk => the width and height dimensions
+
+    sigmoid_activations = torch.sigmoid(winning_activations)
+    y_gated = torch.einsum("bijk,bi->bijk", y, sigmoid_activations)
+    return dendrite_output(y_gated, indices)
+
+
+@torch.jit.script
+def dendritic_absolute_max_gate_2d(y, dendrite_activations):
+    """
+    Returns the output of the absolute max gating convolutional dendritic layer by
+    multiplying all values in each output channel by the selected dendrite
+    activations. Dendrite activations are selected based on the absolute maximum
+    activations (keeping the sign) across all segments for each channel. Each
+    channel has its own set of dendritic weights, and the selected activation is
+    based on the the absolute max value.
+    :param y: output of the convolution operation (a torch tensor with shape
+              (b, c, h, w) where the axes represent the batch, channel, height, and
+              width dimensions respectively)
+    :param dendrite_activations: the dendrite activation values (a torch tensor
+                                 with shape (b, c, d) where the axes represent the
+                                 batch size, number of channels, and number of segments
+                                 respectively)
+    """
+    indices = dendrite_activations.abs().max(dim=2).indices
+    return dendritic_gate_2d(y, dendrite_activations, indices=indices)
+
+class ApplyDendritesBase(torch.nn.Module):
+    """
+    Base class for identifying an apply-dendrites module via `isinstance`.
+    """
+    pass
+
+class DendriticBias1d(ApplyDendritesBase):
+    def forward(self, y, dendrite_activations):
+        return F.dendritic_bias_1d(y, dendrite_activations)
+
+
+class DendriticGate1d(ApplyDendritesBase):
+    def forward(self, y, dendrite_activations):
+        return F.dendritic_gate_1d(y, dendrite_activations)
+
+
+class DendriticAbsoluteMaxGate1d(ApplyDendritesBase):
+    def forward(self, y, dendrite_activations):
+        return F.dendritic_absolute_max_gate_1d(y, dendrite_activations)
+
+
+class DendriticGate2d(ApplyDendritesBase):
+    def forward(self, y, dendrite_activations):
+        return F.dendritic_gate_2d(y, dendrite_activations)
+
+
+class DendriticAbsoluteMaxGate2d(ApplyDendritesBase):
+    def forward(self, y, dendrite_activations):
+        return F.dendritic_absolute_max_gate_2d(y, dendrite_activations)
+
+class DendriticLayerBase(SparseWeights, metaclass=abc.ABCMeta):
+    """
+    Base class for all Dendritic Layer modules.
+    This combines a DendriteSegments module with a SparseLinear module.
+    The output from the dendrite segments (shape of num_units x num_segments)
+    is applied to the output of of the linear weights (shape of num_units).
+    Thus, each linear output unit gets modulated by a set of dendritic segments.
+    """
+
+    def __init__(
+        self, module, num_segments, dim_context,
+        module_sparsity, dendrite_sparsity, dendrite_bias=None
+    ):
+        """
+        TODO: specify the type - what is module_sparsity type?
+        :param module: linear module from in-units to out-units
+        :param num_segments: number of dendrite segments per out-unit
+        :param dim_context: length of the context vector;
+                            the same context will be applied to each segment
+        :param module_sparsity: sparsity applied over linear module;
+        :param dendrite_sparsity: sparsity applied transformation per unit per segment
+        :param dendrite_bias: whether or not dendrite activations have an additive bias
+        """
+        self.dim_context = dim_context
+        self.segments = None
+        super().__init__(
+            module,
+            sparsity=module_sparsity,
+            allow_extremes=True
+        )
+
+        self.segments = DendriteSegments(
+            num_units=module.weight.shape[0],
+            num_segments=num_segments,
+            dim_context=dim_context,
+            sparsity=dendrite_sparsity,
+            bias=dendrite_bias,
+        )
+
+        self.rezero_weights()
+
+    def rezero_weights(self):
+        """Set the previously selected weights to zero."""
+        super().rezero_weights()
+        if self.segments is not None:  # only none at beginning of init
+            self.segments.rezero_weights()
+
+    @abc.abstractmethod
+    def apply_dendrites(self, y, dendrite_activations):
+        """Apply dendrites using function specified by subclass"""
+        raise NotImplementedError
+
+    def forward(self, x, context):
+        """Compute of linear layer and apply output of dendrite segments."""
+        y = super().forward(x)
+        dendrite_activations = self.segments(context)  # num_units x num_segments
+        return self.apply_dendrites(y, dendrite_activations)
+
+    @property
+    def segment_weights(self):
+        return self.segments.weights
+
+class AbsoluteMaxGatingDendriticLayer(DendriticLayerBase):
+    """
+    This layer is similar to `GatingDendriticLayer`, but selects dendrite activations
+    based on absolute max activation values instead of just max activation values. For
+    example, if choosing between activations -7.4, and 6.5 for a particular unit, -7.4
+    will be chosen, and its sign will be kept.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.dendritic_absolute_max_gate = DendriticAbsoluteMaxGate1d()
+
+    def apply_dendrites(self, y, dendrite_activations):
+        """Apply dendrites as a gating mechanism."""
+        return self.dendritic_absolute_max_gate(y, dendrite_activations).values
 
 class DendriticMLP(nn.Module):
     """
