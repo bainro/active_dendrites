@@ -24,8 +24,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-import .k_winners_jit as F
-from .duty_cycle_metrics import binary_entropy, max_entropy
+import k_winners_jit as F
+from duty_cycle_metrics import binary_entropy, max_entropy
 
 
 def update_boost_strength(m):
