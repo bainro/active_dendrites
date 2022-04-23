@@ -27,5 +27,5 @@ if __name__ == "__main__":
     model = D.DendriticMLP(**conf)
     model = model.to(device)
 
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     print("SCRIPT FINISHED!")
