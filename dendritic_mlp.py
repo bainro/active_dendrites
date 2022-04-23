@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from collections import namedtuple
+from collections import namedtuple, abc
 from typing import Optional
 
 import numpy as np
