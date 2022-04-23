@@ -1,3 +1,5 @@
+    import .dendritic_mlp
+    
     ### base experiment
     
     model_class=DendriticMLP,
