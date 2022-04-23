@@ -19,6 +19,7 @@ conf = dict(
       dendrite_weight_sparsity=0.0,
       weight_sparsity=0.5,
       context_percent_on=0.1,
+      num_segments=10
 )
 
 if __name__ == "__main__":
