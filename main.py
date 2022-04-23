@@ -28,9 +28,13 @@ if __name__ == "__main__":
     model = D.DendriticMLP(**conf)
     model = model.to(device)
 
-    if dataset is None:
-        dataset = cls.load_dataset(config, train=True)
-
+    dataset_args = dict(
+        root=os.path.expanduser("~/datasets/permutedMNIST"),
+        download=True,  # Change to True if running for the first time
+        seed=42,
+    ),
+    
+    dataset = PermutedMNIST(**dataset_args)
     sampler = cls.create_train_sampler(config, dataset)
     
     train_loader = DataLoader(
