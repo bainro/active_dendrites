@@ -52,3 +52,7 @@
     loss_function=F.cross_entropy,
     optimizer_class=torch.optim.Adam,  # On permutedMNIST, Adam works better than
                                        # SGD with default hyperparameter settings
+
+if __name__ == "__main__":
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = DendriticMLP().to(device)
