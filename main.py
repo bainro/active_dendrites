@@ -2,7 +2,7 @@ import dendritic_mlp as D
 
 import torch
       
-conf = {
+conf = dict(
       input_size=784,
       output_size=10,  # Single output head shared by all tasks
       hidden_sizes=[2048, 2048],
@@ -22,7 +22,7 @@ conf = {
 
       loss_function=F.cross_entropy,
       optimizer_class=torch.optim.Adam
-}
+)
 
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
