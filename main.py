@@ -18,9 +18,9 @@ conf = dict(
       val_batch_size=512,
       tasks_to_validate=[1, 4, 9, 24, 49, 99],
       distributed=False,
-      seed=tune.sample_from(lambda spec: np.random.randint(2, 10000)),
+      seed=42,
 
-      loss_function=F.cross_entropy,
+      loss_function=torch.nn.functional.cross_entropy,
       optimizer_class=torch.optim.Adam
 )
 
