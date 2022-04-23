@@ -14,7 +14,7 @@ conf = dict(
       context_percent_on=0.1,
 
 
-      batch_size=256,
+      # batch_size=256,
       val_batch_size=512,
       tasks_to_validate=[1, 4, 9, 24, 49, 99],
       distributed=False,
