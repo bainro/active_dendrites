@@ -1,4 +1,4 @@
-import dendritic_mlp
+import dendritic_mlp as DendriticMLP
 
 import torch
       
