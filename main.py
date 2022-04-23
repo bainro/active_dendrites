@@ -29,3 +29,4 @@ optimizer_class=torch.optim.Adam
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = D.DendriticMLP().to(device)
+    print("SCRIPT FINISHED!")
