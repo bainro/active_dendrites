@@ -198,3 +198,7 @@ def kwinners2d(x, duty_cycles, k: int, boost_strength: float, local: bool = True
     else:
         return x.masked_fill(off_mask, 0)
     
+__all__ = [
+    "kwinners",
+    "kwinners2d",
+]
