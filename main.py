@@ -15,9 +15,8 @@ conf = dict(
 
 
       # batch_size=256,
-      val_batch_size=512,
-      tasks_to_validate=[1, 4, 9, 24, 49, 99],
-      distributed=False,
+      # val_batch_size=512,
+      # tasks_to_validate=[1, 4, 9, 24, 49, 99],
       seed=42,
 
       loss_function=torch.nn.functional.cross_entropy,
