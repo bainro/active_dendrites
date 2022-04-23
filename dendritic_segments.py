@@ -32,7 +32,7 @@ import numpy as np
 import torch
 from torch.nn import init
 
-from nupic.torch.modules.sparse_weights import HasRezeroWeights
+from .sparse_weights import HasRezeroWeights
 
 
 class DendriteSegments(torch.nn.Module, HasRezeroWeights):
