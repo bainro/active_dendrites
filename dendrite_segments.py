@@ -118,8 +118,6 @@ class DendriteSegments(torch.nn.Module, HasRezeroWeights):
         #    * k => the context dimension; multiplication will be along this dimension
         #    * ij => the units and segment dimensions, respectively
         # W^C * M^C * C -> num_units x num_segments
-        print("self.weights.shape: ", self.weights.shape)
-        print("context.shape: ", context.shape)
         output = torch.einsum("ijk,bk->bij", self.weights, context)
 
         if self.biases is not None:
