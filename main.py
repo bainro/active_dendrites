@@ -157,7 +157,8 @@ if __name__ == "__main__":
                 #print(f"targets.shape: {targets.shape}")
                 correct += pred.eq(targets.data.view_as(pred)).sum().item()
             print(f"correct: {correct}")
-            acc = 100. * correct / len(test_loader)
+            acc = 100. * correct / len(test_loader.dataset)
+            print(f"len(test_loader.dataset): {len(test_loader.dataset)}")
             print(f"[epoch {e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
