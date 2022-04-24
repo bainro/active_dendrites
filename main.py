@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 
+curr_task = 0
 num_epochs = 4
 batch_size = 256
 test_batch_size = 512
@@ -98,7 +99,9 @@ if __name__ == "__main__":
 
             imgs, targets = imgs.to(device), targets.to(device)
 
-            one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            # one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            one_hot_vector = torch.zeros([num_tasks])
+            one_hot_vector[curr_task] = 1
             context = torch.FloatTensor(one_hot_vector)
             context = context.to(device)
             # print("imgs.shape[0]: ", imgs.shape[0])
