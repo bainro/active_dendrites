@@ -6,7 +6,6 @@ from typing import Optional
 import numpy as np
 import torch
 from torch import nn
-from torch.nn import functional as F
 
 from k_winners import KWinners
 from sparse_weights import SparseWeights, rezero_weights
@@ -153,27 +152,27 @@ class ApplyDendritesBase(torch.nn.Module):
 
 class DendriticBias1d(ApplyDendritesBase):
     def forward(self, y, dendrite_activations):
-        return F.dendritic_bias_1d(y, dendrite_activations)
+        return dendritic_bias_1d(y, dendrite_activations)
 
 
 class DendriticGate1d(ApplyDendritesBase):
     def forward(self, y, dendrite_activations):
-        return F.dendritic_gate_1d(y, dendrite_activations)
+        return dendritic_gate_1d(y, dendrite_activations)
 
 
 class DendriticAbsoluteMaxGate1d(ApplyDendritesBase):
     def forward(self, y, dendrite_activations):
-        return F.dendritic_absolute_max_gate_1d(y, dendrite_activations)
+        return dendritic_absolute_max_gate_1d(y, dendrite_activations)
 
 
 class DendriticGate2d(ApplyDendritesBase):
     def forward(self, y, dendrite_activations):
-        return F.dendritic_gate_2d(y, dendrite_activations)
+        return dendritic_gate_2d(y, dendrite_activations)
 
 
 class DendriticAbsoluteMaxGate2d(ApplyDendritesBase):
     def forward(self, y, dendrite_activations):
-        return F.dendritic_absolute_max_gate_2d(y, dendrite_activations)
+        return dendritic_absolute_max_gate_2d(y, dendrite_activations)
 
 class DendriticLayerBase(SparseWeights, metaclass=abc.ABCMeta):
     """
