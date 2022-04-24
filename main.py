@@ -1,7 +1,6 @@
 ''' 
 @TODO(s)
 -seed not working for images
--need to get all tensors on gpu
 '''
 
 import os
