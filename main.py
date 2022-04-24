@@ -56,7 +56,9 @@ if __name__ == "__main__":
     for i in range(num_tasks):
         for j in range(num_classes_per_task):
             task_indices[i].extend(class_indices[j + (i * num_classes_per_task)])
-    
+
+    print(task_indices)
+    print(task_indices.shape)
     sampler = TaskRandomSampler(task_indices)
     
     train_loader = DataLoader(
