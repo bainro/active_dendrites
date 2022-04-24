@@ -129,6 +129,8 @@ if __name__ == "__main__":
                 pred = output.data.max(1, keepdim=True)[1] 
                 print(f"pred: {pred}")
                 print(f"pred.shape: {pred.shape}")
+                print(f"target: {target}")
+                print(f"target.shape: {target.shape}")
                 correct += pred.eq(target.view_as(pred)).sum().item()
             acc = 100. * correct / len(test_loader.dataset)
             print(f"[epoch {batch_idx}] test acc: ", acc)
