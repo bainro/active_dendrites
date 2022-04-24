@@ -1,4 +1,5 @@
 import dendritic_mlp as D
+from samplers import TaskRandomSampler
 
 import torch
 from torch.utils.data import DataLoader
@@ -50,7 +51,7 @@ if __name__ == "__main__":
         for j in range(num_classes_per_task):
             task_indices[i].extend(class_indices[j + (i * num_classes_per_task)])
     
-    sampler = TaskRandomSampler(task_indices)
+    sampler = S.TaskRandomSampler(task_indices)
     
     train_loader = DataLoader(
         dataset=dataset,
