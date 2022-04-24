@@ -126,9 +126,9 @@ if __name__ == "__main__":
                 context = context.repeat(imgs.shape[0], 1)
                 imgs = imgs.flatten(start_dim=1)
                 output = model(imgs, context)
-                print(f"output: {output}")
-                print(f"output.shape: {output.shape}")
                 pred = output.data.max(1, keepdim=True)[1] 
+                print(f"pred: {pred}")
+                print(f"pred.shape: {pred.shape}")
                 correct += pred.eq(target.view_as(pred)).sum().item()
             acc = 100. * correct / len(test_loader.dataset)
             print(f"[epoch {batch_idx}] test acc: ", acc)
