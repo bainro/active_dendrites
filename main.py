@@ -90,13 +90,13 @@ if __name__ == "__main__":
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), weight_decay=1e-4)
     criterion = nn.CrossEntropyLoss()
-
+    
+    model.train()
     for _ in tqdm(range(num_epochs)):
         for batch_idx, (imgs, targets) in enumerate(train_loader):
             optimizer.zero_grad()
 
-            imgs = imgs.to(device)
-            targets = targets.to(device)
+            imgs, targets = imgs.to(device), targets.to(device)
 
             one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             context = torch.FloatTensor(one_hot_vector)
@@ -113,6 +113,17 @@ if __name__ == "__main__":
             train_loss.backward()
 
             optimizer.step()
-        print("latest train loss: ", train_loss.item())
+        # print("latest train loss: ", train_loss.item())
+    
+        model.eval()
+        correct = 0
+        with torch.no_grad():
+            for imgs, targets in test_loader:
+                imgs, targets = imgs.to(device), targets.to(device)
+                output = model(data)
+                pred = output.data.max(1, keepdim=True)[1] 
+                correct += pred.eq(target.data.view_as(pred)).sum().item()
+            acc = 100. * correct / len(test_loader.dataset)
+            print(f"[epoch {batch_idx}] test acc: ", acc)
 
     print("SCRIPT FINISHED!")
