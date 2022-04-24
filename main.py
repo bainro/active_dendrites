@@ -99,16 +99,12 @@ if __name__ == "__main__":
 
             imgs, targets = imgs.to(device), targets.to(device)
 
-            # one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             one_hot_vector = torch.zeros([num_tasks])
             one_hot_vector[curr_task] = 1
             context = torch.FloatTensor(one_hot_vector)
             context = context.to(device)
-            # print("imgs.shape[0]: ", imgs.shape[0])
             context = context.unsqueeze(0)
-            # print("[1] context.shape: ", context.shape)
             context = context.repeat(imgs.shape[0], 1)
-            # print("[2] context.shape: ", context.shape);exit()
 
             imgs = imgs.flatten(start_dim=1)
             output = model(imgs, context)
@@ -123,7 +119,12 @@ if __name__ == "__main__":
             for imgs, targets in test_loader:
                 imgs, targets = imgs.to(device), targets.to(device)
                 imgs = imgs.flatten(start_dim=1)
-                context = context[:imgs.shape[0], ...]
+                one_hot_vector = torch.zeros([num_tasks])
+                one_hot_vector[curr_task] = 1
+                context = torch.FloatTensor(one_hot_vector)
+                context = context.to(device)
+                context = context.unsqueeze(0)
+                context = context.repeat(imgs.shape[0], 1)
                 print(f"context.shape: {context.shape}")
                 output = model(imgs, context)
                 pred = output.data.max(1, keepdim=True)[1] 
