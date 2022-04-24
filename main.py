@@ -78,6 +78,7 @@ if __name__ == "__main__":
         context = torch.FloatTensor(one_hot_vector)
         context = context.to(device)
         print("imgs.shape[0]: ", imgs.shape[0])
+        print("context.shape: ", context.shape)
         context = torch.cat(imgs.shape[0]*[context])
         # print(context.shape);exit()
         
