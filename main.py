@@ -75,7 +75,7 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         
         one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        context = torch.FloatTensor(one_hot_vector)
+        context = torch.FloatTensor(one_hot_vector).to(device)
         
         output = model(imgs, context)
         train_loss = criterion(output, targets)
