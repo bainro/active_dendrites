@@ -6,7 +6,7 @@ from typing import Optional
 import numpy as np
 import torch
 from torch import nn
-from nn import functional as F
+from torch.nn import functional as F
 
 from k_winners import KWinners
 from sparse_weights import SparseWeights, rezero_weights
