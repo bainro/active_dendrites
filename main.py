@@ -77,11 +77,11 @@ if __name__ == "__main__":
         one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         context = torch.FloatTensor(one_hot_vector)
         context = context.to(device)
-        print("imgs.shape[0]: ", imgs.shape[0])
+        # print("imgs.shape[0]: ", imgs.shape[0])
         context = context.unsqueeze(0)
-        print("[1] context.shape: ", context.shape)
+        # print("[1] context.shape: ", context.shape)
         context = context.repeat(imgs.shape[0], 1)
-        print("[2] context.shape: ", context.shape);exit()
+        # print("[2] context.shape: ", context.shape);exit()
         
         imgs = imgs.flatten(start_dim=1)
         output = model(imgs, context)
