@@ -39,7 +39,7 @@ if __name__ == "__main__":
     
     dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
-        download=True,  # Change to True if running for the first time
+        download=False,  # Change to True if running for the first time
         seed=42,
         train=True,
         num_tasks=num_tasks,
