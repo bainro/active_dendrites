@@ -17,7 +17,7 @@ batch_size = 256
 num_tasks = 10
 num_classes = 10
 num_classes_per_task = math.floor(num_classes / num_tasks)
-print(num_classes_per_task)
+print(num_classes_per_task);exit()
 
 conf = dict(
     input_size=784,
