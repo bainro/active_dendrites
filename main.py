@@ -78,6 +78,7 @@ if __name__ == "__main__":
         context = torch.FloatTensor(one_hot_vector)
         context = context.to(device)
         
+        imgs = imgs.flatten(start_dim=1)
         output = model(imgs, context)
         train_loss = criterion(output, targets)
         train_loss.backward()
