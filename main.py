@@ -42,7 +42,7 @@ if __name__ == "__main__":
         seed=42,
     ),
     
-    dataset = PermutedMNIST(**dataset_args)
+    dataset = PermutedMNIST(dataset_args)
     
     # target -> all indices for that target
     class_indices = defaultdict(list)
