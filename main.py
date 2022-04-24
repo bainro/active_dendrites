@@ -9,7 +9,7 @@ from samplers import TaskRandomSampler
 import torch
 from torch.utils.data import DataLoader
 
-# batch_size=256,
+batch_size=256,
 # val_batch_size=512,
 # tasks_to_validate=[1, 4, 9, 24, 49, 99],
 # loss_function=torch.nn.functional.cross_entropy,
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     
     train_loader = DataLoader(
         dataset=dataset,
-        batch_size=config.get("batch_size", 1),
+        batch_size=batch_size,
         shuffle=sampler is None,
         num_workers=config.get("workers", 0),
         sampler=sampler,
