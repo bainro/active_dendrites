@@ -1,8 +1,3 @@
-''' 
-@TODO(s)
--seed not working for images
-'''
-
 import os
 import math
 from collections import defaultdict
