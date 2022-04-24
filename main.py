@@ -48,6 +48,8 @@ if __name__ == "__main__":
     class_indices = defaultdict(list)
     for idx, (_, target) in enumerate(dataset):
         class_indices[target].append(idx)
+        
+    print(class_indices);exit()
 
     # task -> all indices corresponding to this task
     task_indices = defaultdict(list)
