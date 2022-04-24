@@ -86,7 +86,7 @@ if __name__ == "__main__":
         t = imgs[0].numpy()
         visual_test = numpy.transpose(t, (1, 2, 0))
         plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
-        plt.savefig('my_plot_' + batch_idx + '.png')
+        plt.savefig('my_plot_' + str(batch_idx) + '.png')
         
         imgs = imgs.flatten(start_dim=1)
         output = model(imgs, context)
