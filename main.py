@@ -7,11 +7,11 @@ from datasets.permutedMNIST import PermutedMNIST
 from samplers import TaskRandomSampler
 
 import torch
+from torch import nn
 from torch.utils.data import DataLoader
 
 # val_batch_size=512,
 # tasks_to_validate=[1, 4, 9, 24, 49, 99],
-# loss_function=torch.nn.functional.cross_entropy,
 # optimizer_class=torch.optim.Adam
 
 batch_size = 256
@@ -67,6 +67,10 @@ if __name__ == "__main__":
         pin_memory=torch.cuda.is_available(),
         drop_last=True,
     )
+    
+    # Optimizer and Loss
+    optimizer = torch.optim.Adam(model.parameters(), weight_decay=1e-4)
+    criterion = nn.CrossEntropyLoss()
     
     for batch_idx, (imgs, targets) in enumerate(train_loader):
         optimizer.zero_grad()
