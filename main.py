@@ -127,6 +127,7 @@ if __name__ == "__main__":
                 context = context.repeat(imgs.shape[0], 1)
                 imgs = imgs.flatten(start_dim=1)
                 output = model(imgs, context)
+                print(f"output: {output}")
                 pred = output.data.max(1, keepdim=True)[1] 
                 correct += pred.eq(target.data.view_as(pred)).sum().item()
             acc = 100. * correct / len(test_loader.dataset)
