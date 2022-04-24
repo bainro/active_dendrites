@@ -57,8 +57,6 @@ if __name__ == "__main__":
         task_id = dataset.get_task_id(idx)
         target += 10 * task_id
         class_indices[target].append(idx)
-        
-    # print(class_indices);exit()
 
     # task -> all indices corresponding to this task
     task_indices = defaultdict(list)
@@ -84,6 +82,9 @@ if __name__ == "__main__":
     
     for batch_idx, (imgs, targets) in enumerate(train_loader):
         optimizer.zero_grad()
+        
+        imgs = imgs.to(device)
+        target = target.to(device)
         
         one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         context = torch.FloatTensor(one_hot_vector)
