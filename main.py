@@ -67,6 +67,12 @@ if __name__ == "__main__":
         pin_memory=torch.cuda.is_available(),
         drop_last=True,
     )
+    
+    for batch_idx, (imgs, targets) in enumerate(train_loader):
+        optimizer.zero_grad()
+        print("type of imgs[0]: ", type(imgs[0]))
+        print(imgs[0].shape)
+        break
 
     # import pdb; pdb.set_trace()
     print("SCRIPT FINISHED!")
