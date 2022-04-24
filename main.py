@@ -118,7 +118,6 @@ if __name__ == "__main__":
         with torch.no_grad():
             for imgs, targets in test_loader:
                 imgs, targets = imgs.to(device), targets.to(device)
-                imgs = imgs.flatten(start_dim=1)
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_task] = 1
                 context = torch.FloatTensor(one_hot_vector)
@@ -126,6 +125,7 @@ if __name__ == "__main__":
                 context = context.unsqueeze(0)
                 context = context.repeat(imgs.shape[0], 1)
                 print(f"context.shape: {context.shape}")
+                imgs = imgs.flatten(start_dim=1)
                 output = model(imgs, context)
                 pred = output.data.max(1, keepdim=True)[1] 
                 correct += pred.eq(target.data.view_as(pred)).sum().item()
