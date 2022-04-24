@@ -117,7 +117,7 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
     
     model.train()
-    for _ in tqdm(range(num_epochs)):
+    for e in tqdm(range(num_epochs)):
         for batch_idx, (imgs, targets) in enumerate(train_loader):
             optimizer.zero_grad()
 
@@ -157,8 +157,8 @@ if __name__ == "__main__":
                 #print(f"targets.shape: {targets.shape}")
                 correct += pred.eq(targets.data.view_as(pred)).sum().item()
             print(f"correct: {correct}")
-            acc = 100. * correct / len(test_loader.dataset)
-            print(f"[epoch {batch_idx}] test acc: ", acc)
+            acc = 100. * correct / len(test_loader)
+            print(f"[epoch {e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
     
