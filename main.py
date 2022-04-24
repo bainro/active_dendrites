@@ -40,7 +40,7 @@ conf = dict(
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = D.DendriticMLP(**conf)
-    #model = model.to(device)
+    model = model.to(device)
     
     dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
@@ -87,7 +87,7 @@ if __name__ == "__main__":
         
         one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         context = torch.FloatTensor(one_hot_vector)
-        # context = context.to(device)
+        context = context.to(device)
         # print("imgs.shape[0]: ", imgs.shape[0])
         context = context.unsqueeze(0)
         # print("[1] context.shape: ", context.shape)
