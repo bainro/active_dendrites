@@ -15,10 +15,8 @@ import matplotlib.pyplot as plt
 
 batch_size = 256
 num_tasks = 10
-num_classes = 10
+num_classes = 10 * num_tasks
 num_classes_per_task = math.floor(num_classes / num_tasks)
-# @TODO this should be 10, but is 1 :-/
-print(num_classes_per_task);exit()
 
 conf = dict(
     input_size=784,
