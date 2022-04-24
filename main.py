@@ -9,12 +9,12 @@ from samplers import TaskRandomSampler
 import torch
 from torch.utils.data import DataLoader
 
-batch_size=256,
 # val_batch_size=512,
 # tasks_to_validate=[1, 4, 9, 24, 49, 99],
 # loss_function=torch.nn.functional.cross_entropy,
 # optimizer_class=torch.optim.Adam
 
+batch_size = 256
 num_tasks = 10
 num_classes = 10
 num_classes_per_task = math.floor(num_classes / num_tasks)
