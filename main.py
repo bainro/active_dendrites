@@ -84,7 +84,7 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         
         imgs = imgs.to(device)
-        target = target.to(device)
+        targets = targets.to(device)
         
         one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         context = torch.FloatTensor(one_hot_vector)
