@@ -9,6 +9,7 @@ from samplers import TaskRandomSampler
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
 
 # val_batch_size=512,
 # tasks_to_validate=[1, 4, 9, 24, 49, 99],
@@ -77,7 +78,9 @@ if __name__ == "__main__":
         print("type of imgs[0]: ", type(imgs[0]))
         print(imgs[0].shape)
         print(imgs[0])
-        
+        visual_test = imgs[0].numpy()
+        plt.imshow(arr, cmap='gray', vmin=0, vmax=255)
+        plt.show()
         break
 
     # import pdb; pdb.set_trace()
