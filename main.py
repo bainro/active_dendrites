@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 
+seed = 42
 curr_task = 0
 num_epochs = 4
 batch_size = 256
@@ -47,7 +48,7 @@ if __name__ == "__main__":
     dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
         download=False,  # Change to True if running for the first time
-        seed=44,
+        seed=seed,
         train=True,
         num_tasks=num_tasks,
     )
@@ -78,12 +79,35 @@ if __name__ == "__main__":
         drop_last=True,
     )
     
+    
+    test_dataset = PermutedMNIST(
+        root=os.path.expanduser("~/datasets/permutedMNIST"),
+        download=False,  # Change to True if running for the first time
+        seed=44,
+        train=False,
+        num_tasks=num_tasks,
+    )
+    
+    test_class_indices = defaultdict(list)
+    for idx in range(len(test_dataset)):
+        target = int(test_dataset.targets[idx % len(test_dataset.data)])
+        task_id = test_dataset.get_task_id(idx)
+        target += 10 * task_id
+        test_class_indices[target].append(idx)
+
+    test_task_indices = defaultdict(list)
+    for i in range(num_tasks):
+        for j in range(num_classes_per_task):
+            test_task_indices[i].extend(test_class_indices[j + (i * num_classes_per_task)])
+
+    test_sampler = TaskRandomSampler(test_task_indices)
+    
     test_loader = DataLoader(
         dataset=test_dataset,
         batch_size=test_batch_size,
-        shuffle=sampler is None,
+        shuffle=test_sampler is None,
         num_workers=4,
-        sampler=sampler,
+        sampler=test_sampler,
         pin_memory=torch.cuda.is_available(),
         drop_last=False,
     )
