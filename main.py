@@ -116,14 +116,13 @@ if __name__ == "__main__":
             train_loss.backward()
 
             optimizer.step()
-        # print("latest train loss: ", train_loss.item())
     
         model.eval()
         correct = 0
         with torch.no_grad():
             for imgs, targets in test_loader:
                 imgs, targets = imgs.to(device), targets.to(device)
-                output = model(imgs)
+                output = model(imgs, context)
                 pred = output.data.max(1, keepdim=True)[1] 
                 correct += pred.eq(target.data.view_as(pred)).sum().item()
             acc = 100. * correct / len(test_loader.dataset)
