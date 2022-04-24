@@ -34,7 +34,7 @@ conf = dict(
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = D.DendriticMLP(**conf)
-    model = model.to(device)
+    #model = model.to(device)
     
     dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
@@ -75,7 +75,8 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         
         one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        context = torch.FloatTensor(one_hot_vector).to(device)
+        context = torch.FloatTensor(one_hot_vector)
+        context = context.to(device)
         
         output = model(imgs, context)
         train_loss = criterion(output, targets)
