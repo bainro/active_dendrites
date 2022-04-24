@@ -10,6 +10,10 @@ from torch.utils.data import DataLoader
 # loss_function=torch.nn.functional.cross_entropy,
 # optimizer_class=torch.optim.Adam
 
+num_tasks = 10
+num_classes = 10
+num_classes_per_task = math.floor(num_classes / num_tasks)
+
 conf = dict(
     input_size=784,
     output_size=10,  # Single output head shared by all tasks
@@ -20,7 +24,7 @@ conf = dict(
     dendrite_weight_sparsity=0.0,
     weight_sparsity=0.5,
     context_percent_on=0.1,
-    num_segments=10
+    num_segments=num_tasks
 )    
 
 if __name__ == "__main__":
@@ -35,7 +39,19 @@ if __name__ == "__main__":
     ),
     
     dataset = PermutedMNIST(**dataset_args)
-    sampler = cls.create_train_sampler(config, dataset)
+    
+    # target -> all indices for that target
+    class_indices = defaultdict(list)
+    for idx, (_, target) in enumerate(dataset):
+        class_indices[target].append(idx)
+
+    # task -> all indices corresponding to this task
+    task_indices = defaultdict(list)
+    for i in range(num_tasks):
+        for j in range(num_classes_per_task):
+            task_indices[i].extend(class_indices[j + (i * num_classes_per_task)])
+    
+    sampler = TaskRandomSampler(task_indices)
     
     train_loader = DataLoader(
         dataset=dataset,
