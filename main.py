@@ -1,3 +1,7 @@
+'''
+Script to train an active dendrite MLP on 10 tasks of PermutedMNIST.
+'''
+
 import os
 import math
 from collections import defaultdict
