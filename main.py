@@ -94,10 +94,12 @@ if __name__ == "__main__":
         context = context.repeat(imgs.shape[0], 1)
         # print("[2] context.shape: ", context.shape);exit()
         
+        '''
         t = imgs[0].cpu().numpy()
         visual_test = numpy.transpose(t, (1, 2, 0))
         plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
-        plt.savefig('my_plot_' + str(batch_idx) + '_' + str(targets.cpu()[0]) + '.png')
+        plt.savefig('my_plot_' + str(batch_idx) + '_' + str(targets.cpu().numpy()[0]) + '.png')
+        '''
         
         imgs = imgs.flatten(start_dim=1)
         output = model(imgs, context)
