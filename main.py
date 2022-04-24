@@ -81,7 +81,6 @@ if __name__ == "__main__":
     criterion = nn.CrossEntropyLoss()
 
     for _ in tqdm(range(num_epochs)):
-        print("starting training 
         for batch_idx, (imgs, targets) in enumerate(train_loader):
             optimizer.zero_grad()
 
