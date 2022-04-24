@@ -1,5 +1,6 @@
 import os
 import math
+from collections import defaultdict
 
 import dendritic_mlp as D
 from datasets.permutedMNIST import PermutedMNIST
