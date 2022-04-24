@@ -57,7 +57,7 @@ class PermutedMNIST(MNIST):
         self.permutations = [
             torch.randperm(784, generator=g) for task_id in range(1, num_tasks)
         ]
-        self.permutations.insert(0, None)
+        # self.permutations.insert(0, None)
 
     def __getitem__(self, index):
         """
