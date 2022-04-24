@@ -17,6 +17,7 @@ batch_size = 256
 num_tasks = 10
 num_classes = 10
 num_classes_per_task = math.floor(num_classes / num_tasks)
+print(num_classes_per_task)
 
 conf = dict(
     input_size=784,
@@ -58,7 +59,6 @@ if __name__ == "__main__":
             task_indices[i].extend(class_indices[j + (i * num_classes_per_task)])
 
     print(task_indices)
-    print(task_indices.shape)
     sampler = TaskRandomSampler(task_indices)
     
     train_loader = DataLoader(
