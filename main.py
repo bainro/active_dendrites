@@ -20,6 +20,7 @@ from tqdm import tqdm
 
 num_epochs = 4
 batch_size = 256
+test_batch_size = 512
 num_tasks = 10
 num_classes = 10 * num_tasks
 num_classes_per_task = math.floor(num_classes / num_tasks)
@@ -76,6 +77,16 @@ if __name__ == "__main__":
         drop_last=True,
     )
     
+    test_loader = DataLoader(
+        dataset=dataset,
+        batch_size=test_batch_size,
+        shuffle=sampler is None,
+        num_workers=4,
+        sampler=sampler,
+        pin_memory=torch.cuda.is_available(),
+        drop_last=False,
+    )
+    
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), weight_decay=1e-4)
     criterion = nn.CrossEntropyLoss()
@@ -100,8 +111,8 @@ if __name__ == "__main__":
             output = model(imgs, context)
             train_loss = criterion(output, targets)
             train_loss.backward()
-            print("train loss: ", train_loss.item())
 
             optimizer.step()
+        print("latest train loss: ", train_loss.item())
 
     print("SCRIPT FINISHED!")
