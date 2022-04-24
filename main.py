@@ -76,6 +76,8 @@ if __name__ == "__main__":
         optimizer.zero_grad()
         print("type of imgs[0]: ", type(imgs[0]))
         print(imgs[0].shape)
+        print(imgs[0])
+        
         break
 
     # import pdb; pdb.set_trace()
