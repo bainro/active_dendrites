@@ -62,7 +62,7 @@ if __name__ == "__main__":
     train_loader = DataLoader(
         dataset=dataset,
         batch_size=batch_size,
-        shuffle=True,#sampler is None,
+        shuffle=sampler is None,
         num_workers=4,
         sampler=sampler,
         pin_memory=torch.cuda.is_available(),
