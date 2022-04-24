@@ -2,6 +2,7 @@ import os
 import math
 
 import dendritic_mlp as D
+from datasets.permutedMNIST import PermutedMNIST
 from samplers import TaskRandomSampler
 
 import torch
