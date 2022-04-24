@@ -78,7 +78,7 @@ if __name__ == "__main__":
         context = torch.FloatTensor(one_hot_vector)
         context = context.to(device)
         context = torch.cat(imgs.shape[0]*[context])
-        print(context.shape);exit()
+        # print(context.shape);exit()
         
         imgs = imgs.flatten(start_dim=1)
         output = model(imgs, context)
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         optimizer.step()
         
         #print("type of imgs[0]: ", type(imgs[0]))
-        print(imgs[0].shape)
+        # print(imgs[0].shape)
         #print(imgs[0])
         #t = imgs[0].numpy()
         #visual_test = numpy.transpose(t, (1, 2, 0))
