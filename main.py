@@ -120,7 +120,6 @@ if __name__ == "__main__":
                 imgs, targets = imgs.to(device), targets.to(device)
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_task] = 1
-                print(f"one_hot_vector: {one_hot_vector}")
                 context = torch.FloatTensor(one_hot_vector)
                 context = context.to(device)
                 context = context.unsqueeze(0)
@@ -128,6 +127,7 @@ if __name__ == "__main__":
                 imgs = imgs.flatten(start_dim=1)
                 output = model(imgs, context)
                 print(f"output: {output}")
+                print(f"output.shape: {output.shape}")
                 pred = output.data.max(1, keepdim=True)[1] 
                 correct += pred.eq(target.data.view_as(pred)).sum().item()
             acc = 100. * correct / len(test_loader.dataset)
