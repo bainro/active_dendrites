@@ -78,7 +78,8 @@ if __name__ == "__main__":
         print("type of imgs[0]: ", type(imgs[0]))
         print(imgs[0].shape)
         print(imgs[0])
-        visual_test = imgs[0].numpy()
+        t = imgs[0].numpy()
+        visual_test = np.transpose(t, (1, 2, 0))
         plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
         plt.show()
         break
