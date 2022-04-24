@@ -15,8 +15,10 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 
+num_epochs = 4
 batch_size = 256
 num_tasks = 10
 num_classes = 10 * num_tasks
@@ -77,28 +79,30 @@ if __name__ == "__main__":
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), weight_decay=1e-4)
     criterion = nn.CrossEntropyLoss()
-    
-    for batch_idx, (imgs, targets) in enumerate(train_loader):
-        optimizer.zero_grad()
-        
-        imgs = imgs.to(device)
-        targets = targets.to(device)
-        
-        one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        context = torch.FloatTensor(one_hot_vector)
-        context = context.to(device)
-        # print("imgs.shape[0]: ", imgs.shape[0])
-        context = context.unsqueeze(0)
-        # print("[1] context.shape: ", context.shape)
-        context = context.repeat(imgs.shape[0], 1)
-        # print("[2] context.shape: ", context.shape);exit()
-        
-        imgs = imgs.flatten(start_dim=1)
-        output = model(imgs, context)
-        train_loss = criterion(output, targets)
-        train_loss.backward()
-        print("train loss: ", train_loss.item())
 
-        optimizer.step()
+    for _ in tqdm(range(num_epochs)):
+        print("starting training 
+        for batch_idx, (imgs, targets) in enumerate(train_loader):
+            optimizer.zero_grad()
+
+            imgs = imgs.to(device)
+            targets = targets.to(device)
+
+            one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            context = torch.FloatTensor(one_hot_vector)
+            context = context.to(device)
+            # print("imgs.shape[0]: ", imgs.shape[0])
+            context = context.unsqueeze(0)
+            # print("[1] context.shape: ", context.shape)
+            context = context.repeat(imgs.shape[0], 1)
+            # print("[2] context.shape: ", context.shape);exit()
+
+            imgs = imgs.flatten(start_dim=1)
+            output = model(imgs, context)
+            train_loss = criterion(output, targets)
+            train_loss.backward()
+            print("train loss: ", train_loss.item())
+
+            optimizer.step()
 
     print("SCRIPT FINISHED!")
