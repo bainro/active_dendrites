@@ -6,6 +6,7 @@ import dendritic_mlp as D
 from datasets.permutedMNIST import PermutedMNIST
 from samplers import TaskRandomSampler
 
+import numpy
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
