@@ -65,7 +65,7 @@ if __name__ == "__main__":
         num_workers=4,
         sampler=sampler,
         pin_memory=torch.cuda.is_available(),
-        drop_last=config.get("train_loader_drop_last", True),
+        drop_last=True,
     )
 
     # import pdb; pdb.set_trace()
