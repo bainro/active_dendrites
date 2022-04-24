@@ -40,7 +40,8 @@ if __name__ == "__main__":
         root=os.path.expanduser("~/datasets/permutedMNIST"),
         download=True,  # Change to True if running for the first time
         seed=42,
-        train=True
+        train=True,
+        num_tasks=num_tasks,
     )
     
     # target -> all indices for that target
