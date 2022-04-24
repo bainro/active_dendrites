@@ -122,6 +122,9 @@ if __name__ == "__main__":
         with torch.no_grad():
             for imgs, targets in test_loader:
                 imgs, targets = imgs.to(device), targets.to(device)
+                imgs = imgs.flatten(start_dim=1)
+                context = context[:imgs.shape[0], ...]
+                print(f"context.shape: {context.shape}")
                 output = model(imgs, context)
                 pred = output.data.max(1, keepdim=True)[1] 
                 correct += pred.eq(target.data.view_as(pred)).sum().item()
