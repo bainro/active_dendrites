@@ -79,7 +79,7 @@ if __name__ == "__main__":
     )
     
     test_loader = DataLoader(
-        dataset=dataset,
+        dataset=test_dataset,
         batch_size=test_batch_size,
         shuffle=sampler is None,
         num_workers=4,
