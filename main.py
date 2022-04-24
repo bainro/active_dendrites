@@ -79,7 +79,7 @@ if __name__ == "__main__":
         print(imgs[0].shape)
         print(imgs[0])
         visual_test = imgs[0].numpy()
-        plt.imshow(arr, cmap='gray', vmin=0, vmax=255)
+        plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
         plt.show()
         break
 
