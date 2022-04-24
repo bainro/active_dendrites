@@ -12,9 +12,6 @@ from torch import nn
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 
-# val_batch_size=512,
-# tasks_to_validate=[1, 4, 9, 24, 49, 99],
-# optimizer_class=torch.optim.Adam
 
 batch_size = 256
 num_tasks = 10
@@ -77,7 +74,10 @@ if __name__ == "__main__":
     for batch_idx, (imgs, targets) in enumerate(train_loader):
         optimizer.zero_grad()
         
-        output = model(imgs)
+        one_hot_vector = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        context = torch.FloatTensor(one_hot_vector)
+        
+        output = model(imgs, context)
         train_loss = criterion(output, targets)
         train_loss.backward()
 
