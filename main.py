@@ -35,14 +35,13 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = D.DendriticMLP(**conf)
     model = model.to(device)
-
-    dataset_args = dict(
+    
+    dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
         download=True,  # Change to True if running for the first time
         seed=42,
-    ),
-    
-    dataset = PermutedMNIST(dataset_args)
+        train=True
+    )
     
     # target -> all indices for that target
     class_indices = defaultdict(list)
