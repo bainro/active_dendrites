@@ -127,3 +127,11 @@ if __name__ == "__main__":
             print(f"[epoch {batch_idx}] test acc: ", acc)
 
     print("SCRIPT FINISHED!")
+    
+'''
+@TODO(s)
+-Need to make separate test sampler
+-Need to train other tasks
+-Need to make train context correct
+-Need to make test context
+'''
