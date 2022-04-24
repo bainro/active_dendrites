@@ -76,13 +76,13 @@ if __name__ == "__main__":
     
     for batch_idx, (imgs, targets) in enumerate(train_loader):
         optimizer.zero_grad()
-        print("type of imgs[0]: ", type(imgs[0]))
+        #print("type of imgs[0]: ", type(imgs[0]))
         print(imgs[0].shape)
-        print(imgs[0])
-        t = imgs[0].numpy()
-        visual_test = numpy.transpose(t, (1, 2, 0))
-        plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
-        plt.savefig('my_plot.png')
+        #print(imgs[0])
+        #t = imgs[0].numpy()
+        #visual_test = numpy.transpose(t, (1, 2, 0))
+        #plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
+        #plt.savefig('my_plot.png')
         break
 
     # import pdb; pdb.set_trace()
