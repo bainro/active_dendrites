@@ -140,7 +140,7 @@ if __name__ == "__main__":
             model.eval()
             correct = 0
             with torch.no_grad():
-                for t in range(curr_task):
+                for t in range(curr_task+1):
                     test_loader.sampler.set_active_tasks(t)
                     for imgs, targets in test_loader:
                         imgs, targets = imgs.to(device), targets.to(device)
