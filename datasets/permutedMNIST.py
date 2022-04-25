@@ -48,15 +48,16 @@ class PermutedMNIST(MNIST):
         `index`, determines which pixel-wise permutation to apply. Target values are
         also scaled to be unique to each permutation.
         """
+        # Determine which task `index` corresponds to
+        task_id = self.get_task_id(index)
+        assert task_id == 0
+        
         img, target = super().__getitem__(index % len(self.data))
         ### DEBUG CODE
         visual_test = numpy.transpose(img, (1, 2, 0))
         plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
         plt.savefig(f"my_plot_{index}_{target}.png")
         exit()
-        
-        # Determine which task `index` corresponds to
-        task_id = self.get_task_id(index)
 
         # Apply permutation to `img`
         permutation = self.permutations[task_id]
