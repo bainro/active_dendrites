@@ -156,14 +156,6 @@ if __name__ == "__main__":
                         correct += pred.eq(targets.data.view_as(pred)).sum().item()
                 print(f"correct: {correct}")
                 acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
-                print(f"[epoch {e}] test acc: {acc}%")
+                print(f"[t:{t} e:{e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
-    
-'''
-@TODO(s)
--Need to make separate test sampler
--Need to train other tasks
--Need to make train context correct
--Need to make test context
-'''
