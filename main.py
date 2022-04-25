@@ -139,7 +139,6 @@ if __name__ == "__main__":
                 # print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
 
-            # @TODO training loss decreasing like MNIST, but then guessing lvls of test_acc...
             model.eval()
             correct = 0
             with torch.no_grad():
