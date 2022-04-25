@@ -73,7 +73,12 @@ class PermutedMNIST(MNIST):
         task_id = self.get_task_id(index)
 
         # Apply permutation to `img`
-        img = permute(img, self.permutations[task_id])
+        permutation = self.permutations[task_id]
+        if permutation is not None:
+            _, height, width = img.size()
+            img = img.view(-1, 1)
+            img = img[permutation, :]
+            img = img.view(1, height, width)
 
         # Since target values are not shared between tasks, `target` should be in the
         # range [0 + 10 * task_id, 9 + 10 * task_id]
@@ -89,29 +94,3 @@ class PermutedMNIST(MNIST):
 
     def get_task_id(self, index):
         return index // len(self.data)
-
-
-def permute(x, permutation):
-    """
-    Applies the permutation specified by `permutation` to `x` and returns the resulting
-    tensor.
-    """
-
-    # Assume x has shape (1, height, width)
-    if permutation is None:
-        return x
-
-    _, height, width = x.size()
-    x = x.view(-1, 1)
-    x = x[permutation, :]
-    x = x.view(1, height, width)
-    return x
-
-
-def tuple_context(x, context):
-    return (x, context)
-
-
-def concat_context(x, context):
-    img = x.flatten()
-    return torch.cat((img, context))
