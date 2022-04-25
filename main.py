@@ -122,6 +122,7 @@ if __name__ == "__main__":
 
                 imgs, targets = imgs.to(device), targets.to(device)
 
+                # @TODO this context vector is diff than the paper
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_task] = 1
                 context = torch.FloatTensor(one_hot_vector)
