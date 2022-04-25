@@ -131,8 +131,9 @@ if __name__ == "__main__":
 
                 imgs = imgs.flatten(start_dim=1)
                 output = model(imgs, context)
+                pred = output.data.max(1, keepdim=True)[1]
                 print(f"targets: {targets[10, ...]}")
-                print(f"predictions: {output[10, ...]}")
+                print(f"predictions: {pred[10, ...]}")
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 # print(f"train_loss: {train_loss.item()}")
