@@ -80,7 +80,7 @@ if __name__ == "__main__":
     test_dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
         download=False,
-        seed=44,
+        seed=seed,
         train=False,
         num_tasks=num_tasks,
     )
