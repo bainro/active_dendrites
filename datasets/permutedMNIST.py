@@ -61,7 +61,8 @@ class PermutedMNIST(MNIST):
             img = img.view(1, height, width)
             visual_test = numpy.transpose(img, (1, 2, 0))
             plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
-            plt.savefig('my_plot_' + str(batch_idx) + '_' + str(targets.cpu().numpy()[0]) + '.png')
+            plt.savefig(f"my_plot_{index}_{target}.png")
+            exit()
 
         # Since target values are not shared between tasks, `target` should be in the
         # range [0 + 10 * task_id, 9 + 10 * task_id]
