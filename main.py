@@ -135,6 +135,7 @@ if __name__ == "__main__":
                 output = model(imgs, context)
                 train_loss = criterion(output, targets)
                 train_loss.backward()
+                print(f"train_loss: {train_loss.item()}")
 
                 optimizer.step()
 
