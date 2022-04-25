@@ -51,8 +51,6 @@ if __name__ == "__main__":
         num_tasks=num_tasks,
     )
     
-    # @TODO think thru this train & test logic; is this why permuted isn't training?
-    
     # target -> all indices for that target
     class_indices = defaultdict(list)
     for idx in range(len(dataset)):
@@ -135,10 +133,10 @@ if __name__ == "__main__":
                 output = model(imgs, context)
                 train_loss = criterion(output, targets)
                 train_loss.backward()
-                print(f"train_loss: {train_loss.item()}")
-
+                # print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
 
+            # @TODO training loss decreasing like MNIST, but then guessing lvls of test_acc...
             model.eval()
             correct = 0
             with torch.no_grad():
