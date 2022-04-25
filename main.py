@@ -159,3 +159,4 @@ if __name__ == "__main__":
                 print(f"[t:{t} e:{e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
+# might need to save some un-permuted images and check that the labels aren't scrambled, because acc is super low on permuted sets
