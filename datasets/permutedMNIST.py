@@ -50,11 +50,13 @@ class PermutedMNIST(MNIST):
         """
         
         img, target = super().__getitem__(index % len(self.data))
+        '''
         ### DEBUG CODE
         visual_test = numpy.transpose(img, (1, 2, 0))
         plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
         plt.savefig(f"my_plot_{index}_{target}.png")
         exit()
+        '''
 
         # Apply permutation to `img`
         permutation = self.permutations[task_id]
