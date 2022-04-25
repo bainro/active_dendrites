@@ -169,7 +169,7 @@ if __name__ == "__main__":
                 optimizer.step()
                 
         train_loader.sampler.set_active_tasks(curr_task)
-        for e in tqdm(range(num_epochs)):
+        for e in tqdm(range(1)):
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loader):
                 optimizer.zero_grad()
@@ -193,7 +193,7 @@ if __name__ == "__main__":
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 print(f"train_loss: {train_loss.item()}")
-                optimizer.step()     
+                #optimizer.step()     
 
             model.eval()
             correct = 0
