@@ -62,7 +62,7 @@ class PermutedMNIST(MNIST):
         # Since target values are not shared between tasks, `target` should be in the
         # range [0 + 10 * task_id, 9 + 10 * task_id]
         # target += 10 * task_id
-        return img, target, permutation
+        return img, target
 
     def __len__(self):
         return self.num_tasks * len(self.data)
