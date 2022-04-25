@@ -119,23 +119,16 @@ if __name__ == "__main__":
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loader):
                 optimizer.zero_grad()
-
                 imgs, targets = imgs.to(device), targets.to(device)
-
-                # @TODO this context vector is diff than the paper
-                # but can also double check that task 0's training loss is still low after training task 1, etc
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_task] = 1
                 context = torch.FloatTensor(one_hot_vector)
                 context = context.to(device)
                 context = context.unsqueeze(0)
                 context = context.repeat(imgs.shape[0], 1)
-
                 imgs = imgs.flatten(start_dim=1)
                 output = model(imgs, context)
                 pred = output.data.max(1, keepdim=True)[1]
-                # print(f"targets: {targets[10, ...]}")
-                # print(f"predictions: {pred[10, ...]}")
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 print(f"train_loss: {train_loss.item()}")
@@ -146,24 +139,16 @@ if __name__ == "__main__":
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loader):
                 optimizer.zero_grad()
-
                 imgs, targets = imgs.to(device), targets.to(device)
-
-                # @TODO this context vector is diff than the paper
-                # but can also double check that task 0's training loss is still low after training task 1, etc
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_task+1] = 1
-                print(f"one_hot_vector: {one_hot_vector}")
                 context = torch.FloatTensor(one_hot_vector)
                 context = context.to(device)
                 context = context.unsqueeze(0)
                 context = context.repeat(imgs.shape[0], 1)
-
                 imgs = imgs.flatten(start_dim=1)
                 output = model(imgs, context)
                 pred = output.data.max(1, keepdim=True)[1]
-                # print(f"targets: {targets[10, ...]}")
-                # print(f"predictions: {pred[10, ...]}")
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 print(f"train_loss: {train_loss.item()}")
@@ -174,23 +159,17 @@ if __name__ == "__main__":
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loader):
                 optimizer.zero_grad()
-
                 imgs, targets = imgs.to(device), targets.to(device)
-
-                # @TODO this context vector is diff than the paper
-                # but can also double check that task 0's training loss is still low after training task 1, etc
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_task] = 1
+                print(f"one_hot_vector: {one_hot_vector}")
                 context = torch.FloatTensor(one_hot_vector)
                 context = context.to(device)
                 context = context.unsqueeze(0)
                 context = context.repeat(imgs.shape[0], 1)
-
                 imgs = imgs.flatten(start_dim=1)
                 output = model(imgs, context)
                 pred = output.data.max(1, keepdim=True)[1]
-                # print(f"targets: {targets[10, ...]}")
-                # print(f"predictions: {pred[10, ...]}")
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 print(f"train_loss: {train_loss.item()}")
