@@ -330,15 +330,11 @@ class DendriticMLP(nn.Module):
         self.weight_sparsity = weight_sparsity
         self.dendrite_weight_sparsity = dendrite_weight_sparsity
         self.output_nonlinearity = output_nonlinearity
-        self.hardcode_dendrites = (dendrite_init == "hardcoded")
 
         self._layers = nn.ModuleList()
         self._activations = nn.ModuleList()
 
-        if self.hardcode_dendrites:
-            dendrite_sparsity = 0.0
-        else:
-            dendrite_sparsity = self.dendrite_weight_sparsity
+        dendrite_sparsity = self.dendrite_weight_sparsity
 
         # Allow user to specify multiple layer types, with backward compatibility.
         # Just specify dendritic_layer_class as a module, and automatically broadcast
@@ -448,88 +444,4 @@ class DendriticMLP(nn.Module):
             fan_in = m.dim_context
             bound = 1.0 / np.sqrt(input_density * weight_density * fan_in)
             nn.init.uniform_(m.segment_weights, -bound, bound)
-            m.apply(rezero_weights)
-
-    def hardcode_dendritic_weights(self, context_vectors, init):
-        """
-        Set up specific weights for each dendritic segment based on the value of init.
-        if init == "overlapping":
-            We hardcode the weights of dendrites such that each context selects 5% of
-            hidden units to become active and form a subnetwork. Hidden units are
-            sampled with replacement, hence subnetworks can overlap. Any context/task
-            which does not use a particular hidden unit will cause it to turn off, as
-            the unit's other segment(s) have -1 in all entries and will yield an
-            extremely small dendritic activation.
-        otherwise if init == "non_overlapping":
-            We hardcode the weights of dendrites such that each unit recognizes a single
-            random context vector. The first dendritic segment is initialized to contain
-            positive weights from that context vector. The other segment(s) ensure that
-            the unit is turned off for any other context - they contain negative weights
-            for all other weights.
-        :param context_vectors:
-        :param init: a string "overlapping" or "non_overlapping"
-        """
-        if self.num_segments > 0:
-            for dendrite in self._layers:
-                self._hardcode_dendritic_weights(dendrite.weights, context_vectors,
-                                                 init)
-
-    @staticmethod
-    def _hardcode_dendritic_weights(dendrite_weights, context_vectors, init):
-        squeeze = False
-        if len(dendrite_weights.shape) == 2:
-            # 1 segment dendrite, so add in a segment dimension
-            squeeze = True
-            original_weights = dendrite_weights
-            dendrite_weights = dendrite_weights.unsqueeze(dim=1)
-
-        num_units, num_segments, dim_context = dendrite_weights.size()
-        num_contexts, _ = context_vectors.size()
-
-        if init == "overlapping":
-            new_dendritic_weights = -0.95 * torch.ones((num_units, num_segments,
-                                                        dim_context))
-
-            # The number of units to allocate to each context (with replacement)
-            k = int(0.05 * num_units)
-
-            # Keep track of the number of contexts for which each segment has already
-            # been chosen; this is to not overwrite a previously hardcoded segment
-            num_contexts_chosen = {i: 0 for i in range(num_units)}
-
-            for c in range(num_contexts):
-
-                # Pick k random units to be activated by the cth context
-                selected_units = torch.randperm(num_units)[:k]
-                for i in selected_units:
-                    i = i.item()
-
-                    # If num_segments other contexts have already selected unit i to
-                    # become active, skip
-                    segment_id = num_contexts_chosen[i]
-                    if segment_id == num_segments:
-                        continue
-
-                    new_dendritic_weights[i, segment_id, :] = context_vectors[c, :]
-                    num_contexts_chosen[i] += 1
-
-        elif init == "non_overlapping":
-            new_dendritic_weights = torch.zeros((num_units, num_segments, dim_context))
-
-            for i in range(num_units):
-                context_perm = context_vectors[torch.randperm(num_contexts), :]
-                new_dendritic_weights[i, :, :] = 1.0 * (context_perm[0, :] > 0)
-                new_dendritic_weights[i, 1:, :] = -1
-                new_dendritic_weights[i, 1:, :] += new_dendritic_weights[i, 0, :]
-                del context_perm
-
-        else:
-            raise Exception("Invalid dendritic weight hardcode choice")
-
-        dendrite_weights.data = new_dendritic_weights
-
-        if squeeze:
-            dendrite_weights = dendrite_weights.squeeze(dim=1)
-            # dendrite weights doesn't point to the dendrite weights tensor,
-            # so expicitly assign the new values
-            original_weights.data = dendrite_weights
+            m.apply(rezero_weights)    
