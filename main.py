@@ -141,7 +141,6 @@ if __name__ == "__main__":
                 print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
         
-        '''
         train_loader.sampler.set_active_tasks(curr_task+1)
         for e in tqdm(range(num_epochs)):
             model.train()
@@ -165,11 +164,10 @@ if __name__ == "__main__":
                 pred = output.data.max(1, keepdim=True)[1]
                 # print(f"targets: {targets[10, ...]}")
                 # print(f"predictions: {pred[10, ...]}")
-                train_loss = criterion(output, targets)
-                train_loss.backward()
-                print(f"train_loss: {train_loss.item()}")
-                optimizer.step()
-        '''
+                # train_loss = criterion(output, targets)
+                # train_loss.backward()
+                # print(f"train_loss: {train_loss.item()}")
+                # optimizer.step()
                 
         train_loader.sampler.set_active_tasks(curr_task)
         for e in tqdm(range(1)):
