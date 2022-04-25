@@ -168,7 +168,7 @@ if __name__ == "__main__":
                 print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
                 
-       train_loader.sampler.set_active_tasks(curr_task)
+        train_loader.sampler.set_active_tasks(curr_task)
         for e in tqdm(range(num_epochs)):
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loader):
