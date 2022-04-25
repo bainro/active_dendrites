@@ -34,7 +34,7 @@ conf = dict(
     kw_percent_on=0.05,
     dendrite_weight_sparsity=0.0,
     weight_sparsity=0.5,
-    context_percent_on=0.1,
+    context_percent_on=1.0,
     num_segments=num_tasks
 )    
 
