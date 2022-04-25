@@ -141,6 +141,7 @@ if __name__ == "__main__":
                 print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
         
+        '''
         train_loader.sampler.set_active_tasks(curr_task+1)
         for e in tqdm(range(num_epochs)):
             model.train()
@@ -168,6 +169,7 @@ if __name__ == "__main__":
                 train_loss.backward()
                 print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
+        '''
                 
         train_loader.sampler.set_active_tasks(curr_task)
         for e in tqdm(range(1)):
