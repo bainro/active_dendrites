@@ -153,6 +153,7 @@ if __name__ == "__main__":
                 # but can also double check that task 0's training loss is still low after training task 1, etc
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_task+1] = 1
+                print(f"one_hot_vector: {one_hot_vector}")
                 context = torch.FloatTensor(one_hot_vector)
                 context = context.to(device)
                 context = context.unsqueeze(0)
