@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 
 seed = 42
-num_epochs = 4
+num_epochs = 40
 batch_size = 256
 test_batch_size = 512
 num_tasks = 10
