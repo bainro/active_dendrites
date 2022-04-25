@@ -162,7 +162,6 @@ if __name__ == "__main__":
                 imgs, targets = imgs.to(device), targets.to(device)
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_task] = 1
-                print(f"one_hot_vector: {one_hot_vector}")
                 context = torch.FloatTensor(one_hot_vector)
                 context = context.to(device)
                 context = context.unsqueeze(0)
