@@ -153,6 +153,8 @@ if __name__ == "__main__":
                         imgs = imgs.flatten(start_dim=1)
                         output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
+                        print(f"targets: {targets[10, ...]}")
+                        print(f"predictions: {pred[10, ...]}")
                         correct += pred.eq(targets.data.view_as(pred)).sum().item()
                 print(f"correct: {correct}")
                 acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
