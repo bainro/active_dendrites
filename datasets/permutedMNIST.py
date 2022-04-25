@@ -3,6 +3,7 @@ import os
 import torch
 from torchvision import transforms
 from torchvision.datasets import MNIST
+import matplotlib.pyplot as plt
 
 
 class PermutedMNIST(MNIST):
@@ -58,6 +59,9 @@ class PermutedMNIST(MNIST):
             img = img.view(-1, 1)
             img = img[permutation, :]
             img = img.view(1, height, width)
+            visual_test = numpy.transpose(img, (1, 2, 0))
+            plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
+            plt.savefig('my_plot_' + str(batch_idx) + '_' + str(targets.cpu().numpy()[0]) + '.png')
 
         # Since target values are not shared between tasks, `target` should be in the
         # range [0 + 10 * task_id, 9 + 10 * task_id]
