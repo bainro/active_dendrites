@@ -19,7 +19,6 @@ from tqdm import tqdm
 
 
 seed = 42
-curr_task = 0
 num_epochs = 4
 batch_size = 256
 test_batch_size = 512
@@ -79,7 +78,6 @@ if __name__ == "__main__":
         drop_last=True,
     )
     
-    
     test_dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
         download=False,  # Change to True if running for the first time
@@ -116,50 +114,50 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters(), weight_decay=1e-4)
     criterion = nn.CrossEntropyLoss()
     
-    model.train()
-    for e in tqdm(range(num_epochs)):
-        for batch_idx, (imgs, targets) in enumerate(train_loader):
-            optimizer.zero_grad()
+    for curr_task in range(num_tasks):
+        train_loader.sampler.set_active_tasks(curr_task)
+        model.train()
+        for e in tqdm(range(num_epochs)):
+            for batch_idx, (imgs, targets) in enumerate(train_loader):
+                optimizer.zero_grad()
 
-            imgs, targets = imgs.to(device), targets.to(device)
-
-            one_hot_vector = torch.zeros([num_tasks])
-            one_hot_vector[curr_task] = 1
-            context = torch.FloatTensor(one_hot_vector)
-            context = context.to(device)
-            context = context.unsqueeze(0)
-            context = context.repeat(imgs.shape[0], 1)
-
-            imgs = imgs.flatten(start_dim=1)
-            output = model(imgs, context)
-            train_loss = criterion(output, targets)
-            train_loss.backward()
-
-            optimizer.step()
-    
-        model.eval()
-        correct = 0
-        with torch.no_grad():
-            for imgs, targets in test_loader:
                 imgs, targets = imgs.to(device), targets.to(device)
+
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_task] = 1
                 context = torch.FloatTensor(one_hot_vector)
                 context = context.to(device)
                 context = context.unsqueeze(0)
                 context = context.repeat(imgs.shape[0], 1)
+
                 imgs = imgs.flatten(start_dim=1)
                 output = model(imgs, context)
-                pred = output.data.max(1, keepdim=True)[1] 
-                #print(f"pred: {pred}")
-                #print(f"pred.shape: {pred.shape}")
-                #print(f"targets: {targets}")
-                #print(f"targets.shape: {targets.shape}")
-                correct += pred.eq(targets.data.view_as(pred)).sum().item()
-            print(f"correct: {correct}")
-            acc = 100. * correct / len(test_loader.dataset)
-            print(f"len(test_loader.dataset): {len(test_loader.dataset)}")
-            print(f"[epoch {e}] test acc: {acc}%")
+                train_loss = criterion(output, targets)
+                train_loss.backward()
+
+                optimizer.step()
+
+            model.eval()
+            correct = 0
+            with torch.no_grad():
+                for t in range(curr_task):
+                    test_loader.sampler.set_active_tasks(t)
+                    for imgs, targets in test_loader:
+                        imgs, targets = imgs.to(device), targets.to(device)
+                        one_hot_vector = torch.zeros([num_tasks])
+                        one_hot_vector[t] = 1
+                        context = torch.FloatTensor(one_hot_vector)
+                        context = context.to(device)
+                        context = context.unsqueeze(0)
+                        context = context.repeat(imgs.shape[0], 1)
+                        imgs = imgs.flatten(start_dim=1)
+                        output = model(imgs, context)
+                        pred = output.data.max(1, keepdim=True)[1]
+                        correct += pred.eq(targets.data.view_as(pred)).sum().item()
+                print(f"correct: {correct}")
+                acc = 100. * correct * num_tasks / curr_task / len(test_loader.dataset)
+                print(f"len(test_loader.dataset): {len(test_loader.dataset)}")
+                print(f"[epoch {e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
     
