@@ -195,6 +195,8 @@ if __name__ == "__main__":
                 print(f"train_loss: {train_loss.item()}")
                 #optimizer.step()     
 
+            exit()
+                
             model.eval()
             correct = 0
             with torch.no_grad():
