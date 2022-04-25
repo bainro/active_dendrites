@@ -116,8 +116,8 @@ if __name__ == "__main__":
     
     for curr_task in range(num_tasks):
         train_loader.sampler.set_active_tasks(curr_task)
-        model.train()
         for e in tqdm(range(num_epochs)):
+            model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loader):
                 optimizer.zero_grad()
 
