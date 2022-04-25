@@ -155,7 +155,7 @@ if __name__ == "__main__":
                         pred = output.data.max(1, keepdim=True)[1]
                         correct += pred.eq(targets.data.view_as(pred)).sum().item()
                 print(f"correct: {correct}")
-                acc = 100. * correct * num_tasks / curr_task / len(test_loader.dataset)
+                acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
                 print(f"len(test_loader.dataset): {len(test_loader.dataset)}")
                 print(f"[epoch {e}] test acc: {acc}%")
 
