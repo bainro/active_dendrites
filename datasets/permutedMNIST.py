@@ -48,9 +48,6 @@ class PermutedMNIST(MNIST):
         `index`, determines which pixel-wise permutation to apply. Target values are
         also scaled to be unique to each permutation.
         """
-        # Determine which task `index` corresponds to
-        task_id = self.get_task_id(index)
-        assert task_id == 0
         
         img, target = super().__getitem__(index % len(self.data))
         ### DEBUG CODE
@@ -66,6 +63,9 @@ class PermutedMNIST(MNIST):
             img = img.view(-1, 1)
             img = img[permutation, :]
             img = img.view(1, height, width)
+        
+        # Determine which task `index` corresponds to
+        task_id = self.get_task_id(index)
 
         # Since target values are not shared between tasks, `target` should be in the
         # range [0 + 10 * task_id, 9 + 10 * task_id]
