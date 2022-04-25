@@ -49,7 +49,12 @@ class PermutedMNIST(MNIST):
         also scaled to be unique to each permutation.
         """
         img, target = super().__getitem__(index % len(self.data))
-
+        ### DEBUG CODE
+        visual_test = numpy.transpose(img, (1, 2, 0))
+        plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
+        plt.savefig(f"my_plot_{index}_{target}.png")
+        exit()
+        
         # Determine which task `index` corresponds to
         task_id = self.get_task_id(index)
 
@@ -60,10 +65,6 @@ class PermutedMNIST(MNIST):
             img = img.view(-1, 1)
             img = img[permutation, :]
             img = img.view(1, height, width)
-            visual_test = numpy.transpose(img, (1, 2, 0))
-            plt.imshow(visual_test, cmap='gray', vmin=0.4242, vmax=2.8215)
-            plt.savefig(f"my_plot_{index}_{target}.png")
-            exit()
 
         # Since target values are not shared between tasks, `target` should be in the
         # range [0 + 10 * task_id, 9 + 10 * task_id]
