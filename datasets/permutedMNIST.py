@@ -1,5 +1,6 @@
 import os
 
+import numpy
 import torch
 from torchvision import transforms
 from torchvision.datasets import MNIST
