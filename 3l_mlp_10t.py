@@ -7,7 +7,6 @@ import os
 from mlp import ModifiedInitMLP
 from datasets.permutedMNIST import PermutedMNIST
 from datasets.permutedMNIST import make_loader
-from samplers import TaskRandomSampler
 
 import numpy
 import torch
