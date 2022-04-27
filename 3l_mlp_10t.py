@@ -57,7 +57,7 @@ class ModifiedInitMLP(nn.Module):
                 input_flag = True
 
                 _, fan_in = layer.weight.size()
-                bound = 1.0 / np.sqrt(input_density * weight_density * fan_in)
+                bound = 1.0 / numpy.sqrt(input_density * weight_density * fan_in)
                 nn.init.uniform_(layer.weight, -bound, bound)
 
     def forward(self, x):
