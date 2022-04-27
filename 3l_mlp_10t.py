@@ -4,7 +4,6 @@ Script to train a fully connected, 3 layer MLP on 10 tasks of PermutedMNIST.
 
 import os
 
-from mlp import ModifiedInitMLP
 from datasets.permutedMNIST import PermutedMNIST, make_loader
 
 import numpy
@@ -25,6 +24,46 @@ conf = dict(
     hidden_sizes=[2048, 2048],
 )    
 
+class ModifiedInitMLP(nn.Module):  
+    def __init__(self, input_size, num_classes,
+                 hidden_sizes=(100, 100)):
+        super().__init__()
+
+        layers = [
+            nn.Flatten(),
+            nn.Linear(int(np.prod(input_size)), hidden_sizes[0]),
+            nn.ReLU()
+        ]
+        for idx in range(1, len(hidden_sizes)):
+            layers.extend([
+                nn.Linear(hidden_sizes[idx - 1], hidden_sizes[idx]),
+                nn.ReLU()
+            ])
+        layers.append(nn.Linear(hidden_sizes[-1], num_classes))
+
+        self.classifier = nn.Sequential(*layers)
+        
+        # Modified Kaiming weight initialization which considers 1) the density of
+        # the input vector and 2) the weight density in addition to the fan-in
+
+        weight_density = 1.0
+        input_flag = False
+        for layer in self.classifier:
+            if isinstance(layer, nn.Linear):
+
+                # Assume input is fully dense, but hidden layer activations are only
+                # 50% dense due to ReLU
+                input_density = 1.0 if not input_flag else 0.5
+                input_flag = True
+
+                _, fan_in = layer.weight.size()
+                bound = 1.0 / np.sqrt(input_density * weight_density * fan_in)
+                nn.init.uniform_(layer.weight, -bound, bound)
+
+    def forward(self, x):
+        return self.classifier(x)
+
+    
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = ModifiedInitMLP(**conf)
