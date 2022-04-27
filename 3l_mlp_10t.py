@@ -31,7 +31,7 @@ conf = dict(
     hidden_sizes=[2048, 2048],
 )    
 
-def permuted_loader(train=True):
+def make_loader(train=True):
     dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
         download=False,  # Change to True if running for the first time
