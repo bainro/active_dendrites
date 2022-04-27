@@ -3,10 +3,8 @@ Script to train an active dendrite MLP on 10 tasks of PermutedMNIST.
 '''
 
 import os
-
 import dendritic_mlp as D
 from datasets.permutedMNIST import PermutedMNIST, make_loader
-
 import numpy
 import torch
 from torch import nn
@@ -35,8 +33,7 @@ conf = dict(
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = D.DendriticMLP(**conf)
-    model = model.to(device)
-    
+    model = model.to(device)    
     
     dataset, train_loader = make_loader(num_tasks, seed, train_bs, train=True)
     test_dataset, test_loader = make_loader(num_tasks, seed, test_bs, train=False)
