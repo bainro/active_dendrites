@@ -23,6 +23,7 @@ num_epochs = 4
 batch_size = 256
 test_batch_size = 512
 num_tasks = 10
+# @TODO evil stare ?
 num_classes = 10 * num_tasks
 num_classes_per_task = math.floor(num_classes / num_tasks)
 
