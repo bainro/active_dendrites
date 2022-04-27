@@ -147,7 +147,7 @@ if __name__ == "__main__":
                 for imgs, targets in test_loader:
                     imgs, targets = imgs.to(device), targets.to(device)
                     one_hot_vector = torch.zeros([num_tasks])
-                    one_hot_vector[t] = 1
+                    one_hot_vector[curr_task] = 1
                     context = torch.FloatTensor(one_hot_vector)
                     context = context.to(device)
                     context = context.unsqueeze(0)
