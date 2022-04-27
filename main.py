@@ -142,27 +142,27 @@ if __name__ == "__main__":
                 # print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
                 
-            model.eval()
-            correct = 0
-            with torch.no_grad():
-                for t in range(curr_task+1):
-                    test_loader.sampler.set_active_tasks(t)
-                    for imgs, targets in test_loader:
-                        imgs, targets = imgs.to(device), targets.to(device)
-                        one_hot_vector = torch.zeros([num_tasks])
-                        one_hot_vector[t] = 1
-                        context = torch.FloatTensor(one_hot_vector)
-                        context = context.to(device)
-                        context = context.unsqueeze(0)
-                        context = context.repeat(imgs.shape[0], 1)
-                        imgs = imgs.flatten(start_dim=1)
-                        output = model(imgs, context)
-                        pred = output.data.max(1, keepdim=True)[1]
-                        # print(f"targets: {targets[10, ...]}")
-                        # print(f"predictions: {pred[10, ...]}")
-                        correct += pred.eq(targets.data.view_as(pred)).sum().item()
-                print(f"correct: {correct}")
-                acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
-                print(f"[t:{t} e:{e}] test acc: {acc}%")
+        model.eval()
+        correct = 0
+        with torch.no_grad():
+            for t in range(curr_task+1):
+                test_loader.sampler.set_active_tasks(t)
+                for imgs, targets in test_loader:
+                    imgs, targets = imgs.to(device), targets.to(device)
+                    one_hot_vector = torch.zeros([num_tasks])
+                    one_hot_vector[t] = 1
+                    context = torch.FloatTensor(one_hot_vector)
+                    context = context.to(device)
+                    context = context.unsqueeze(0)
+                    context = context.repeat(imgs.shape[0], 1)
+                    imgs = imgs.flatten(start_dim=1)
+                    output = model(imgs, context)
+                    pred = output.data.max(1, keepdim=True)[1]
+                    # print(f"targets: {targets[10, ...]}")
+                    # print(f"predictions: {pred[10, ...]}")
+                    correct += pred.eq(targets.data.view_as(pred)).sum().item()
+            print(f"correct: {correct}")
+            acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
+            print(f"[t:{t} e:{e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
