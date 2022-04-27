@@ -31,7 +31,7 @@ class ModifiedInitMLP(nn.Module):
 
         layers = [
             nn.Flatten(),
-            nn.Linear(int(np.prod(input_size)), hidden_sizes[0]),
+            nn.Linear(int(numpy.prod(input_size)), hidden_sizes[0]),
             nn.ReLU()
         ]
         for idx in range(1, len(hidden_sizes)):
