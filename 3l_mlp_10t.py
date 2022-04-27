@@ -8,6 +8,7 @@ from collections import defaultdict
 
 from mlp import ModifiedInitMLP
 from datasets.permutedMNIST import PermutedMNIST
+from datasets.permutedMNIST import make_loader
 from samplers import TaskRandomSampler
 
 import numpy
@@ -30,43 +31,6 @@ conf = dict(
     num_classes = 10,
     hidden_sizes=[2048, 2048],
 )    
-
-def make_loader(train=True):
-    dataset = PermutedMNIST(
-        root=os.path.expanduser("~/datasets/permutedMNIST"),
-        download=False,  # Change to True if running for the first time
-        seed=seed,
-        train=train,
-        num_tasks=num_tasks,
-    )
-    
-    # target -> all indices for that target
-    class_indices = defaultdict(list)
-    for idx in range(len(dataset)):
-        target = int(dataset.targets[idx % len(dataset.data)])
-        task_id = dataset.get_task_id(idx)
-        target += 10 * task_id
-        class_indices[target].append(idx)
-
-    # task -> all indices corresponding to this task
-    task_indices = defaultdict(list)
-    for i in range(num_tasks):
-        for j in range(num_classes_per_task):
-            task_indices[i].extend(class_indices[j + (i * num_classes_per_task)])
-
-    sampler = TaskRandomSampler(task_indices)
-    
-    loader = DataLoader(
-        dataset=dataset,
-        batch_size=batch_size,
-        shuffle=sampler is None,
-        num_workers=4,
-        sampler=sampler,
-        pin_memory=torch.cuda.is_available(),
-        drop_last=train,
-    )
-    
-    return dataset, loader
 
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
