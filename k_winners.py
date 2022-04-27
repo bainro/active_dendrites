@@ -25,7 +25,7 @@ import torch
 import torch.nn as nn
 
 import k_winners_jit as F
-from duty_cycle_metrics import binary_entropy, max_entropy
+#from duty_cycle_metrics import binary_entropy, max_entropy
 
 
 def update_boost_strength(m):
@@ -136,6 +136,7 @@ class KWinnersBase(nn.Module, metaclass=abc.ABCMeta):
         self._cached_boost_strength *= self.boost_strength_factor
         self.boost_strength.fill_(self._cached_boost_strength)
 
+    '''
     def entropy(self):
         """Returns the current total entropy of this layer."""
         _, entropy = binary_entropy(self.duty_cycle)
@@ -144,6 +145,7 @@ class KWinnersBase(nn.Module, metaclass=abc.ABCMeta):
     def max_entropy(self):
         """Returns the maximum total entropy we can expect from this layer."""
         return max_entropy(self.n, int(self.n * self.percent_on))
+    '''
 
 
 class KWinners(KWinnersBase):
