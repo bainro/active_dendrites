@@ -61,6 +61,7 @@ if __name__ == "__main__":
         target = int(dataset.targets[idx % len(dataset.data)])
         task_id = dataset.get_task_id(idx)
         target += 10 * task_id
+        assert task_id < 2
         class_indices[target].append(idx)
 
     # task -> all indices corresponding to this task
