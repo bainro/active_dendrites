@@ -61,7 +61,6 @@ if __name__ == "__main__":
         target = int(dataset.targets[idx % len(dataset.data)])
         task_id = dataset.get_task_id(idx)
         target += 10 * task_id
-        assert task_id < 2
         class_indices[target].append(idx)
 
     # task -> all indices corresponding to this task
@@ -115,7 +114,7 @@ if __name__ == "__main__":
     )
     
     # Optimizer and Loss
-    optimizer = torch.optim.Adam(model.parameters(), weight_decay=1e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=1e-4)
     criterion = nn.CrossEntropyLoss()
     
     for curr_task in range(num_tasks):
