@@ -31,7 +31,6 @@ def max_entropy(n, k):
 
     return n * entropy
 
-
 def binary_entropy(x):
     """Calculate entropy for a list of binary random variables.
 
