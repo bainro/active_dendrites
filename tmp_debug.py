@@ -162,6 +162,6 @@ if __name__ == "__main__":
                 print(f"correct: {correct}")
                 # acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
                 acc = 100. * correct / 10000 
-                print(f"[t:{t} e:{e}] test acc: {acc}%")
+                print(f"[t:{curr_task} e:{e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
