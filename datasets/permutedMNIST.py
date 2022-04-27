@@ -81,7 +81,7 @@ class PermutedMNIST(MNIST):
     def get_task_id(self, index):
         return index // len(self.data)
 
-def make_loader(num_tasks, seed, train=True):
+def make_loader(num_tasks, seed, batch_size, train=True):
     num_classes = 10
     num_classes_per_task = math.floor(num_classes / num_tasks)
     
