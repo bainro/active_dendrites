@@ -1,6 +1,5 @@
 import math
 from collections.abc import Iterable
-
 import numpy as np
 import torch
 from torch.utils.data import DistributedSampler, Sampler
