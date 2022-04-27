@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 
 seed = 42
-num_epochs = 4
+num_epochs = 3
 batch_size = 256
 test_batch_size = 512
 num_tasks = 10
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     )
     
     # Optimizer and Loss
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=1e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=5e-4, weight_decay=0) # 1e-4
     criterion = nn.CrossEntropyLoss()
     
     for curr_task in range(num_tasks):
