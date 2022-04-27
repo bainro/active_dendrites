@@ -1,23 +1,3 @@
-# ----------------------------------------------------------------------
-# Numenta Platform for Intelligent Computing (NuPIC)
-# Copyright (C) 2019, Numenta, Inc.  Unless you have an agreement
-# with Numenta, Inc., for a separate license for this software code, the
-# following terms and conditions apply:
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero Public License version 3 as
-# published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the GNU Affero Public License for more details.
-#
-# You should have received a copy of the GNU Affero Public License
-# along with this program.  If not, see http://www.gnu.org/licenses.
-#
-# http://numenta.org/licenses/
-# ----------------------------------------------------------------------
 import abc
 
 import numpy as np
@@ -25,7 +5,6 @@ import torch
 import torch.nn as nn
 
 import k_winners_jit as F
-#from duty_cycle_metrics import binary_entropy, max_entropy
 
 
 def update_boost_strength(m):
@@ -136,18 +115,6 @@ class KWinnersBase(nn.Module, metaclass=abc.ABCMeta):
         self._cached_boost_strength *= self.boost_strength_factor
         self.boost_strength.fill_(self._cached_boost_strength)
 
-    '''
-    def entropy(self):
-        """Returns the current total entropy of this layer."""
-        _, entropy = binary_entropy(self.duty_cycle)
-        return entropy
-
-    def max_entropy(self):
-        """Returns the maximum total entropy we can expect from this layer."""
-        return max_entropy(self.n, int(self.n * self.percent_on))
-    '''
-
-
 class KWinners(KWinnersBase):
     """Applies K-Winner function to the input tensor.
 
@@ -253,7 +220,6 @@ class KWinners(KWinnersBase):
         if self.inplace:
             s += ", inplace=True"
         return s
-
 
 class KWinners2d(KWinnersBase):
     """
@@ -371,10 +337,6 @@ class KWinners2d(KWinnersBase):
         s = x.gt(0).sum(dim=(0, 2, 3), dtype=torch.float) / scale_factor
         self.duty_cycle.reshape(-1).add_(s)
         self.duty_cycle.div_(period)
-
-    def entropy(self):
-        entropy = super(KWinners2d, self).entropy()
-        return entropy * self.n / self.channels
 
     def extra_repr(self):
         s = (f"channels={self.channels}, local={self.local}"
