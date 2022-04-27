@@ -1,5 +1,6 @@
 import os
 import math
+from collections import defaultdict
 
 from samplers import TaskRandomSampler
 
@@ -7,7 +8,7 @@ import numpy
 import torch
 from torchvision import transforms
 from torchvision.datasets import MNIST
-from collections import defaultdict
+from torch.utils.data import DataLoader
 
 
 class PermutedMNIST(MNIST):
