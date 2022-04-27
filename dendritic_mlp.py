@@ -112,7 +112,6 @@ class DendriticBias1d(ApplyDendritesBase):
     def forward(self, y, dendrite_activations):
         return dendritic_bias_1d(y, dendrite_activations)
 
-
 class DendriticGate1d(ApplyDendritesBase):
     def forward(self, y, dendrite_activations):
         return dendritic_gate_1d(y, dendrite_activations)
