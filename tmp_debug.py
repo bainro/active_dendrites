@@ -134,8 +134,8 @@ if __name__ == "__main__":
                     output = model(imgs)
                     pred = output.data.max(1, keepdim=True)[1]
                     correct += pred.eq(targets.data.view_as(pred)).sum().item()
-                print(f"correct: {correct}")
-                acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
-                print(f"[t:{t} e:{e}] test acc: {acc}%")
+            print(f"correct: {correct}")
+            acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
+            print(f"[t:{t} e:{e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
