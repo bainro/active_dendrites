@@ -11,7 +11,6 @@ from datasets.permutedMNIST import make_loader
 import numpy
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 
