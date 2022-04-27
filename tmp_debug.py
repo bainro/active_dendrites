@@ -28,6 +28,7 @@ num_classes_per_task = math.floor(num_classes / num_tasks)
 
 conf = dict(
     input_size=784,
+    num_classes = 10,
     # output_size=10,  # Single output head shared by all tasks
     hidden_sizes=[2048, 2048],
     # dim_context=10,
