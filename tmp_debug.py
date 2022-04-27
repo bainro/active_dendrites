@@ -138,7 +138,11 @@ if __name__ == "__main__":
                 train_loss.backward()
                 print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
-                
+        
+        # test that we're getting the same images & targets from the dataset
+        tmp_imgs = imgs.detach().clone()
+        tmp_targets = targets.detach().clone()
+        
         train_loader.sampler.set_active_tasks(curr_task+1)
         for e in tqdm(range(num_epochs)):
             model.train()
@@ -160,27 +164,10 @@ if __name__ == "__main__":
                 print(f"[t2] train_loss: {train_loss.item()}")
                 optimizer.step()
                 
-        train_loader.sampler.set_active_tasks(curr_task)
-        for e in tqdm(range(num_epochs)):
-            model.train()
-            for batch_idx, (imgs, targets) in enumerate(train_loader):
-                optimizer.zero_grad()
-                imgs, targets = imgs.to(device), targets.to(device)
-                one_hot_vector = torch.zeros([num_tasks])
-                one_hot_vector[curr_task] = 1
-                context = torch.FloatTensor(one_hot_vector)
-                context = context.to(device)
-                context = context.unsqueeze(0)
-                context = context.repeat(imgs.shape[0], 1)
-                imgs = imgs.flatten(start_dim=1)
-                # output = model(imgs, context)
-                output = model(imgs)
-                pred = output.data.max(1, keepdim=True)[1]
-                train_loss = criterion(output, targets)
-                train_loss.backward()
-                print(f"[t1a] train_loss: {train_loss.item()}")
-                # optimizer.step()
-                
+            output = model(tmp_imgs)
+            pred = output.data.max(1, keepdim=True)[1]
+            train_loss = criterion(output, tmp_targets)
+            print(f"[final] train_loss: {train_loss.item()}")
             exit()
                 
             model.eval()
