@@ -120,7 +120,7 @@ if __name__ == "__main__":
                 pred = output.data.max(1, keepdim=True)[1]
                 train_loss = criterion(output, targets)
                 train_loss.backward()
-                print(f"train_loss: {train_loss.item()}")
+                # print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
                 
         model.eval()
