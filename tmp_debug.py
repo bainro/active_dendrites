@@ -105,7 +105,7 @@ if __name__ == "__main__":
     )
     
     # Optimizer and Loss
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=1e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
     
     for curr_task in range(num_tasks):
