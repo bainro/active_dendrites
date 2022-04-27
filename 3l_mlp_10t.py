@@ -16,8 +16,8 @@ from tqdm import tqdm
 
 seed = 42
 num_epochs = 5
-batch_size = 256
-test_batch_size = 512
+train_bs = 256
+test_bs = 512
 num_tasks = 10
 
 conf = dict(
@@ -31,8 +31,8 @@ if __name__ == "__main__":
     model = ModifiedInitMLP(**conf)
     model = model.to(device)
     
-    dataset, train_loader = make_loader(num_tasks, seed, train=True)
-    test_dataset, test_loader = make_loader(num_tasks, seed, train=False)
+    dataset, train_loader = make_loader(num_tasks, seed, train_bs, train=True)
+    test_dataset, test_loader = make_loader(num_tasks, seed, test_Bs, train=False)
     
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
