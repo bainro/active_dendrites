@@ -7,6 +7,7 @@ import math
 from collections import defaultdict
 
 import dendritic_mlp as D
+from mlp import ModifiedInitMLP
 from datasets.permutedMNIST import PermutedMNIST
 from samplers import TaskRandomSampler
 
@@ -40,7 +41,8 @@ conf = dict(
 
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = D.DendriticMLP(**conf)
+    # model = D.DendriticMLP(**conf)
+    model = ModifiedInitMLP(**conf)
     model = model.to(device)
     
     dataset = PermutedMNIST(
@@ -127,54 +129,13 @@ if __name__ == "__main__":
                 context = context.unsqueeze(0)
                 context = context.repeat(imgs.shape[0], 1)
                 imgs = imgs.flatten(start_dim=1)
-                output = model(imgs, context)
+                # output = model(imgs, context)
+                output = model(imgs)
                 pred = output.data.max(1, keepdim=True)[1]
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
-        
-        train_loader.sampler.set_active_tasks(curr_task+1)
-        for e in tqdm(range(num_epochs)):
-            model.train()
-            for batch_idx, (imgs, targets) in enumerate(train_loader):
-                optimizer.zero_grad()
-                imgs, targets = imgs.to(device), targets.to(device)
-                one_hot_vector = torch.zeros([num_tasks])
-                one_hot_vector[curr_task+1] = 1
-                context = torch.FloatTensor(one_hot_vector)
-                context = context.to(device)
-                context = context.unsqueeze(0)
-                context = context.repeat(imgs.shape[0], 1)
-                imgs = imgs.flatten(start_dim=1)
-                output = model(imgs, context)
-                pred = output.data.max(1, keepdim=True)[1]
-                train_loss = criterion(output, targets)
-                train_loss.backward()
-                print(f"train_loss: {train_loss.item()}")
-                optimizer.step()
-                
-        train_loader.sampler.set_active_tasks(curr_task)
-        for e in tqdm(range(1)):
-            model.train()
-            for batch_idx, (imgs, targets) in enumerate(train_loader):
-                optimizer.zero_grad()
-                imgs, targets = imgs.to(device), targets.to(device)
-                one_hot_vector = torch.zeros([num_tasks])
-                one_hot_vector[curr_task] = 1
-                context = torch.FloatTensor(one_hot_vector)
-                context = context.to(device)
-                context = context.unsqueeze(0)
-                context = context.repeat(imgs.shape[0], 1)
-                imgs = imgs.flatten(start_dim=1)
-                output = model(imgs, context)
-                pred = output.data.max(1, keepdim=True)[1]
-                train_loss = criterion(output, targets)
-                train_loss.backward()
-                print(f"train_loss: {train_loss.item()}")
-                #optimizer.step()     
-
-            exit()
                 
             model.eval()
             correct = 0
@@ -190,7 +151,8 @@ if __name__ == "__main__":
                         context = context.unsqueeze(0)
                         context = context.repeat(imgs.shape[0], 1)
                         imgs = imgs.flatten(start_dim=1)
-                        output = model(imgs, context)
+                        # output = model(imgs, context)
+                        output = model(imgs)
                         pred = output.data.max(1, keepdim=True)[1]
                         # print(f"targets: {targets[10, ...]}")
                         # print(f"predictions: {pred[10, ...]}")
