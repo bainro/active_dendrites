@@ -22,8 +22,6 @@ num_epochs = 5
 batch_size = 256
 test_batch_size = 512
 num_tasks = 10
-num_classes = 10 * num_tasks
-num_classes_per_task = math.floor(num_classes / num_tasks)
 
 conf = dict(
     input_size=784,
