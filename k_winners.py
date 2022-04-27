@@ -1,9 +1,7 @@
 import abc
-
 import numpy as np
 import torch
 import torch.nn as nn
-
 import k_winners_jit as F
 
 
