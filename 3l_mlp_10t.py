@@ -31,17 +31,12 @@ conf = dict(
     hidden_sizes=[2048, 2048],
 )    
 
-if __name__ == "__main__":
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # model = D.DendriticMLP(**conf)
-    model = ModifiedInitMLP(**conf)
-    model = model.to(device)
-    
+def permuted_loader(train=True):
     dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
         download=False,  # Change to True if running for the first time
         seed=seed,
-        train=True,
+        train=train,
         num_tasks=num_tasks,
     )
     
@@ -61,47 +56,25 @@ if __name__ == "__main__":
 
     sampler = TaskRandomSampler(task_indices)
     
-    train_loader = DataLoader(
+    loader = DataLoader(
         dataset=dataset,
         batch_size=batch_size,
         shuffle=sampler is None,
         num_workers=4,
         sampler=sampler,
         pin_memory=torch.cuda.is_available(),
-        drop_last=True,
+        drop_last=train,
     )
     
-    test_dataset = PermutedMNIST(
-        root=os.path.expanduser("~/datasets/permutedMNIST"),
-        download=False,
-        seed=seed,
-        train=False,
-        num_tasks=num_tasks,
-    )
-    
-    test_class_indices = defaultdict(list)
-    for idx in range(len(test_dataset)):
-        target = int(test_dataset.targets[idx % len(test_dataset.data)])
-        task_id = test_dataset.get_task_id(idx)
-        target += 10 * task_id
-        test_class_indices[target].append(idx)
+    return dataset, loader
 
-    test_task_indices = defaultdict(list)
-    for i in range(num_tasks):
-        for j in range(num_classes_per_task):
-            test_task_indices[i].extend(test_class_indices[j + (i * num_classes_per_task)])
-
-    test_sampler = TaskRandomSampler(test_task_indices)
+if __name__ == "__main__":
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = ModifiedInitMLP(**conf)
+    model = model.to(device)
     
-    test_loader = DataLoader(
-        dataset=test_dataset,
-        batch_size=test_batch_size,
-        shuffle=test_sampler is None,
-        num_workers=4,
-        sampler=test_sampler,
-        pin_memory=torch.cuda.is_available(),
-        drop_last=False,
-    )
+    dataset, train_loader = make_loader(train=True)
+    test_dataset, test_loader = make_loader(train=False)
     
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
