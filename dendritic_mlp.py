@@ -33,7 +33,6 @@ def dendritic_bias_1d(y, dendrite_activations):
     winning_activations, indices = dendrite_activations.max(dim=2)
     return dendrite_output(y + winning_activations, indices)
 
-
 @torch.jit.script
 def gather_activations(dendrite_activations, indices):
     """
