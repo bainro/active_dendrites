@@ -2,11 +2,9 @@ import abc
 from collections.abc import Iterable
 from collections import namedtuple
 from typing import Optional
-
 import numpy as np
 import torch
 from torch import nn
-
 from k_winners import KWinners
 from sparse_weights import SparseWeights, rezero_weights
 from dendrite_segments import DendriteSegments
