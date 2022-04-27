@@ -17,7 +17,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 
-seed = 43
+seed = 44
 num_epochs = 3
 batch_size = 256
 test_batch_size = 512
