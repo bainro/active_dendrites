@@ -28,15 +28,15 @@ num_classes_per_task = math.floor(num_classes / num_tasks)
 
 conf = dict(
     input_size=784,
-    output_size=10,  # Single output head shared by all tasks
+    # output_size=10,  # Single output head shared by all tasks
     hidden_sizes=[2048, 2048],
-    dim_context=10,
-    kw=True,
-    kw_percent_on=0.05,
-    dendrite_weight_sparsity=0.0,
-    weight_sparsity=0.5,
-    context_percent_on=1.0,
-    num_segments=num_tasks
+    # dim_context=10,
+    # kw=True,
+    # kw_percent_on=0.05,
+    # dendrite_weight_sparsity=0.0,
+    # weight_sparsity=0.5,
+    # context_percent_on=1.0,
+    # num_segments=num_tasks
 )    
 
 if __name__ == "__main__":
