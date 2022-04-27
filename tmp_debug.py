@@ -139,6 +139,50 @@ if __name__ == "__main__":
                 print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
                 
+        train_loader.sampler.set_active_tasks(curr_task+1)
+        for e in tqdm(range(num_epochs)):
+            model.train()
+            for batch_idx, (imgs, targets) in enumerate(train_loader):
+                optimizer.zero_grad()
+                imgs, targets = imgs.to(device), targets.to(device)
+                one_hot_vector = torch.zeros([num_tasks])
+                one_hot_vector[curr_task+1] = 1
+                context = torch.FloatTensor(one_hot_vector)
+                context = context.to(device)
+                context = context.unsqueeze(0)
+                context = context.repeat(imgs.shape[0], 1)
+                imgs = imgs.flatten(start_dim=1)
+                # output = model(imgs, context)
+                output = model(imgs)
+                pred = output.data.max(1, keepdim=True)[1]
+                train_loss = criterion(output, targets)
+                train_loss.backward()
+                print(f"[t2] train_loss: {train_loss.item()}")
+                optimizer.step()
+                
+        train_loader.sampler.set_active_tasks(curr_task)
+        for e in tqdm(range(num_epochs)):
+            model.train()
+            for batch_idx, (imgs, targets) in enumerate(train_loader):
+                optimizer.zero_grad()
+                imgs, targets = imgs.to(device), targets.to(device)
+                one_hot_vector = torch.zeros([num_tasks])
+                one_hot_vector[curr_task] = 1
+                context = torch.FloatTensor(one_hot_vector)
+                context = context.to(device)
+                context = context.unsqueeze(0)
+                context = context.repeat(imgs.shape[0], 1)
+                imgs = imgs.flatten(start_dim=1)
+                # output = model(imgs, context)
+                output = model(imgs)
+                pred = output.data.max(1, keepdim=True)[1]
+                train_loss = criterion(output, targets)
+                train_loss.backward()
+                print(f"[t1a] train_loss: {train_loss.item()}")
+                # optimizer.step()
+                
+            exit()
+                
             model.eval()
             correct = 0
             with torch.no_grad():
