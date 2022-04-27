@@ -78,6 +78,9 @@ class PermutedMNIST(MNIST):
         return index // len(self.data)
 
 def make_loader(num_tasks, seed, train=True):
+    num_classes = 10
+    num_classes_per_task = math.floor(num_classes / num_tasks)
+    
     dataset = PermutedMNIST(
         root=os.path.expanduser("~/datasets/permutedMNIST"),
         download=False,  # Change to True if running for the first time
