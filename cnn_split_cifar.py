@@ -3,7 +3,7 @@ Train a lenet 5 CNN on CIFAR100 split into 10-way classification tasks.
 '''
 
 import os
-from datasets.splitCIFAR100 import make_loader
+from datasets.splitCIFAR100 import make_loaders
 import numpy
 import torch
 from torch import nn
@@ -14,13 +14,7 @@ seed = 42
 num_epochs = 5
 train_bs = 256
 test_bs = 512
-num_tasks = 10
-
-conf = dict(
-    input_size=784,
-    num_classes = 10,
-    hidden_sizes=[2048, 2048],
-)    
+# num_tasks = 10
 
 class LeNet5(nn.Module):
     def __init__(self, num_classes=10):
@@ -47,14 +41,16 @@ class LeNet5(nn.Module):
         x = self.classifier(x)
         return x
 
-    
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = ModifiedInitMLP(**conf)
+    model = LeNet5(num_classes=10)
     model = model.to(device)
     
-    train_loader = make_loader(num_tasks, seed, train_bs, train=True)
-    test_loader = make_loader(num_tasks, seed, test_bs, train=False)
+    train_loaders= make_loaders(seed, train_bs, train=True)
+    test_loaders = make_loaders(seed, test_bs, train=False)
+    
+    print("made it to pdb!!!")
+    import pdb; pdb.set_trace()
     
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
