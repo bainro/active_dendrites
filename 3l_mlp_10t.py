@@ -67,8 +67,8 @@ if __name__ == "__main__":
     model = ModifiedInitMLP(**conf)
     model = model.to(device)
     
-    dataset, train_loader = make_loader(num_tasks, seed, train_bs, train=True)
-    test_dataset, test_loader = make_loader(num_tasks, seed, test_bs, train=False)
+    train_loader = make_loader(num_tasks, seed, train_bs, train=True)
+    test_loader = make_loader(num_tasks, seed, test_bs, train=False)
     
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
