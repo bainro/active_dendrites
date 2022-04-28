@@ -3,7 +3,7 @@ Script to train a fully connected, 3 layer MLP on 10 tasks of PermutedMNIST.
 '''
 
 import os
-from datasets.permutedMNIST import PermutedMNIST, make_loader
+from datasets.permutedMNIST import make_loader
 import numpy
 import torch
 from torch import nn
