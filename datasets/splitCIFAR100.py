@@ -11,11 +11,10 @@ from torch.utils.data import DataLoader, Subset
 
 def make_loader(seed, batch_size, train):
     """
-    CIFAR-100 split into 10-way classification tasks. 
+    CIFAR-100 split into 10-way classification tasks. Returns 10 loaders, 
+    each with 10 random classes. Setting the seed allows the validation 
+    data to be of the same classes as training.
     """
-    
-    num_classes = 100
-    num_classes_per_task = 10
     
     whole_dataset = CIFAR100(
         root=os.path.expanduser("~/datasets/CIFAR100"),
@@ -25,15 +24,17 @@ def make_loader(seed, batch_size, train):
     )
     
     # load regular 100 class dataset
-    whole_loader = DataLoader(whole_dataset, batch_size=1, shuffle=True, num_workers=8)
+    whole_loader = DataLoader(whole_dataset, batch_size=1, shuffle=True, num_workers=4)
     
     # deterministically shuffle the tasks' classes
-    all_classes = list(range(0,100))
-    random.Random(seed).shuffle(all_classes)
+    all_labels = list(range(0,100))
+    random.Random(seed).shuffle(all_labels)
+    # split shuffled classes into 10 lists
+    label_subsets = [all_labels[x:x+10] for x in range(0, 100, 10)]
     
     # list of dataloaders. One for each task.
     loaders = []
-    for label_subset in all_labels:
+    for label_subset in label_subsets:
         subset_idx = []
         for idx, (img, target) in enumerate(whole_loader):
             if target in label_subset:
