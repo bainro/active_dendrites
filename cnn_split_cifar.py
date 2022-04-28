@@ -1,5 +1,5 @@
 '''
-Script to train a fully connected, 3 layer MLP on 10 tasks of PermutedMNIST.
+Train a lenet 5 CNN on cifar-100 split into 10-way classification tasks.
 '''
 
 import os
