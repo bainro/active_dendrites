@@ -38,7 +38,7 @@ class splitCIFAR100(CIFAR100):
         return img, target
 
     def __len__(self):
-        return 10 * len(self.data)
+        return len(self.data)
     
     @property
     def processed_folder(self):
