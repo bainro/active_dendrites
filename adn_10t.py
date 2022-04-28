@@ -4,7 +4,7 @@ Script to train an active dendrite MLP on 10 tasks of PermutedMNIST.
 
 import os
 import dendritic_mlp as D
-from datasets.permutedMNIST import PermutedMNIST, make_loader
+from datasets.permutedMNIST import make_loader
 import numpy
 import torch
 from torch import nn
