@@ -14,8 +14,8 @@ def make_loader(seed, batch_size, train):
     """
     
     # load regular 100 class dataset
-    # split into 10 tasks given a seed
-    # replace sampler with list of datasets?
+    # split into 10 tasks given a seed https://stackoverflow.com/questions/47432168/taking-subsets-of-a-pytorch-dataset
+    # return list of dataloaders
     
     num_classes = 100
     num_classes_per_task = 10
@@ -30,9 +30,9 @@ def make_loader(seed, batch_size, train):
     loader = DataLoader(
         dataset=dataset,
         batch_size=batch_size,
-        shuffle=sampler is None,
+        shuffle=True,
         num_workers=4,
-        sampler=sampler,
+        sampler=None,
         pin_memory=torch.cuda.is_available(),
         drop_last=train,
     )
