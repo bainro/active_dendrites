@@ -9,7 +9,7 @@ from torchvision.datasets import CIFAR100
 from torch.utils.data import DataLoader, Subset
 
 
-def make_loader(seed, batch_size, train):
+def make_loaders(seed, batch_size, train):
     """
     CIFAR-100 split into 10-way classification tasks. Returns 10 loaders, 
     each with 10 random classes. Setting the seed allows the validation 
