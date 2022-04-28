@@ -36,9 +36,6 @@ class splitCIFAR100(CIFAR100):
         # Determine the which task `index` belongs to
         task_id = self.get_task_id(index)
         return img, target
-
-    def __len__(self):
-        return len(self.data)
     
     @property
     def processed_folder(self):
