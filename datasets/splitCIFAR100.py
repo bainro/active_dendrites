@@ -11,84 +11,50 @@ from torch.utils.data import DataLoader
 
 class splitCIFAR100(CIFAR100):
     """
-    The permutedMNIST dataset contains MNIST images where the same random permutation
-    of pixel values is applied to each image. More specifically, the dataset can be
-    broken down into 'tasks', where each such task is the set of all MNIST images, but
-    with a unique pixel-wise permutation applied to all images. `num_tasks` gives the
-    number of 10-way classification tasks (each corresponding to a unique pixel-wise
-    permutation) that a continual learner will try to learn in sequence.
+    CIFAR-100 split into 10-way classification tasks. 
+    
     """
 
-    def __init__(self, num_tasks, seed, train, root=".", target_transform=None,
-                 download=False, normalize=True):
+    def __init__(self, num_tasks, seed, train, root=".", download=False):
 
         t = [transforms.ToTensor()]
-        if normalize:
-            t.append(transforms.Normalize((0.13062755,), (0.30810780,)))
         data_transform = transforms.Compose(t)
         super().__init__(root=root, train=train, transform=data_transform,
-                         target_transform=target_transform, download=download)
-
-        self.num_tasks = num_tasks
+                         target_transform=None, download=download)
 
         # Use a generator object to manually set the seed and generate the same
-        # num_tasks random permutations for both training and validation datasets; the
-        # first one is the identity permutation (i.e., regular MNIST), represented
-        # below as `None`
+        # num_tasks splits for both training and validation datasets
         g = torch.manual_seed(seed)
 
         self.permutations = [
             torch.randperm(784, generator=g) for task_id in range(1, num_tasks)
         ]
-        self.permutations.insert(0, None)
 
-    def __getitem__(self, index):
-        """
-        Returns an (image, target) pair.
-
-        In particular, this method retrieves an MNIST image, and based on the value of
-        `index`, determines which pixel-wise permutation to apply. Target values are
-        also scaled to be unique to each permutation.
-        """
-        
+    def __getitem__(self, index):        
         img, target = super().__getitem__(index % len(self.data))
-
-        # Determine which task `index` corresponds to
+        # Determine the which task `index` belongs to
         task_id = self.get_task_id(index)
-        
-        # Apply permutation to `img`
-        permutation = self.permutations[task_id]
-        if permutation is not None:
-            _, height, width = img.size()
-            img = img.view(-1, 1)
-            img = img[permutation, :]
-            img = img.view(1, height, width)
-
-        # Since target values are not shared between tasks, `target` should be in the
-        # range [0 + 10 * task_id, 9 + 10 * task_id]
-        # target += 10 * task_id
         return img, target
 
     def __len__(self):
-        return self.num_tasks * len(self.data)
+        return 10 * len(self.data)
     
     @property
     def processed_folder(self):
-        return os.path.join(self.root, "MNIST", "processed")
+        return os.path.join(self.root, "CIFAR100", "processed")
 
     def get_task_id(self, index):
         return index // len(self.data)
 
-def make_loader(num_tasks, seed, batch_size, train):
-    num_classes = 10 * num_tasks
-    num_classes_per_task = math.floor(num_classes / num_tasks)
+def make_loader(seed, batch_size, train):
+    num_classes = 100
+    num_classes_per_task = 10
     
     dataset = PermutedMNIST(
-        root=os.path.expanduser("~/datasets/permutedMNIST"),
-        download=False,  # Change to True if running for the first time
+        root=os.path.expanduser("~/datasets/splitCIFAR100"),
+        download=True,  # Change to True if running for the first time
         seed=seed,
         train=train,
-        num_tasks=num_tasks,
     )
     
     # target -> all indices for that target
