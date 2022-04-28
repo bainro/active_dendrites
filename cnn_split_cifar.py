@@ -1,5 +1,5 @@
 '''
-Train a lenet 5 CNN on cifar-100 split into 10-way classification tasks.
+Train a lenet 5 CNN on CIFAR100 split into 10-way classification tasks.
 '''
 
 import os
