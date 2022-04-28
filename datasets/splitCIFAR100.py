@@ -21,13 +21,15 @@ class splitCIFAR100(CIFAR100):
         super().__init__(root=root, train=train, transform=data_transform,
                          target_transform=None, download=download)
 
+        '''
         # Use a generator object to manually set the seed and generate the same
         # num_tasks splits for both training and validation datasets
         g = torch.manual_seed(seed)
 
-        self.permutations = [
+        self.shuffled_classes = [
             torch.randperm(784, generator=g) for task_id in range(1, num_tasks)
         ]
+        '''
 
     def __getitem__(self, index):        
         img, target = super().__getitem__(index % len(self.data))
@@ -49,7 +51,7 @@ def make_loader(seed, batch_size, train):
     num_classes = 100
     num_classes_per_task = 10
     
-    dataset = PermutedMNIST(
+    dataset = splitCIFAR100(
         root=os.path.expanduser("~/datasets/splitCIFAR100"),
         download=True,  # Change to True if running for the first time
         seed=seed,
