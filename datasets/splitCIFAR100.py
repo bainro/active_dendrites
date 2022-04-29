@@ -83,7 +83,8 @@ def make_loaders(seed, batch_size, train):
         )
         loaders.append(loader)
 
-    assert whole_dataset.targets.unique() == 10, "Number of classes should be 10"
+    n_unique_class = whole_dataset.targets.unique() 
+    assert n_unique_class == 10, f"Number of classes should be 10 not {n_unique_class}"
     del whole_loader
     
     return loaders
