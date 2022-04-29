@@ -22,7 +22,7 @@ def make_loaders(seed, batch_size, train):
     try:
         whole_dataset = CIFAR100(**conf)  
     except:
-        conf.update({'download': True)
+        conf.update({'download': True})
         whole_dataset = CIFAR100(**conf)  
     
     # load regular 100 class dataset
