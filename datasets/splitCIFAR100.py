@@ -48,7 +48,7 @@ def make_loaders(seed, batch_size, train):
     if os.path.exists(file_path):
         targets = np.fromfile(file_path, dtype=int)
     else:
-        for idx, (img, target) in enumerate(whole_loader):
+        for _imgs, target in enumerate(whole_loader):
             targets.append(target)
         targets = numpy.array(targets)
         targets.tofile(file_path)
