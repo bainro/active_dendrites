@@ -56,6 +56,6 @@ def make_loaders(seed, batch_size, train):
         )
         loaders.append(loader)
         
-        del whole_loader
+    del whole_loader
     
     return loaders
