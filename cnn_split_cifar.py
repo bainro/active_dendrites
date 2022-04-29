@@ -83,7 +83,7 @@ if __name__ == "__main__":
                         pred = output.data.max(1, keepdim=True)[1]
                         correct += pred.eq(targets.data.view_as(pred)).sum().item()
                     # print(f"correct: {correct}")
-                    acc = 100. * correct / len(test_loaders[t].dataset)
+                    acc = 100. * correct / len(test_loaders[curr_t].dataset)
                     print(f"[t:{t} e:{e}] test acc: {acc}%")
                     if acc > best_acc:
                         best_acc = acc
