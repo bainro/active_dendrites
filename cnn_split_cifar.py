@@ -104,6 +104,7 @@ if __name__ == "__main__":
                             g['lr'] *= .1
                         reduced_lr = True
                         reduced_e = e
+                        tol *= 2 # dbl the tolerance
                         print("reducing LR!")
                         
 
