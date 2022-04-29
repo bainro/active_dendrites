@@ -19,7 +19,6 @@ def make_loaders(seed, batch_size, train):
     whole_dataset = CIFAR100(
         root=os.path.expanduser("~/datasets/CIFAR100"),
         download=False,  # Change to True if running for the first time
-        seed=seed,
         train=train,
     )
     
