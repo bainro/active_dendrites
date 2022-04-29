@@ -10,7 +10,7 @@ from torch import nn
 from tqdm import tqdm
 
 
-seed = 42
+seed = 43
 num_epochs = 450
 train_bs = 256
 test_bs = 512
