@@ -68,12 +68,9 @@ def make_loaders(seed, batch_size, train):
     for i, subset in enumerate(subsets):
         # map the 100 class id's to [0, 9]
         for j, k in enumerate(label_subsets[i]):
-            # print(f"j: {j} k: {k}")
-            # whole_dataset.targets[whole_dataset.targets == k] = j
             t_copy = numpy.array(whole_dataset.targets)
-            t_copy[t_copy > 5] = j
+            t_copy[t_copy == k] = j
             whole_dataset.targets = list(t_copy)
-        # exit()
         dataset_subset = Subset(whole_dataset, subset)
         loader = DataLoader(
             dataset=dataset_subset,
