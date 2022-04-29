@@ -28,7 +28,7 @@ class LeNet5(nn.Module):
             nn.MaxPool2d(kernel_size=2),
         )
         self.classifier = nn.Sequential(
-            nn.Linear(32*7*7, 512),
+            nn.Linear(32*8*8, 512),
             nn.ReLU(),
             nn.Linear(256, 128),
             nn.ReLU(),
