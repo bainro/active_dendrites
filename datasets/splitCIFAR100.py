@@ -15,12 +15,16 @@ def make_loaders(seed, batch_size, train):
     each with 10 random classes. Setting the seed allows the validation 
     data to be of the same classes as training.
     """
-    
-    whole_dataset = CIFAR100(
-        root=os.path.expanduser("~/datasets/CIFAR100"),
-        download=False,  # Change to True if running for the first time
-        train=train,
-    )
+
+    conf = {root: os.path.expanduser("~/datasets/CIFAR100"),
+            download: False,
+            train: train,}
+    # will throw error if dataset isn't already downloaded
+    try:
+        whole_dataset = CIFAR100(**conf)  
+    except:
+        conf.update("download", True)
+        whole_dataset = CIFAR100(**conf)  
     
     # load regular 100 class dataset
     whole_loader = DataLoader(whole_dataset, batch_size=1, shuffle=True, num_workers=4)
