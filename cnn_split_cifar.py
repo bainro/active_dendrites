@@ -46,21 +46,17 @@ if __name__ == "__main__":
     model = LeNet5(num_classes=10)
     model = model.to(device)
     
-    train_loaders= make_loaders(seed, train_bs, train=True)
-    test_loaders = make_loaders(seed, test_bs, train=False)
-    
-    # print("made it to pdb!!!")
-    # import pdb; pdb.set_trace()
+    train_loaders = make_loaders(seed, train_bs, train=True)
+    test_loaders  = make_loaders(seed, test_bs, train=False)
     
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
     
-    for curr_task in range(num_tasks):
-        train_loader.sampler.set_active_tasks(curr_task)
+    for curr_i in range(num_tasks):
         for e in tqdm(range(num_epochs)):
             model.train()
-            for batch_idx, (imgs, targets) in enumerate(train_loader):
+            for batch_idx, (imgs, targets) in enumerate(train_loader[curr_i]):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
                 output = model(imgs)
@@ -74,8 +70,7 @@ if __name__ == "__main__":
         correct = 0
         with torch.no_grad():
             for t in range(curr_task+1):
-                test_loader.sampler.set_active_tasks(t)
-                for imgs, targets in test_loader:
+                for imgs, targets in test_loader[t]:
                     imgs, targets = imgs.to(device), targets.to(device)
                     output = model(imgs)
                     pred = output.data.max(1, keepdim=True)[1]
