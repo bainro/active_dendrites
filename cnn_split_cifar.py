@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 
 seed = 42
-num_epochs = 150
+num_epochs = 450
 train_bs = 256
 test_bs = 512
 num_tasks = 1
