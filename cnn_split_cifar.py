@@ -15,7 +15,8 @@ num_epochs = 450
 train_bs = 256
 test_bs = 512
 test_freq = 5
-num_tasks = 1
+num_tasks = 10
+tolerance = test_freq * 3
 
 class LeNet5(nn.Module):
     def __init__(self, num_classes=10):
@@ -56,11 +57,8 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
 
-    tol = 15        # tolerance for acc improvement
     best_acc = 0.   # best test acc so far
     best_e = 0      # epoch of best_acc
-    reduced_e = 0   # epoch when reduced learning rate
-    reduced_lr = False
     
     for curr_t in range(num_tasks):
         for e in tqdm(range(num_epochs)):
@@ -79,33 +77,33 @@ if __name__ == "__main__":
                 model.eval()
                 correct = 0
                 with torch.no_grad():
-                    for t in range(curr_t+1):
-                        for imgs, targets in test_loaders[t]:
-                            imgs, targets = imgs.to(device), targets.to(device)
-                            output = model(imgs)
-                            pred = output.data.max(1, keepdim=True)[1]
-                            correct += pred.eq(targets.data.view_as(pred)).sum().item()
+                    for imgs, targets in test_loaders[curr_t]:
+                        imgs, targets = imgs.to(device), targets.to(device)
+                        output = model(imgs)
+                        pred = output.data.max(1, keepdim=True)[1]
+                        correct += pred.eq(targets.data.view_as(pred)).sum().item()
                     # print(f"correct: {correct}")
-                    acc = 100. * correct / num_tasks / len(test_loaders[t].dataset)
+                    acc = 100. * correct / len(test_loaders[t].dataset)
                     print(f"[t:{t} e:{e}] test acc: {acc}%")
                     if acc > best_acc:
                         best_acc = acc
                         best_e = e
-                        backup.load_state_dict(model.state_dict())
-                    elif best_e + tol <= e and reduced_e + tol <= e:
-                        if reduced_lr:
-                            # not going to reduce again
-                            print("early stopped!")
-                            break
-                        # haven't improved test acc recently
-                        # reload best checkpoint & reduce LR
-                        model.load_state_dict(backup.state_dict())
-                        for g in optimizer.param_groups:
-                            g['lr'] *= .1
-                        reduced_lr = True
-                        reduced_e = e
-                        tol *= 2 # dbl the tolerance
-                        print("reducing LR!")
+                        # backup.load_state_dict(model.state_dict())
+                    elif best_e + tolerance <= e:
+                        print("early stopping!")
+                        break
                         
+        model.eval()
+        correct = 0
+        with torch.no_grad():
+            for t in range(curr_t+1):
+                for imgs, targets in test_loaders[t]:
+                    imgs, targets = imgs.to(device), targets.to(device)
+                    output = model(imgs)
+                    pred = output.data.max(1, keepdim=True)[1]
+                    correct += pred.eq(targets.data.view_as(pred)).sum().item()
+            print(f"correct: {correct}")
+            acc = 100. * correct / num_tasks / len(test_loaders[t].dataset)
+            print(f"[t:{t} e:{e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
