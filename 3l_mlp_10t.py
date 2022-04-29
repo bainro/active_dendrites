@@ -69,7 +69,7 @@ if __name__ == "__main__":
     
     train_loader = make_loader(num_tasks, seed, train_bs, train=True)
     test_loader = make_loader(num_tasks, seed, test_bs, train=False)
-    
+    import pdb; pdb.set_trace()    
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
