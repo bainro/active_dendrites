@@ -15,7 +15,10 @@ if __name__ == "__main__":
                             "lr": lr, "w_decay": w_d}
                     avg_acc, final_epochs, final_single_acc = train(**conf)
                     # per_seed_acc.append(avg_acc)
-                    print(**conf)
+                    print(f"seed: {seed}")
+                    print(f"lr: {lr}")
+                    print(f"batch size: {bs}")
+                    print(f"weight decay: {w_d}")
                     print(f"avg_acc: {avg_acc}%")
                     print(f"final_epochs: {final_epochs}") 
                     print(f"final_single_acc: {final_single_acc}")
