@@ -14,7 +14,7 @@ seed = 42
 num_epochs = 5
 train_bs = 256
 test_bs = 512
-# num_tasks = 10
+num_tasks = 1
 
 class LeNet5(nn.Module):
     def __init__(self, num_classes=10):
@@ -49,8 +49,8 @@ if __name__ == "__main__":
     train_loaders= make_loaders(seed, train_bs, train=True)
     test_loaders = make_loaders(seed, test_bs, train=False)
     
-    print("made it to pdb!!!")
-    import pdb; pdb.set_trace()
+    # print("made it to pdb!!!")
+    # import pdb; pdb.set_trace()
     
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
@@ -63,12 +63,11 @@ if __name__ == "__main__":
             for batch_idx, (imgs, targets) in enumerate(train_loader):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
-                imgs = imgs.flatten(start_dim=1)
                 output = model(imgs)
                 pred = output.data.max(1, keepdim=True)[1]
                 train_loss = criterion(output, targets)
                 train_loss.backward()
-                # print(f"train_loss: {train_loss.item()}")
+                print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
                 
         model.eval()
@@ -78,12 +77,11 @@ if __name__ == "__main__":
                 test_loader.sampler.set_active_tasks(t)
                 for imgs, targets in test_loader:
                     imgs, targets = imgs.to(device), targets.to(device)
-                    imgs = imgs.flatten(start_dim=1)
                     output = model(imgs)
                     pred = output.data.max(1, keepdim=True)[1]
                     correct += pred.eq(targets.data.view_as(pred)).sum().item()
             print(f"correct: {correct}")
-            acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
+            acc = 100. * correct / num_tasks / len(test_loader.dataset)
             print(f"[t:{t} e:{e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
