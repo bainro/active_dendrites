@@ -50,7 +50,8 @@ def make_loaders(seed, batch_size, train):
     else:
         for idx, (img, target) in enumerate(whole_loader):
             targets.append(target)
-            targets.tofile(numpy.array(file_path))
+        targets = numpy.array(targets)
+        targets.tofile(file_path)
     for idx, target in enumerate(targets):
         # find index of label_subset that this class belongs to
         label_sub_idx = None
