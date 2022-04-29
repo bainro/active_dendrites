@@ -53,10 +53,10 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
     
-    for t in range(num_tasks):
+    for curr_t in range(num_tasks):
         for e in tqdm(range(num_epochs)):
             model.train()
-            for batch_idx, (imgs, targets) in enumerate(train_loaders[t]):
+            for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
                 output = model(imgs)
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         model.eval()
         correct = 0
         with torch.no_grad():
-            for t in range(curr_task+1):
+            for t in range(curr_t+1):
                 for imgs, targets in test_loaders[t]:
                     imgs, targets = imgs.to(device), targets.to(device)
                     output = model(imgs)
