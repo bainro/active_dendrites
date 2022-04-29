@@ -46,6 +46,8 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = LeNet5(num_classes=10)
     model = model.to(device)
+    backup = LeNet5(num_classes=10)
+    backup = backup.to(device)
     
     train_loaders = make_loaders(seed, train_bs, train=True)
     test_loaders  = make_loaders(seed, test_bs, train=False)
@@ -53,6 +55,12 @@ if __name__ == "__main__":
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
+
+    tol = 5         # tolerance for acc improvement
+    best_acc = 0.   # best test acc so far
+    best_e = 0      # epoch of best_acc
+    reduced_e = 0   # epoch when reduced learning rate
+    reduced_lr = False
     
     for curr_t in range(num_tasks):
         for e in tqdm(range(num_epochs)):
@@ -80,5 +88,23 @@ if __name__ == "__main__":
                     # print(f"correct: {correct}")
                     acc = 100. * correct / num_tasks / len(test_loaders[t].dataset)
                     print(f"[t:{t} e:{e}] test acc: {acc}%")
+                    if acc > best_acc:
+                        best_acc = acc
+                        best_e = e
+                        backup.load_state_dict(model.state_dict())
+                    elif best_e + tol <= e and reduced_e + tol <= e:
+                        if reduced_lr:
+                            # not going to reduce again
+                            print("early stopped!")
+                            break
+                        # haven't improved test acc recently
+                        # reload best checkpoint & reduce LR
+                        model.load_state_dict(backup.state_dict())
+                        for g in optimizer.param_groups:
+                            g['lr'] *= .5
+                        reduced_lr = True
+                        reduced_e = e
+                        print("reducing LR!")
+                        
 
     print("SCRIPT FINISHED!")
