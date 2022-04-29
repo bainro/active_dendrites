@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 
 seed = 42
-num_epochs = 5
+num_epochs = 15
 train_bs = 256
 test_bs = 512
 num_tasks = 1
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     test_loaders  = make_loaders(seed, test_bs, train=False)
     
     # Optimizer and Loss
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-6, weight_decay=0)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
     
     for curr_t in range(num_tasks):
