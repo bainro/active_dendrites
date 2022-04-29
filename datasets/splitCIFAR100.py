@@ -66,10 +66,10 @@ def make_loaders(seed, batch_size, train):
     # list of dataloaders. One for each task.
     loaders = []
     for i, subset in enumerate(subsets):
-        dataset_subset = Subset(whole_dataset, subset)
         # map the 100 class id's to [0, 9]
         for j, k in enumerate(label_subsets[i]):
-            dataset_subset.targets[dataset_subset.targets == k] = j
+            whole_dataset.targets[whole_dataset.targets == k] = j
+        dataset_subset = Subset(whole_dataset, subset)
         loader = DataLoader(
             dataset=dataset_subset,
             batch_size=batch_size,
