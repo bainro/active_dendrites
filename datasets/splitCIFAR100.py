@@ -29,7 +29,7 @@ def make_loaders(seed, batch_size, train):
         whole_dataset = CIFAR100(**conf)  
     
     # load regular 100 class dataset
-    whole_loader = DataLoader(whole_dataset, batch_size=1, shuffle=False, num_workers=4)
+    whole_loader = DataLoader(whole_dataset, batch_size=256, shuffle=False, num_workers=4)
     
     # deterministically shuffle the tasks' classes
     all_labels = list(range(0,100))
@@ -48,8 +48,9 @@ def make_loaders(seed, batch_size, train):
     if os.path.exists(file_path):
         targets = numpy.fromfile(file_path, dtype=int)
     else:
-        for _imgs, target in whole_loader:
-            targets.append(target)
+        for _imgs, _targets in whole_loader:
+            for target in _targets:
+                targets.append(target)
         targets = numpy.array(targets)
         targets.tofile(file_path)
     for idx, target in enumerate(targets):
