@@ -16,14 +16,13 @@ def make_loaders(seed, batch_size, train):
     data to be of the same classes as training.
     """
 
-    conf = {root: os.path.expanduser("~/datasets/CIFAR100"),
-            download: False,
-            train: train,}
+    conf = {"root": os.path.expanduser("~/datasets/CIFAR100"),
+            "download": False, "train": train}
     # will throw error if dataset isn't already downloaded
     try:
         whole_dataset = CIFAR100(**conf)  
     except:
-        conf.update("download", True)
+        conf.update({'download': True)
         whole_dataset = CIFAR100(**conf)  
     
     # load regular 100 class dataset
