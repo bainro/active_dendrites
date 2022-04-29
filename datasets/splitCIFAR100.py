@@ -81,7 +81,7 @@ def make_loaders(seed, batch_size, train):
         )
         loaders.append(loader)
 
-    print(whole_loader.targets);exit()
+    print(whole_dataset.targets);exit()
     del whole_loader
     
     return loaders
