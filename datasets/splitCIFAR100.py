@@ -16,12 +16,11 @@ def make_loaders(seed, batch_size, train):
     data to be of the same classes as training.
     """
 
-    t = [transforms.ToTensor()]
-    # t.append(transforms.Normalize((0.13062755,), (0.30810780,)))
-    tt = transforms.Compose(t)
+    t = transforms.Compose([transforms.ToTensor(), 
+                            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     
     conf = {"root": os.path.expanduser("~/datasets/CIFAR100"),
-            "download": False, "train": train, "target_transform": tt}
+            "download": False, "train": train, "transform": t}
     # will throw error if dataset isn't already downloaded
     try:
         whole_dataset = CIFAR100(**conf)  
