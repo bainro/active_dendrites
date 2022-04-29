@@ -68,7 +68,9 @@ def make_loaders(seed, batch_size, train):
     for i, subset in enumerate(subsets):
         # map the 100 class id's to [0, 9]
         for j, k in enumerate(label_subsets[i]):
+            print(f"j: {j} k: {k}")
             whole_dataset.targets[whole_dataset.targets == k] = j
+        exit()
         dataset_subset = Subset(whole_dataset, subset)
         loader = DataLoader(
             dataset=dataset_subset,
@@ -81,7 +83,7 @@ def make_loaders(seed, batch_size, train):
         )
         loaders.append(loader)
 
-    print(whole_dataset.targets);exit()
+    assert whole_dataset.targets.unique() == 10, "Number of classes should be 10"
     del whole_loader
     
     return loaders
