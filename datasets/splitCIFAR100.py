@@ -29,7 +29,7 @@ def make_loaders(seed, batch_size, train):
         whole_dataset = CIFAR100(**conf)  
     
     # load regular 100 class dataset
-    whole_loader = DataLoader(whole_dataset, batch_size=1, shuffle=False, num_workers=4)
+    whole_loader = DataLoader(whole_dataset, batch_size=1, shuffle=False, num_workers=8)
     
     # deterministically shuffle the tasks' classes
     all_labels = list(range(0,100))
