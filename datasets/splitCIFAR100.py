@@ -46,7 +46,7 @@ def make_loaders(seed, batch_size, train):
     targets = []
     file_path = os.path.join("./", f".{'train' if train else 'test'}_idx.dat")
     if os.path.exists(file_path):
-        targets = np.fromfile(file_path, dtype=int)
+        targets = numpy.fromfile(file_path, dtype=int)
     else:
         for _imgs, target in whole_loader:
             targets.append(target)
