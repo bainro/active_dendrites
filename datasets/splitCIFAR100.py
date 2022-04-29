@@ -17,7 +17,7 @@ def make_loaders(seed, batch_size, train):
     """
 
     t = transforms.Compose([transforms.ToTensor(), 
-                            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+                           ])#transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     
     conf = {"root": os.path.expanduser("~/datasets/CIFAR100"),
             "download": False, "train": train, "transform": t}
