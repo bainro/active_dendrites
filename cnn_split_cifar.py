@@ -101,7 +101,7 @@ if __name__ == "__main__":
                         # reload best checkpoint & reduce LR
                         model.load_state_dict(backup.state_dict())
                         for g in optimizer.param_groups:
-                            g['lr'] *= .5
+                            g['lr'] *= .1
                         reduced_lr = True
                         reduced_e = e
                         print("reducing LR!")
