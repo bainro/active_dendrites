@@ -59,7 +59,8 @@ def train(seed, train_bs, lr, w_decay):
         optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=w_decay)
         best_acc = 0.   # best task test acc so far
         best_e = 0      # epoch of best_acc
-        for e in tqdm(range(num_epochs)):
+        # for e in tqdm(range(num_epochs)):
+        for e in range(num_epochs):
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
                 optimizer.zero_grad()
