@@ -9,10 +9,7 @@ import torch
 from torch import nn
 from tqdm import tqdm
 
-
-seed = 43
-num_epochs = 450
-train_bs = 256
+num_epochs = 1000
 test_bs = 512
 test_freq = 5
 num_tasks = 10
@@ -43,7 +40,7 @@ class LeNet5(nn.Module):
         x = self.classifier(x)
         return x
 
-if __name__ == "__main__":
+def train(seed, train_bs, lr, w_decay):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = LeNet5(num_classes=10)
     model = model.to(device)
@@ -54,7 +51,7 @@ if __name__ == "__main__":
     test_loaders  = make_loaders(seed, test_bs, train=False)
     
     # Optimizer and Loss
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=0)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=w_decay)
     criterion = nn.CrossEntropyLoss()
 
     best_acc = 0.   # best test acc so far
@@ -107,5 +104,12 @@ if __name__ == "__main__":
             print(f"correct: {correct}")
             acc = 100. * correct / (curr_t+1) / len(test_loaders[t].dataset)
             print(f"\n\n[t:{t} e:{e}] test acc: {acc}%\n\n")
+        
+    # final task-avg accuracy
+    # epochs that early stopping occurred 
+    # latest single task acc at early stopping
+    return acc, stops, stop_accs 
 
+if __name__ == "__main__":
+    train(seed=43, train_bs=256, lr=1e-4, w_decay=0)
     print("SCRIPT FINISHED!")
