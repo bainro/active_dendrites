@@ -29,7 +29,7 @@ def make_loaders(seed, batch_size, train):
         whole_dataset = CIFAR100(**conf)  
     
     # load regular 100 class dataset
-    whole_loader = DataLoader(whole_dataset, batch_size=1, shuffle=True, num_workers=4)
+    whole_loader = DataLoader(whole_dataset, batch_size=1, shuffle=False, num_workers=4)
     
     # deterministically shuffle the tasks' classes
     all_labels = list(range(0,100))
@@ -37,14 +37,24 @@ def make_loaders(seed, batch_size, train):
     # split shuffled classes into 10 lists
     label_subsets = [all_labels[x:x+10] for x in range(0, 100, 10)]
     
+    # list of indexes for each task's example subset
+    subsets = [[] for _ in range(10)]
+    # should be parallel lists
+    assert len(subsets) == len(label_subsets)
+    for idx, (img, target) in enumerate(whole_loader):
+        # find index of label_subset that this class belongs to
+        label_sub_idx = None
+        for _idx in range(10):
+            if target in label_subsets[_idx]:
+                label_sub_idx = _idx
+                break
+        assert type(label_sub_idx) != type(None)
+        subsets[label_sub_idx].append(idx)
+    
     # list of dataloaders. One for each task.
     loaders = []
-    for label_subset in label_subsets:
-        subset_idx = []
-        for idx, (img, target) in enumerate(whole_loader):
-            if target in label_subset:
-                subset_idx.append(idx)
-        dataset_subset = Subset(whole_dataset, subset_idx)
+    for subset in subsets:
+        dataset_subset = Subset(whole_dataset, subset)
         loader = DataLoader(
             dataset=dataset_subset,
             batch_size=batch_size,
