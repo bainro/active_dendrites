@@ -50,13 +50,13 @@ def train(seed, train_bs, lr, w_decay):
     train_loaders = make_loaders(seed, train_bs, train=True)
     test_loaders  = make_loaders(seed, test_bs, train=False)
     
-    # Optimizer and Loss
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=w_decay)
     criterion = nn.CrossEntropyLoss()
 
     final_e, final_acc = [], []
     
     for curr_t in range(num_tasks):
+        # testing resetting the optim
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=w_decay)
         best_acc = 0.   # best task test acc so far
         best_e = 0      # epoch of best_acc
         for e in tqdm(range(num_epochs)):
