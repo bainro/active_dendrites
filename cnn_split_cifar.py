@@ -55,10 +55,10 @@ def train(seed, train_bs, lr, w_decay):
     criterion = nn.CrossEntropyLoss()
 
     final_e, final_acc = [], []
-    best_acc = 0.   # best test acc so far
-    best_e = 0      # epoch of best_acc
     
     for curr_t in range(num_tasks):
+        best_acc = 0.   # best task test acc so far
+        best_e = 0      # epoch of best_acc
         for e in tqdm(range(num_epochs)):
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
