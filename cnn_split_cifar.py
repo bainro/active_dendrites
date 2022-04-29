@@ -14,6 +14,7 @@ seed = 42
 num_epochs = 450
 train_bs = 256
 test_bs = 512
+test_freq = 5
 num_tasks = 1
 
 class LeNet5(nn.Module):
@@ -63,20 +64,21 @@ if __name__ == "__main__":
                 pred = output.data.max(1, keepdim=True)[1]
                 train_loss = criterion(output, targets)
                 train_loss.backward()
-                print(f"train_loss: {train_loss.item()}")
                 optimizer.step()
-                
-        model.eval()
-        correct = 0
-        with torch.no_grad():
-            for t in range(curr_t+1):
-                for imgs, targets in test_loaders[t]:
-                    imgs, targets = imgs.to(device), targets.to(device)
-                    output = model(imgs)
-                    pred = output.data.max(1, keepdim=True)[1]
-                    correct += pred.eq(targets.data.view_as(pred)).sum().item()
-            print(f"correct: {correct}")
-            acc = 100. * correct / num_tasks / len(test_loaders[t].dataset)
-            print(f"[t:{t} e:{e}] test acc: {acc}%")
+            
+            if e % test_freq == 0:
+                print(f"train_loss: {train_loss.item()}")    
+                model.eval()
+                correct = 0
+                with torch.no_grad():
+                    for t in range(curr_t+1):
+                        for imgs, targets in test_loaders[t]:
+                            imgs, targets = imgs.to(device), targets.to(device)
+                            output = model(imgs)
+                            pred = output.data.max(1, keepdim=True)[1]
+                            correct += pred.eq(targets.data.view_as(pred)).sum().item()
+                    # print(f"correct: {correct}")
+                    acc = 100. * correct / num_tasks / len(test_loaders[t].dataset)
+                    print(f"[t:{t} e:{e}] test acc: {acc}%")
 
     print("SCRIPT FINISHED!")
