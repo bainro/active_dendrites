@@ -21,7 +21,7 @@ def make_loaders(seed, batch_size, train):
     tt = transforms.Compose(t)
     
     conf = {"root": os.path.expanduser("~/datasets/CIFAR100"),
-            "download": False, "train": train, target_transform: tt}
+            "download": False, "train": train, "target_transform": tt}
     # will throw error if dataset isn't already downloaded
     try:
         whole_dataset = CIFAR100(**conf)  
