@@ -2,7 +2,7 @@ from cnn_split_cifar import train
 
 if __name__ == "__main__":
     LRs = [5e-6, 1e-5, 5e-5, 1e-4]
-    BSs = [64, 128]#, 256, 512]
+    BSs = [256, 512] # 64, 128]
     decays = [0, 1e-5, 5e-5, 1e-4]
     seeds = [42]
     
