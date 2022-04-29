@@ -56,7 +56,7 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
 
-    tol = 5         # tolerance for acc improvement
+    tol = 15        # tolerance for acc improvement
     best_acc = 0.   # best test acc so far
     best_e = 0      # epoch of best_acc
     reduced_e = 0   # epoch when reduced learning rate
