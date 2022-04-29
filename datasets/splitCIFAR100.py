@@ -70,7 +70,7 @@ def make_loaders(seed, batch_size, train):
         for j, k in enumerate(label_subsets[i]):
             print(f"j: {j} k: {k}")
             whole_dataset.targets[whole_dataset.targets == k] = j
-        exit()
+        # exit()
         dataset_subset = Subset(whole_dataset, subset)
         loader = DataLoader(
             dataset=dataset_subset,
