@@ -37,6 +37,8 @@ def make_loaders(seed, batch_size, train):
     # split shuffled classes into 10 lists
     label_subsets = [all_labels[x:x+10] for x in range(0, 100, 10)]
     
+    import time
+    start_t = time.time()
     # list of indexes for each task's example subset
     subsets = [[] for _ in range(10)]
     # should be parallel lists
@@ -50,6 +52,7 @@ def make_loaders(seed, batch_size, train):
                 break
         assert type(label_sub_idx) != type(None)
         subsets[label_sub_idx].append(idx)
+    print(f"took {time.time()-start_t} seconds to sort the indices")
     
     # list of dataloaders. One for each task.
     loaders = []
