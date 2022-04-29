@@ -43,6 +43,7 @@ def make_loaders(seed, batch_size, train):
     for label_subset in label_subsets:
         subset_idx = []
         for idx, (img, target) in enumerate(whole_loader):
+            print("\n\n\n\n\n\n\n\n123123123123\n\n\n\n\n")
             if target in label_subset:
                 subset_idx.append(idx)
         dataset_subset = Subset(whole_dataset, subset_idx)
