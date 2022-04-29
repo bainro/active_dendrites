@@ -114,6 +114,6 @@ def train(seed, train_bs, lr, w_decay):
     return acc, final_e, final_acc 
 
 if __name__ == "__main__":
-    _ = train(seed=43, train_bs=64, lr=1e-4, w_decay=1e-4)
+    _ = train(seed=43, train_bs=256, lr=1e-4, w_decay=0)
     print(_)
     print("SCRIPT FINISHED!")
