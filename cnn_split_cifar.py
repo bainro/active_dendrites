@@ -88,9 +88,11 @@ if __name__ == "__main__":
                     if acc > best_acc:
                         best_acc = acc
                         best_e = e
-                        # backup.load_state_dict(model.state_dict())
+                        backup.load_state_dict(model.state_dict())
                     elif best_e + tolerance <= e:
-                        print("early stopping!")
+                        # haven't improved test acc recently
+                        # reload best checkpoint & stop early
+                        model.load_state_dict(backup.state_dict())
                         break
                         
         model.eval()
