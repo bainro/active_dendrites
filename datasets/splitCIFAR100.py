@@ -80,7 +80,8 @@ def make_loaders(seed, batch_size, train):
             drop_last=train,
         )
         loaders.append(loader)
-        
+
+    print(whole_loader.targets);exit()
     del whole_loader
     
     return loaders
