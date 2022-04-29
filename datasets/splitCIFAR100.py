@@ -16,8 +16,10 @@ def make_loaders(seed, batch_size, train):
     data to be of the same classes as training.
     """
 
-    t = trans.Compose([trans.ToTensor(),#])
-                       trans.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
+    t = trans.Compose([trans.ToTensor(),
+                       trans.Normalize((0.4914, 0.4822, 0.4465), 
+                                       (0.2023, 0.1994, 0.2010))
+                      ])
     
     conf = {"root": os.path.expanduser("~/datasets/CIFAR100"),
             "download": False, "train": train, "transform": t}
