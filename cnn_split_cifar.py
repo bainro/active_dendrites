@@ -48,6 +48,8 @@ if __name__ == "__main__":
     
     train_loaders = make_loaders(seed, train_bs, train=True)
     test_loaders  = make_loaders(seed, test_bs, train=False)
+
+    import pdb; pdb.set_trace()
     
     # Optimizer and Loss
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, weight_decay=0)
