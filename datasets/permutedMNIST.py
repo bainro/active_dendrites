@@ -117,4 +117,4 @@ def make_loader(num_tasks, seed, batch_size, train):
         drop_last=train,
     )
     
-    return dataset, loader
+    return loader
