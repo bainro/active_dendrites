@@ -46,7 +46,7 @@ def make_loaders(seed, batch_size, train):
                 subset_idx.append(idx)
         dataset_subset = Subset(whole_dataset, subset_idx)
         loader = DataLoader(
-            dataset=dataset,
+            dataset=dataset_subset,
             batch_size=batch_size,
             shuffle=True,
             num_workers=4,
