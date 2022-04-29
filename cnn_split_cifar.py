@@ -54,6 +54,7 @@ def train(seed, train_bs, lr, w_decay):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=w_decay)
     criterion = nn.CrossEntropyLoss()
 
+    final_e, final_acc = [], []
     best_acc = 0.   # best test acc so far
     best_e = 0      # epoch of best_acc
     
@@ -90,6 +91,8 @@ def train(seed, train_bs, lr, w_decay):
                         # haven't improved test acc recently
                         # reload best checkpoint & stop early
                         model.load_state_dict(backup.state_dict())
+                        final_e.append(best_e)
+                        final_acc.append(best_acc)
                         break
                         
         model.eval()
@@ -106,9 +109,9 @@ def train(seed, train_bs, lr, w_decay):
             print(f"\n\n[t:{t} e:{e}] test acc: {acc}%\n\n")
         
     # final task-avg accuracy
-    # epochs that early stopping occurred 
-    # latest single task acc at early stopping
-    return acc, stops, stop_accs 
+    # epochs that best test acc occurred 
+    # best test acc for each task
+    return acc, final_e, final_acc 
 
 if __name__ == "__main__":
     train(seed=43, train_bs=256, lr=1e-4, w_decay=0)
