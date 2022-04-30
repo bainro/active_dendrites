@@ -9,7 +9,7 @@ if __name__ == "__main__":
     k_inference_factors = [0.75, 1.125, 1.5]
     boost_strength = [0, 0.75, 1.5]
     boost_strength_factor = [0, 0.4, 0.85]
-    boosting_pms = zip(k_inference_factors, boost_strength, boost_strength_factor)
+    # boosting_pms = zip(k_inference_factors, boost_strength, boost_strength_factor)
     seed = 42
     
     for lr in LRs:
@@ -17,8 +17,11 @@ if __name__ == "__main__":
             for c_a_s in conv_act_sparsities:
                 for f_a_s in fc_act_sparsities:
                     for f_w_s in fc_w_sparsities:
-                        for boosting_set in boosting_pms:
-                            (k_i_f, b_str, b_str_f) = boosting_set
+                        for i in range(len(boost_strength)):
+                            k_i_f = k_inference_factors[i]
+                            b_str = boost_strength[i]
+                            b_str_f = boost_strength_factor[i]
+                            boosting_set = (k_i_f, b_str, b_str_f)
                             conf = {"seed": seed, "train_bs": bs, 
                                     "lr": lr, "c_a_s": c_a_s, "f_a_s": f_a_s,
                                     "f_w_s": f_w_s, "boost_set": boosting_set}
