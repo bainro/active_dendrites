@@ -4,7 +4,7 @@ Trains lenet 5 with active dendrite FC layers on CIFAR100 split into 10-way clas
 
 import os
 from sparse_weights import SparseWeights
-from k_winners import KWinners, KWinners2D
+from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer as dends1D
 import numpy
