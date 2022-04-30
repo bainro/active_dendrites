@@ -49,8 +49,8 @@ class LeNet5(nn.Module):
     def forward(self, x, context):
         x = self.features(x)
         x = torch.flatten(x, 1)
-        print(f"x.get_device(): {x.get_device()}")
-        print(f"context.get_device(): {context.get_device()}")
+        # print(f"x.get_device(): {x.get_device()}")
+        # print(f"context.get_device(): {context.get_device()}")
         x = self.dends[0](x, context)
         x = self.activations[0](x)
         x = self.dends[1](x, context)
