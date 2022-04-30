@@ -184,6 +184,8 @@ class DendriticLayerBase(SparseWeights, metaclass=abc.ABCMeta):
 
     def forward(self, x, context):
         """Compute of linear layer and apply output of dendrite segments."""
+        print(y)
+        print(context)
         y = super().forward(x)
         dendrite_activations = self.segments(context)  # num_units x num_segments
         return self.apply_dendrites(y, dendrite_activations)
