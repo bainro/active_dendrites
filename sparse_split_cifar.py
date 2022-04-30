@@ -3,6 +3,8 @@ Trains sparse lenet 5 on CIFAR100 split into 10-way classification tasks.
 '''
 
 import os
+from sparse_weights import SparseWeights
+from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
 import numpy
 import torch
@@ -20,17 +22,37 @@ class LeNet5(nn.Module):
         super(LeNet5, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
-            nn.ReLU(),
+            KWinners2d(n=64*32*32, 
+                       k=13000, # ~20%
+                       channels=64,
+                       k_inference_factor=1.5,
+                       boost_strength=1.5,
+                       boost_strength_factor=0.85),
             nn.MaxPool2d(kernel_size=2),
             nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
-            nn.ReLU(),
+            KWinners2d(n=32*16*16, 
+                       k=1600, # ~20%
+                       channels=32,
+                       k_inference_factor=1.5,
+                       boost_strength=1.5,
+                       boost_strength_factor=0.85),
             nn.MaxPool2d(kernel_size=2),
         )
         self.classifier = nn.Sequential(
-            nn.Linear(32*8*8, 256),
-            nn.ReLU(),
-            nn.Linear(256, 128),
-            nn.ReLU(),
+            SparseWeights(module=nn.Linear(32*8*8, 256),
+                          sparsity=0.5, allow_extremes=True),
+            KWinners(n=256,
+                     percent_on=0.2,
+                     k_inference_factor=1.5,
+                     boost_strength=1.5,
+                     boost_strength_factor=0.85),
+            SparseWeights(module=nn.Linear(256, 128),
+                          sparsity=0.5, allow_extremes=True),
+            KWinners(n=128,
+                     percent_on=0.2,
+                     k_inference_factor=1.5,
+                     boost_strength=1.5,
+                     boost_strength_factor=0.85),
             nn.Linear(128, num_classes),
         )
 
@@ -39,7 +61,7 @@ class LeNet5(nn.Module):
         x = torch.flatten(x, 1)
         x = self.classifier(x)
         return x
-
+    
 def train(seed, train_bs, lr, w_decay):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = LeNet5(num_classes=10)
