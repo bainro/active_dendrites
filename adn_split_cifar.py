@@ -41,7 +41,7 @@ class LeNet5(nn.Module):
                           dim_context=num_tasks,
                           module_sparsity=0.5,
                           dendrite_sparsity=0))
-        self.activations.append(KWinners(256, percent_on=0.05,
+        self.activations.append(KWinners(256, percent_on=0.3,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
                                          boost_strength_factor=0.0))
@@ -50,7 +50,7 @@ class LeNet5(nn.Module):
                           dim_context=num_tasks,
                           module_sparsity=0.5,
                           dendrite_sparsity=0))
-        self.activations.append(KWinners(128, percent_on=0.05,
+        self.activations.append(KWinners(128, percent_on=0.3,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
                                          boost_strength_factor=0.0))
