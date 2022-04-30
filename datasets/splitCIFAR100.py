@@ -41,7 +41,7 @@ def make_loaders(seed, batch_size, train):
     label_subsets = [all_labels[x:x+n_c_per_task] for x in range(0, 100, n_c_per_task)]
     
     # list of indexes for each task's example subset
-    subsets = [[] for _ in range(100/n_c_per_task)]
+    subsets = [[] for _ in range(100//n_c_per_task)]
     # should be parallel lists
     assert len(subsets) == len(label_subsets)
     targets = []
