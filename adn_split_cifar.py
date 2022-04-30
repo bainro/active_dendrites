@@ -21,7 +21,8 @@ tolerance = test_freq * 6
 class LeNet5(nn.Module):
     def __init__(self, device, num_classes=10):
         super(LeNet5, self).__init__()
-        self.features = nn.ModuleList(
+        self.features = nn.ModuleList()
+        layers = [
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
@@ -29,7 +30,9 @@ class LeNet5(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
             nn.Flatten(1)
-        )
+        ]
+        for l in layers:
+            self.features.append(l)
         self.dends = nn.ModuleList()
         self.activations = nn.ModuleList()
         self.final_l = nn.ModuleList()
