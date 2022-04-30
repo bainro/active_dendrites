@@ -83,7 +83,7 @@ def train(seed, train_bs, lr,):
     
     train_loaders = make_loaders(seed, train_bs, train=True)
     test_loaders  = make_loaders(seed, test_bs, train=False)
-    print(len(train_loaders));exit()
+    
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
 
@@ -95,7 +95,7 @@ def train(seed, train_bs, lr,):
         # for e in tqdm(range(num_epochs)):
         for e in range(num_epochs):
             model.train()
-            for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
+            for batch_idx, (imgs, targets) in enumerate(train_loaders[1"""curr_t"""]):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
                 one_hot_vector = torch.zeros([num_tasks])
