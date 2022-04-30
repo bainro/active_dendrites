@@ -83,7 +83,7 @@ def train(seed, train_bs, lr,):
     
     train_loaders = make_loaders(seed, train_bs, train=True)
     test_loaders  = make_loaders(seed, test_bs, train=False)
-    
+    print(len(train_loaders));exit()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
 
