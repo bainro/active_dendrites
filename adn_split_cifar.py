@@ -42,7 +42,7 @@ class LeNet5(nn.Module):
                           module_sparsity=0.5,
                           dendrite_sparsity=0))
         self.activations.append(nn.ReLU())
-        self.final_l = nnn.Linear(128, num_classes)
+        self.final_l = nn.Linear(128, num_classes)
 
     def forward(self, x, context):
         x = self.features(x)
