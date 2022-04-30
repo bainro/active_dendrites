@@ -1,4 +1,4 @@
-'''
+''' 
 Trains lenet 5 with active dendrite FC layers on CIFAR100 split into 10-way classification tasks.
 '''
 
