@@ -37,7 +37,11 @@ class LeNet5(nn.Module):
                     module_sparsity=0.5)
         )
             nn.ReLU(),
-            nn.Linear(256, 128),
+            dends1D(nn.Linear(256, 128),
+                    # Testing! Should change back to num_tasks!
+                    num_segments=10, 
+                    dim_context=num_tasks,
+                    module_sparsity=0.5)
             nn.ReLU(),
             nn.Linear(128, num_classes),
         )
@@ -72,7 +76,13 @@ def train(seed, train_bs, lr,):
             for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
-                output = model(imgs)
+                one_hot_vector = torch.zeros([num_tasks])
+                one_hot_vector[curr_task] = 1
+                context = torch.FloatTensor(one_hot_vector)
+                context = context.to(device)
+                context = context.unsqueeze(0)
+                context = context.repeat(imgs.shape[0], 1)
+                output = model(imgs, context)
                 pred = output.data.max(1, keepdim=True)[1]
                 train_loss = criterion(output, targets)
                 train_loss.backward()
@@ -85,7 +95,13 @@ def train(seed, train_bs, lr,):
                 with torch.no_grad():
                     for imgs, targets in test_loaders[curr_t]:
                         imgs, targets = imgs.to(device), targets.to(device)
-                        output = model(imgs)
+                        one_hot_vector = torch.zeros([num_tasks])
+                        one_hot_vector[curr_task] = 1
+                        context = torch.FloatTensor(one_hot_vector)
+                        context = context.to(device)
+                        context = context.unsqueeze(0)
+                        context = context.repeat(imgs.shape[0], 1)
+                        output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
                         correct += pred.eq(targets.data.view_as(pred)).sum().item()
                     # print(f"correct: {correct}")
@@ -109,7 +125,13 @@ def train(seed, train_bs, lr,):
             for t in range(curr_t+1):
                 for imgs, targets in test_loaders[t]:
                     imgs, targets = imgs.to(device), targets.to(device)
-                    output = model(imgs)
+                    one_hot_vector = torch.zeros([num_tasks])
+                    one_hot_vector[curr_task] = 1
+                    context = torch.FloatTensor(one_hot_vector)
+                    context = context.to(device)
+                    context = context.unsqueeze(0)
+                    context = context.repeat(imgs.shape[0], 1)
+                    output = model(imgs, context)
                     pred = output.data.max(1, keepdim=True)[1]
                     correct += pred.eq(targets.data.view_as(pred)).sum().item()
             print(f"correct: {correct}")
