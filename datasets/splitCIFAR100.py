@@ -57,7 +57,7 @@ def make_loaders(seed, batch_size, train):
     for idx, target in enumerate(targets):
         # find index of label_subset that this class belongs to
         label_sub_idx = None
-        for _idx in range(n_c_per_task):
+        for _idx in range(len(label_subsets)):
             if target in label_subsets[_idx]:
                 label_sub_idx = _idx
                 break
