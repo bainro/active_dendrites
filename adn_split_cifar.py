@@ -6,6 +6,7 @@ import os
 from sparse_weights import SparseWeights
 from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
+from dendritic_mlp import AbsoluteMaxGatingDendriticLayer as dends1D
 import numpy
 import torch
 from torch import nn
@@ -19,7 +20,7 @@ tolerance = test_freq * 6
 
 class LeNet5(nn.Module):
     def __init__(self, num_classes=10):
-        super(LeNet5, self).__init__()
+        super(LeNet5, self).__init__()dendrites1D
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
             nn.ReLU(),
@@ -29,7 +30,12 @@ class LeNet5(nn.Module):
             nn.MaxPool2d(kernel_size=2),
         )
         self.classifier = nn.Sequential(
-            nn.Linear(32*8*8, 256),
+            dends1D(nn.Linear(32*8*8, 256),
+            num_segments=10, # num_tasks, # testing, should change back!
+            dim_context=dim_context,
+            module_sparsity=1,
+            dendrite_sparsity=1,
+        )
             nn.ReLU(),
             nn.Linear(256, 128),
             nn.ReLU(),
