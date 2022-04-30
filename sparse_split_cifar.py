@@ -14,12 +14,12 @@ from tqdm import tqdm
 num_epochs = 1000
 test_bs = 512
 test_freq = 5
-num_tasks = 10
+num_tasks = 4
 tolerance = test_freq * 6
 
-class LeNet5(nn.Module):
+class SparseLeNet5(nn.Module):
     def __init__(self, num_classes=10):
-        super(LeNet5, self).__init__()
+        super(SparseLeNet5, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
             KWinners2d(percent_on=0.2,
@@ -62,15 +62,15 @@ class LeNet5(nn.Module):
     
 def train(seed, train_bs, lr, w_decay):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = LeNet5(num_classes=10)
+    model = SparseLeNet5(num_classes=10)
     model = model.to(device)
-    backup = LeNet5(num_classes=10)
+    backup = SparseLeNet5(num_classes=10)
     backup = backup.to(device)
     
     train_loaders = make_loaders(seed, train_bs, train=True)
     test_loaders  = make_loaders(seed, test_bs, train=False)
     
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=w_decay)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0)
     criterion = nn.CrossEntropyLoss()
 
     final_e, final_acc = [], []
@@ -134,6 +134,7 @@ def train(seed, train_bs, lr, w_decay):
     return acc, final_e, final_acc 
 
 if __name__ == "__main__":
-    _ = train(seed=44, train_bs=32, lr=1e-3, w_decay=0)
+    _ = train(seed=44, train_bs=32, lr=1e-3)
     print(_)
+    # "c_a_s": : boosting_set
     print("SCRIPT FINISHED!")
