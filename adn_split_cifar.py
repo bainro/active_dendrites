@@ -53,7 +53,7 @@ class LeNet5(nn.Module):
     def forward(self, x, context):
         x = self.features(x)
         x = torch.flatten(x, 1)
-        x = self.classifier_1(x, context)
+        x = self.classifier_1(x)#, context)
         x = self.classifier_2(x, context)
         return x
     
