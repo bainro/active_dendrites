@@ -14,7 +14,7 @@ from tqdm import tqdm
 num_epochs = 1000
 test_bs = 512
 test_freq = 5
-num_tasks = 10
+num_tasks = 1
 tolerance = test_freq * 6
 
 class LeNet5(nn.Module):
@@ -22,18 +22,18 @@ class LeNet5(nn.Module):
         super(LeNet5, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
-            KWinners2d(percent_on=0.1,
+            KWinners2d(percent_on=0.2,
                        channels=64,
-                       k_inference_factor=1.5,
-                       boost_strength=1.5,
-                       boost_strength_factor=0.85),
+                       k_inference_factor=1.,
+                       boost_strength=0.,
+                       boost_strength_factor=0.),
             nn.MaxPool2d(kernel_size=2),
             nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
             KWinners2d(percent_on=0.2,
                        channels=32,
-                       k_inference_factor=1.5,
-                       boost_strength=1.5,
-                       boost_strength_factor=0.85),
+                       k_inference_factor=1.,
+                       boost_strength=0.,
+                       boost_strength_factor=0.),
             nn.MaxPool2d(kernel_size=2),
         )
         self.classifier = nn.Sequential(
