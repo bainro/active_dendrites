@@ -1,7 +1,9 @@
 import abc
+import math
 import numpy as np
 import torch
 import torch.nn as nn
+
 
 def update_boost_strength(m):
     """Function used to update KWinner modules boost strength. This is typically done
@@ -280,11 +282,28 @@ class KWinnersBase(nn.Module, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     def update_boost_strength(self):
-        """Update boost strength by multiplying by the boost strength factor.
-        This is typically done during training at the beginning of each epoch.
-        """
+        # Update boost strength by multiplying by the boost strength factor.
+        # This is typically done during training at the beginning of each epoch.
         self._cached_boost_strength *= self.boost_strength_factor
         self.boost_strength.fill_(self._cached_boost_strength)
+
+    def entropy(self):
+        """ Calculate total entropy for this layer. """
+        x = self.duty_cycle # the probability of the variable to be 1.
+        entropy = -x * x.log2() - (1 - x) * (1 - x).log2()
+        entropy[x * (1 - x) == 0] = 0
+        return entropy.sum()
+
+    def max_entropy(self):
+        """The maximum entropy we could get with n units and k winners."""
+        k = int(self.n * self.percent_on)
+        s = float(k) / self.n
+        if 0.0 < s < 1.0:
+            entropy = -s * math.log(s, 2) - (1 - s) * math.log(1 - s, 2)
+        else:
+            entropy = 0
+
+        return n * entropy
 
 class KWinners(KWinnersBase):
     """Applies K-Winner function to the input tensor.
