@@ -143,6 +143,6 @@ def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5, boost_set=(1.125,.7
     return acc, final_e, final_acc 
 
 if __name__ == "__main__":
-    _ = train(seed=44, train_bs=64, lr=1e-3)
+    _ = train(seed=69, train_bs=64, lr=1e-3)
     print(_)
     print("SCRIPT FINISHED!")
