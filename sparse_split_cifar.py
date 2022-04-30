@@ -41,16 +41,16 @@ class LeNet5(nn.Module):
                           sparsity=0.5, allow_extremes=True),
             KWinners(n=256,
                      percent_on=0.2,
-                     k_inference_factor=1.5,
-                     boost_strength=1.5,
-                     boost_strength_factor=0.85),
+                     k_inference_factor=1.0,
+                     boost_strength=0.,
+                     boost_strength_factor=0.),
             SparseWeights(module=nn.Linear(256, 128),
                           sparsity=0.5, allow_extremes=True),
             KWinners(n=128,
                      percent_on=0.2,
-                     k_inference_factor=1.5,
-                     boost_strength=1.5,
-                     boost_strength_factor=0.85),
+                     k_inference_factor=1.0,
+                     boost_strength=0.,
+                     boost_strength_factor=0.),
             nn.Linear(128, num_classes),
         )
 
@@ -134,6 +134,6 @@ def train(seed, train_bs, lr, w_decay):
     return acc, final_e, final_acc 
 
 if __name__ == "__main__":
-    _ = train(seed=43, train_bs=256, lr=1e-4, w_decay=0)
+    _ = train(seed=43, train_bs=64, lr=5e-5, w_decay=0)
     print(_)
     print("SCRIPT FINISHED!")
