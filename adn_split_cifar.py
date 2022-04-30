@@ -34,14 +34,13 @@ class LeNet5(nn.Module):
                     # Testing! Should change back to num_tasks!
                     num_segments=10, 
                     dim_context=num_tasks,
-                    module_sparsity=0.5)
-        )
+                    module_sparsity=0.5),
             nn.ReLU(),
             dends1D(nn.Linear(256, 128),
                     # Testing! Should change back to num_tasks!
                     num_segments=10, 
                     dim_context=num_tasks,
-                    module_sparsity=0.5)
+                    module_sparsity=0.5),
             nn.ReLU(),
             nn.Linear(128, num_classes),
         )
