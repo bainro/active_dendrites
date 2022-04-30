@@ -53,7 +53,7 @@ class LeNet5(nn.Module):
     def forward(self, x, context):
         for l in self.features:
             x = l(x)
-        x = self.dends[0]()(x, context)
+        x = self.dends[0](x, context)
         x = self.activations[0](x)
         x = self.dends[1](x, context)
         x = self.activations[1](x)
