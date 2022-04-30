@@ -22,16 +22,14 @@ class LeNet5(nn.Module):
         super(LeNet5, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
-            KWinners2d(n=64*32*32, 
-                       k=13000, # ~20%
+            KWinners2d(percent_on=0.1,
                        channels=64,
                        k_inference_factor=1.5,
                        boost_strength=1.5,
                        boost_strength_factor=0.85),
             nn.MaxPool2d(kernel_size=2),
             nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
-            KWinners2d(n=32*16*16, 
-                       k=1600, # ~20%
+            KWinners2d(percent_on=0.2,
                        channels=32,
                        k_inference_factor=1.5,
                        boost_strength=1.5,
