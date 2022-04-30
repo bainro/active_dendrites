@@ -95,7 +95,7 @@ def train(seed, train_bs, lr,):
         # for e in tqdm(range(num_epochs)):
         for e in range(num_epochs):
             model.train()
-            for batch_idx, (imgs, targets) in enumerate(train_loaders[1]): # curr_t
+            for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
                 one_hot_vector = torch.zeros([num_tasks])
