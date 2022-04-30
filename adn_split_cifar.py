@@ -24,7 +24,7 @@ class LeNet5(nn.Module):
         self.features = nn.ModuleList()
         layers = [
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
-            KWinners2d(percent_on=c_a_s,
+            KWinners2d(percent_on=0.2,
                        channels=64,
                        k_inference_factor=1.125,
                        boost_strength=0.75,
