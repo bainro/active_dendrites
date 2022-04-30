@@ -19,7 +19,7 @@ num_tasks = 1
 tolerance = test_freq * 6
 
 class LeNet5(nn.Module):
-    def __init__(self, num_classes=10):
+    def __init__(self, device, num_classes=10):
         super(LeNet5, self).__init__()
         self.dends, self.activations = [], []
         self.features = nn.Sequential(
@@ -34,7 +34,7 @@ class LeNet5(nn.Module):
                           num_segments=10, # Testing! Should change back to num_tasks!
                           dim_context=num_tasks,
                           module_sparsity=0.5,
-                          dendrite_sparsity=0))
+                          dendrite_sparsity=0)).to(device)
         self.activations.append(nn.ReLU())
         self.dends.append(dends1D(nn.Linear(256, 128),
                           num_segments=10, # Testing! Should change back to num_tasks!
@@ -58,9 +58,9 @@ class LeNet5(nn.Module):
     
 def train(seed, train_bs, lr,):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = LeNet5(num_classes=10)
+    model = LeNet5(device, num_classes=10)
     model = model.to(device)
-    backup = LeNet5(num_classes=10)
+    backup = LeNet5(device, num_classes=10)
     backup = backup.to(device)
     
     train_loaders = make_loaders(seed, train_bs, train=True)
