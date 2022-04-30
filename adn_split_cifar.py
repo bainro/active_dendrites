@@ -108,7 +108,7 @@ def train(seed, train_bs, lr,):
                 pred = output.data.max(1, keepdim=True)[1]
                 train_loss = criterion(output, targets)
                 print(f"output[0]: {output[0]}")
-                print(f"targets[0]: {targets[0]}")
+                print(f"targets: {targets}")
                 train_loss.backward()
                 optimizer.step()
             
