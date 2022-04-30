@@ -18,39 +18,39 @@ num_tasks = 4
 tolerance = test_freq * 6
 
 class SparseLeNet5(nn.Module):
-    def __init__(self, num_classes=10):
+    def __init__(self, c_a_s, f_a_s, f_w_s, boost_set, num_classes=10):
         super(SparseLeNet5, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
-            KWinners2d(percent_on=0.2,
+            KWinners2d(percent_on=c_a_s,
                        channels=64,
-                       k_inference_factor=1.5,
-                       boost_strength=1.5,
-                       boost_strength_factor=0.85),
+                       k_inference_factor=boost_set[0],
+                       boost_strength=boost_set[1],
+                       boost_strength_factor=boost_set[2]),
             nn.MaxPool2d(kernel_size=2),
             nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
-            KWinners2d(percent_on=0.2,
+            KWinners2d(percent_on=c_a_s,
                        channels=32,
-                       k_inference_factor=1.5,
-                       boost_strength=1.5,
-                       boost_strength_factor=0.85),
+                       k_inference_factor=boost_set[0],
+                       boost_strength=boost_set[1],
+                       boost_strength_factor=boost_set[2]),
             nn.MaxPool2d(kernel_size=2),
         )
         self.classifier = nn.Sequential(
             SparseWeights(module=nn.Linear(32*8*8, 256),
-                          sparsity=0.5, allow_extremes=True),
+                          sparsity=f_w_s, allow_extremes=True),
             KWinners(n=256,
-                     percent_on=0.2,
-                     k_inference_factor=1.5,
-                     boost_strength=1.5,
-                     boost_strength_factor=0.85),
+                     percent_on=f_a_s,
+                     k_inference_factor=boost_set[0],
+                     boost_strength=boost_set[1],
+                     boost_strength_factor=boost_set[2]),
             SparseWeights(module=nn.Linear(256, 128),
-                          sparsity=0.5, allow_extremes=True),
+                          sparsity=f_w_s, allow_extremes=True),
             KWinners(n=128,
-                     percent_on=0.2,
-                     k_inference_factor=1.5,
-                     boost_strength=1.5,
-                     boost_strength_factor=0.85),
+                     percent_on=f_a_s,
+                     k_inference_factor=boost_set[0],
+                     boost_strength=boost_set[1],
+                     boost_strength_factor=boost_set[2]),
             nn.Linear(128, num_classes),
         )
 
@@ -60,11 +60,20 @@ class SparseLeNet5(nn.Module):
         x = self.classifier(x)
         return x
     
-def train(seed, train_bs, lr, w_decay):
+def train(seed, train_bs, lr, c_a_s=1, f_a_s=1, f_w_s=1, boost_set=(0,0,0)):
+    """
+    c_a_s: convolutional layer's 2D WTA activation sparsity
+    f_a_s: fully connected layer's 1D WTA activation sparsity
+    f_w_s: fully connected layer's weight sparsity
+    boost_set: tuple of 3 items.
+        1) k_inference_factore 
+        2) boost_strength
+        3) boost_strength_factor
+    """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = SparseLeNet5(num_classes=10)
+    model = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=10)
     model = model.to(device)
-    backup = SparseLeNet5(num_classes=10)
+    backup = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=10)
     backup = backup.to(device)
     
     train_loaders = make_loaders(seed, train_bs, train=True)
