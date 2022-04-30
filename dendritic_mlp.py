@@ -255,17 +255,10 @@ class DendriticMLP(nn.Module):
 
     def __init__(
         self, input_size, output_size, hidden_sizes, num_segments, dim_context,
-        kw, kw_percent_on=0.05, context_percent_on=1.0,
-        dendrite_weight_sparsity=0.95,
-        weight_sparsity=0.95, weight_init="modified", dendrite_init="modified",
-        freeze_dendrites=False, output_nonlinearity=None,
-        dendritic_layer_class=AbsoluteMaxGatingDendriticLayer,
+        kw, kw_percent_on=0.05, context_percent_on=1.0, weight_sparsity=0.95, 
+        output_nonlinearity=None, dendritic_layer_class=AbsoluteMaxGatingDendriticLayer
     ):
 
-        # Forward & dendritic weight initialization must be either "kaiming" or
-        # "modified"
-        assert weight_init in ("kaiming", "modified")
-        assert dendrite_init in ("kaiming", "modified")
         assert kw_percent_on is None or (kw_percent_on >= 0.0 and kw_percent_on < 1.0)
         assert context_percent_on >= 0.0
 
@@ -311,21 +304,6 @@ class DendriticMLP(nn.Module):
                 module_sparsity=self.weight_sparsity,
                 dendrite_sparsity=dendrite_sparsity,
             )
-
-            if weight_init == "modified":
-                # Scale weights to be sampled from the new initialization U(-h, h) where
-                # h = sqrt(1 / (weight_density * previous_layer_percent_on))
-                if i == 0:
-                    # first hidden layer can't have kw input
-                    self._init_sparse_weights(curr_dend, 0.0)
-                else:
-                    self._init_sparse_weights(
-                        curr_dend,
-                        1 - kw_percent_on if kw else 0.0
-                    )
-
-            if dendrite_init == "modified":
-                self._init_sparse_dendrites(curr_dend, 1 - context_percent_on)
 
             if freeze_dendrites:
                 # Dendritic weights will not be updated during backward pass
