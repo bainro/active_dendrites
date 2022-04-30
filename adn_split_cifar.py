@@ -4,7 +4,7 @@ Trains lenet 5 with active dendrite FC layers on CIFAR100 split into 10-way clas
 
 import os
 from sparse_weights import SparseWeights
-from k_winners import KWinners, KWinners2d
+from k_winners import KWinners
 from datasets.splitCIFAR100 import make_loaders
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer as dends1D
 import numpy
@@ -41,13 +41,19 @@ class LeNet5(nn.Module):
                           dim_context=num_tasks,
                           module_sparsity=0.5,
                           dendrite_sparsity=0))
-        self.activations.append(nn.ReLU())
+        self.activations.append(KWinners(256, percent_on=0.1,
+                                         k_inference_factor=1.0,
+                                         boost_strength=0.0,
+                                         boost_strength_factor=0.0))
         self.dends.append(dends1D(nn.Linear(256, 128),
                           num_segments=10, # Testing! Should change back to num_tasks!
                           dim_context=num_tasks,
                           module_sparsity=0.5,
                           dendrite_sparsity=0))
-        self.activations.append(nn.ReLU())
+        self.activations.append(KWinners(128, percent_on=0.1,
+                                         k_inference_factor=1.0,
+                                         boost_strength=0.0,
+                                         boost_strength_factor=0.0))
         self.final_l.append(nn.Linear(128, num_classes))
 
     def forward(self, x, context):
