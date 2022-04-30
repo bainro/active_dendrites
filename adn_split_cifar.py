@@ -31,10 +31,10 @@ class LeNet5(nn.Module):
         )
         self.classifier = nn.Sequential(
             dends1D(nn.Linear(32*8*8, 256),
-            num_segments=10, # num_tasks, # testing, should change back!
-            dim_context=dim_context,
-            module_sparsity=1,
-            dendrite_sparsity=1,
+                    # Testing! Should change back to num_tasks!
+                    num_segments=10, 
+                    dim_context=num_tasks,
+                    module_sparsity=0.5)
         )
             nn.ReLU(),
             nn.Linear(256, 128),
