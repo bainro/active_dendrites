@@ -20,7 +20,7 @@ tolerance = test_freq * 6
 
 class LeNet5(nn.Module):
     def __init__(self, num_classes=10):
-        super(LeNet5, self).__init__()dendrites1D
+        super(LeNet5, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
             nn.ReLU(),
