@@ -15,7 +15,7 @@ num_epochs = 1000
 test_bs = 512
 test_freq = 5
 num_tasks = 10
-tolerance = test_freq * 6
+tolerance = test_freq * 12
 
 class LeNet5(nn.Module):
     def __init__(self, num_classes=10):
@@ -134,6 +134,6 @@ def train(seed, train_bs, lr, w_decay):
     return acc, final_e, final_acc 
 
 if __name__ == "__main__":
-    _ = train(seed=43, train_bs=32, lr=1e-3, w_decay=0)
+    _ = train(seed=44, train_bs=32, lr=1e-3, w_decay=0)
     print(_)
     print("SCRIPT FINISHED!")
