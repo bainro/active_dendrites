@@ -30,11 +30,11 @@ class LeNet5(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
         )
-        self.dends.append(dends1D(nn.Linear(32*8*8, 256),
+        self.dends.append(dends1D(nn.Linear(32*8*8, 256).to(device),
                           num_segments=10, # Testing! Should change back to num_tasks!
                           dim_context=num_tasks,
                           module_sparsity=0.5,
-                          dendrite_sparsity=0)).to(device)
+                          dendrite_sparsity=0).to(device))
         self.activations.append(nn.ReLU())
         self.dends.append(dends1D(nn.Linear(256, 128),
                           num_segments=10, # Testing! Should change back to num_tasks!
