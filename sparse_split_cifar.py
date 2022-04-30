@@ -14,7 +14,7 @@ from tqdm import tqdm
 num_epochs = 1000
 test_bs = 512
 test_freq = 5
-num_tasks = 4
+num_tasks = 10
 tolerance = test_freq * 6
 
 class SparseLeNet5(nn.Module):
@@ -60,7 +60,7 @@ class SparseLeNet5(nn.Module):
         x = self.classifier(x)
         return x
     
-def train(seed, train_bs, lr, c_a_s=.1, f_a_s=.2, f_w_s=1, boost_set=(1,0,0)):
+def train(seed, train_bs, lr, c_a_s=.1, f_a_s=.2, f_w_s=1, boost_set=(1.125,.75,.4)):
     """
     c_a_s: convolutional layer's 2D WTA activation sparsity
     f_a_s: fully connected layer's 1D WTA activation sparsity
@@ -143,7 +143,6 @@ def train(seed, train_bs, lr, c_a_s=.1, f_a_s=.2, f_w_s=1, boost_set=(1,0,0)):
     return acc, final_e, final_acc 
 
 if __name__ == "__main__":
-    _ = train(seed=44, train_bs=32, lr=1e-3)
+    _ = train(seed=44, train_bs=128, lr=1e-3)
     print(_)
-    # "c_a_s": : boosting_set
     print("SCRIPT FINISHED!")
