@@ -88,7 +88,6 @@ class SparseWeightsBase(nn.Module, HasRezeroWeights):
         return "sparsity={}".format(self.sparsity)
 
     def forward(self, x):
-        print("[sparse_weights]: ", x.get_device())
         return self.module(x)
 
     @property
