@@ -72,7 +72,7 @@ def make_loaders(seed, batch_size, train):
             t_copy = numpy.array(whole_dataset.targets)
             t_copy[t_copy == k] = j
             whole_dataset.targets = list(t_copy)
-            print(whole_dataset.targets)
+        print(subset)
         dataset_subset = Subset(whole_dataset, subset)
         loader = DataLoader(
             dataset=dataset_subset,
