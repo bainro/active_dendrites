@@ -76,9 +76,9 @@ class LeNet5(nn.Module):
     
 def train(seed, train_bs, lr,):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = LeNet5(device, num_classes=10)
+    model = LeNet5(device, num_classes=2)
     model = model.to(device)
-    backup = LeNet5(device, num_classes=10)
+    backup = LeNet5(device, num_classes=2)
     backup = backup.to(device)
     
     train_loaders = make_loaders(seed, train_bs, train=True)
