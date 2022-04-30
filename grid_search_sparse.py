@@ -9,7 +9,7 @@ if __name__ == "__main__":
     k_inference_factors = [0.75, 1.125, 1.5]
     boost_strength = [0, 0.75, 1.5]
     boost_strength_factor = [0, 0.4, 0.85]
-    boosting_pms = zip(k_inferece_factors, boost_strength, boost_strength_factor)
+    boosting_pms = zip(k_inference_factors, boost_strength, boost_strength_factor)
     seeds = [42]
     
     for lr in LRs:
