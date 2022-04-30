@@ -30,21 +30,19 @@ class LeNet5(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
         )
-        self.dends.append(nn.Sequential(dends1D(nn.Linear(32*8*8, 256),
-                                        # Testing! Should change back to num_tasks!
-                                        num_segments=10, 
-                                        dim_context=num_tasks,
-                                        module_sparsity=0.5,
-                                        dendrite_sparsity=0)))
-        self.activations.append(nn.Sequential(nn.ReLU()))
-        self.dends.append(nn.Sequential(dends1D(nn.Linear(256, 128),
-                                        # Testing! Should change back to num_tasks!
-                                        num_segments=10, 
-                                        dim_context=num_tasks,
-                                        module_sparsity=0.5,
-                                        dendrite_sparsity=0)))
-        self.activations.append(nn.Sequential(nn.ReLU()))
-        self.final_l = nn.Sequential(nn.Linear(128, num_classes))
+        self.dends.append(dends1D(nn.Linear(32*8*8, 256),
+                          num_segments=10, # Testing! Should change back to num_tasks!
+                          dim_context=num_tasks,
+                          module_sparsity=0.5,
+                          dendrite_sparsity=0))
+        self.activations.append(nn.ReLU())
+        self.dends.append(dends1D(nn.Linear(256, 128),
+                          num_segments=10, # Testing! Should change back to num_tasks!
+                          dim_context=num_tasks,
+                          module_sparsity=0.5,
+                          dendrite_sparsity=0))
+        self.activations.append(nn.ReLU())
+        self.final_l = nnn.Linear(128, num_classes)
 
     def forward(self, x, context):
         x = self.features(x)
