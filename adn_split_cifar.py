@@ -21,20 +21,23 @@ tolerance = test_freq * 6
 class LeNet5(nn.Module):
     def __init__(self, device, num_classes=10):
         super(LeNet5, self).__init__()
-        self.dends, self.activations = [], []
-        self.features = nn.Sequential(
+        self.features = nn.ModuleList(
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
             nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
+            nn.Flatten(1)
         )
-        self.dends.append(dends1D(nn.Linear(32*8*8, 256).to(device),
+        self.dends = nn.ModuleList()
+        self.activations = nn.ModuleList()
+        self.final_l = nn.ModuleList()
+        self.dends.append(dends1D(nn.Linear(32*8*8, 256),
                           num_segments=10, # Testing! Should change back to num_tasks!
                           dim_context=num_tasks,
                           module_sparsity=0.5,
-                          dendrite_sparsity=0).to(device))
+                          dendrite_sparsity=0))
         self.activations.append(nn.ReLU())
         self.dends.append(dends1D(nn.Linear(256, 128),
                           num_segments=10, # Testing! Should change back to num_tasks!
@@ -42,18 +45,16 @@ class LeNet5(nn.Module):
                           module_sparsity=0.5,
                           dendrite_sparsity=0))
         self.activations.append(nn.ReLU())
-        self.final_l = nn.Linear(128, num_classes)
+        self.final_l.append(nn.Linear(128, num_classes))
 
     def forward(self, x, context):
-        x = self.features(x)
-        x = torch.flatten(x, 1)
-        # print(f"x.get_device(): {x.get_device()}")
-        # print(f"context.get_device(): {context.get_device()}")
-        x = self.dends[0](x, context)
+        for l in self.features:
+            x = l(x)
+        x = self.dends[0]()(x, context)
         x = self.activations[0](x)
         x = self.dends[1](x, context)
         x = self.activations[1](x)
-        x = self.final_l(x)
+        x = self.final_l[0](x)
         return x
     
 def train(seed, train_bs, lr,):
