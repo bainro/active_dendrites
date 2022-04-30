@@ -5,7 +5,7 @@ if __name__ == "__main__":
     BSs = [32, 64, 128]
     conv_act_sparsities = [0.2]#, 0.1]
     fc_act_sparsities = [0.1, 0.2]
-    fc_w_sparsities = [1, 0.5]
+    fc_w_sparsities = [0.5, 1]
     k_inference_factors = [0.75, 1.125, 1.5]
     boost_strength = [0, 0.75, 1.5]
     boost_strength_factor = [0, 0.4, 0.85]
