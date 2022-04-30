@@ -36,11 +36,12 @@ def make_loaders(seed, batch_size, train):
     # deterministically shuffle the tasks' classes
     all_labels = list(range(0,100))
     random.Random(seed).shuffle(all_labels)
+    n_c_per_task = 2 # binary classification
     # split shuffled classes into 10 lists
-    label_subsets = [all_labels[x:x+10] for x in range(0, 100, 10)]
+    label_subsets = [all_labels[x:x+n_c_per_task] for x in range(0, 100, n_c_per_task)]
     
     # list of indexes for each task's example subset
-    subsets = [[] for _ in range(10)]
+    subsets = [[] for _ in range(100/n_c_per_task)]
     # should be parallel lists
     assert len(subsets) == len(label_subsets)
     targets = []
