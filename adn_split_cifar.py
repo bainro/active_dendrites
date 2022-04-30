@@ -24,10 +24,18 @@ class LeNet5(nn.Module):
         self.features = nn.ModuleList()
         layers = [
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
-            nn.ReLU(),
+            KWinners2d(percent_on=c_a_s,
+                       channels=64,
+                       k_inference_factor=1.125,
+                       boost_strength=b0.75,
+                       boost_strength_factor=0.4),
             nn.MaxPool2d(kernel_size=2),
             nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
-            nn.ReLU(),
+            KWinners2d(percent_on=0.2,
+                       channels=32,
+                       k_inference_factor=1.125,
+                       boost_strength=b0.75,
+                       boost_strength_factor=0.4),
             nn.MaxPool2d(kernel_size=2),
             nn.Flatten(1)
         ]
@@ -41,7 +49,7 @@ class LeNet5(nn.Module):
                           dim_context=num_tasks,
                           module_sparsity=0.5,
                           dendrite_sparsity=0))
-        self.activations.append(KWinners(256, percent_on=0.3,
+        self.activations.append(KWinners(256, percent_on=0.05,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
                                          boost_strength_factor=0.0))
@@ -50,7 +58,7 @@ class LeNet5(nn.Module):
                           dim_context=num_tasks,
                           module_sparsity=0.5,
                           dendrite_sparsity=0))
-        self.activations.append(KWinners(128, percent_on=0.3,
+        self.activations.append(KWinners(128, percent_on=0.05,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
                                          boost_strength_factor=0.0))
