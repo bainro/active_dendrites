@@ -60,7 +60,7 @@ class SparseLeNet5(nn.Module):
         x = self.classifier(x)
         return x
     
-def train(seed, train_bs, lr, c_a_s=.1, f_a_s=.2, f_w_s=.7, boost_set=(1,0,0)):
+def train(seed, train_bs, lr, c_a_s=.1, f_a_s=.2, f_w_s=1, boost_set=(1,0,0)):
     """
     c_a_s: convolutional layer's 2D WTA activation sparsity
     f_a_s: fully connected layer's 1D WTA activation sparsity
