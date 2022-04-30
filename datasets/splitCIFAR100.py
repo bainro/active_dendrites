@@ -71,7 +71,6 @@ def make_loaders(seed, batch_size, train):
         for j, k in enumerate(label_subsets[i]):
             t_copy = numpy.array(whole_dataset.targets)
             t_copy[t_copy == k] = j
-            print(j)
             whole_dataset.targets = list(t_copy)
         dataset_subset = Subset(whole_dataset, subset)
         loader = DataLoader(
