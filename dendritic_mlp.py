@@ -118,6 +118,8 @@ class DendriticGate1d(ApplyDendritesBase):
 
 class DendriticAbsoluteMaxGate1d(ApplyDendritesBase):
     def forward(self, y, dendrite_activations):
+        print(y)
+        print(dendrite_activations)
         return dendritic_absolute_max_gate_1d(y, dendrite_activations)
 
 class DendriticGate2d(ApplyDendritesBase):
