@@ -78,7 +78,7 @@ def train(seed, train_bs, lr,):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
                 one_hot_vector = torch.zeros([num_tasks])
-                one_hot_vector[curr_task] = 1
+                one_hot_vector[curr_t] = 1
                 context = torch.FloatTensor(one_hot_vector)
                 context = context.to(device)
                 context = context.unsqueeze(0)
@@ -97,7 +97,7 @@ def train(seed, train_bs, lr,):
                     for imgs, targets in test_loaders[curr_t]:
                         imgs, targets = imgs.to(device), targets.to(device)
                         one_hot_vector = torch.zeros([num_tasks])
-                        one_hot_vector[curr_task] = 1
+                        one_hot_vector[curr_t] = 1
                         context = torch.FloatTensor(one_hot_vector)
                         context = context.to(device)
                         context = context.unsqueeze(0)
@@ -127,7 +127,7 @@ def train(seed, train_bs, lr,):
                 for imgs, targets in test_loaders[t]:
                     imgs, targets = imgs.to(device), targets.to(device)
                     one_hot_vector = torch.zeros([num_tasks])
-                    one_hot_vector[curr_task] = 1
+                    one_hot_vector[t] = 1
                     context = torch.FloatTensor(one_hot_vector)
                     context = context.to(device)
                     context = context.unsqueeze(0)
