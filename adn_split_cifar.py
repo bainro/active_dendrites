@@ -29,7 +29,7 @@ class LeNet5(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
         )
-        self.classifier = nn.Sequential(
+        self.classifier_1 = nn.Sequential(
             dends1D(nn.Linear(32*8*8, 256),
                     # Testing! Should change back to num_tasks!
                     num_segments=10, 
@@ -37,6 +37,9 @@ class LeNet5(nn.Module):
                     module_sparsity=0.5,
                     dendrite_sparsity=0),
             nn.ReLU(),
+        )
+        
+        self.classifier_2 = nn.Sequential(
             dends1D(nn.Linear(256, 128),
                     # Testing! Should change back to num_tasks!
                     num_segments=10, 
@@ -47,10 +50,11 @@ class LeNet5(nn.Module):
             nn.Linear(128, num_classes),
         )
 
-    def forward(self, x):
+    def forward(self, x, context):
         x = self.features(x)
         x = torch.flatten(x, 1)
-        x = self.classifier(x)
+        x = self.classifier_1(x, context)
+        x = self.classifier_2(x, context)
         return x
     
 def train(seed, train_bs, lr,):
