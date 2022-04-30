@@ -14,7 +14,7 @@ from tqdm import tqdm
 num_epochs = 1000
 test_bs = 512
 test_freq = 5
-num_tasks = 1
+num_tasks = 10
 tolerance = test_freq * 6
 
 class LeNet5(nn.Module):
