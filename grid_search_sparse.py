@@ -6,7 +6,7 @@ if __name__ == "__main__":
     conv_act_sparsities = [0.1, 0.2]
     fc_act_sparsities = [0.1, 0.2]
     fc_w_sparsities = [0.5, 1]
-    k_inference_factors = [0, 0.75, 1.5]
+    k_inference_factors = [0.75, 1.125, 1.5]
     boost_strength = [0, 0.75, 1.5]
     boost_strength_factor = [0, 0.4, 0.85]
     boosting_pms = zip(k_inferece_factos, boost_strength, boost_strength_factor)
