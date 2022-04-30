@@ -21,6 +21,7 @@ tolerance = test_freq * 6
 class LeNet5(nn.Module):
     def __init__(self, num_classes=10):
         super(LeNet5, self).__init__()
+        self.dends, self.activations = [], []
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
             nn.ReLU(),
@@ -29,32 +30,30 @@ class LeNet5(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
         )
-        self.classifier_1 = nn.Sequential(
-            dends1D(nn.Linear(32*8*8, 256),
-                    # Testing! Should change back to num_tasks!
-                    num_segments=10, 
-                    dim_context=num_tasks,
-                    module_sparsity=0.5,
-                    dendrite_sparsity=0),
-            nn.ReLU(),
-        )
-        
-        self.classifier_2 = nn.Sequential(
-            dends1D(nn.Linear(256, 128),
-                    # Testing! Should change back to num_tasks!
-                    num_segments=10, 
-                    dim_context=num_tasks,
-                    module_sparsity=0.5,
-                    dendrite_sparsity=0),
-            nn.ReLU(),
-            nn.Linear(128, num_classes),
-        )
+        self.dends.append(dends1D(nn.Linear(32*8*8, 256),
+                          # Testing! Should change back to num_tasks!
+                          num_segments=10, 
+                          dim_context=num_tasks,
+                          module_sparsity=0.5,
+                          dendrite_sparsity=0))
+        self.activations.append(nn.ReLU())
+        self.dends.append(dends1D(nn.Linear(256, 128),
+                          # Testing! Should change back to num_tasks!
+                          num_segments=10, 
+                          dim_context=num_tasks,
+                          module_sparsity=0.5,
+                          dendrite_sparsity=0))
+        self.activations.append(nn.ReLU())
+        self.final_l = nn.Linear(128, num_classes)
 
     def forward(self, x, context):
         x = self.features(x)
         x = torch.flatten(x, 1)
-        x = self.classifier_1(x, context)
-        x = self.classifier_2(x, context)
+        x = self.dends[0](x, context)
+        x = self.activations[0](x)
+        x = self.dends[1](x, context)
+        x = self.activations[1](x)
+        x = self.final_l(x)
         return x
     
 def train(seed, train_bs, lr,):
