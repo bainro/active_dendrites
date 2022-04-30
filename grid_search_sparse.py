@@ -3,7 +3,7 @@ from sparse_split_cifar import train
 if __name__ == "__main__":
     LRs = [1e-5, 1e-4, 1e-3]
     BSs = [32, 64, 128]
-    conv_act_sparsities = [0.1, 0.2]
+    conv_act_sparsities = [0.1]#, 0.2]
     fc_act_sparsities = [0.1, 0.2]
     fc_w_sparsities = [0.5, 1]
     k_inference_factors = [0.75, 1.125, 1.5]
