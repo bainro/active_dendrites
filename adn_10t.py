@@ -25,6 +25,7 @@ conf = dict(
     kw=True,
     kw_percent_on=0.05,
     weight_sparsity=0.5,
+    context_percent_on=0.1,
     num_segments=num_tasks
 )    
 
