@@ -205,6 +205,17 @@ class AbsoluteMaxGatingDendriticLayer(DendriticLayerBase):
     def apply_dendrites(self, y, dendrite_activations):
         """Apply dendrites as a gating mechanism."""
         return self.dendritic_absolute_max_gate(y, dendrite_activations).values
+    
+class AbsoluteMaxGatingDendriticLayer2d(DendriticLayerBase):
+    """This layer is similar to the class above but for conv layers."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.dendritic_absolute_max_gate = DendriticAbsoluteMaxGate2d()
+
+    def apply_dendrites(self, y, dendrite_activations):
+        """Apply dendrites as a gating mechanism."""
+        return self.dendritic_absolute_max_gate(y, dendrite_activations).values
 
 class DendriticMLP(nn.Module):
     """
