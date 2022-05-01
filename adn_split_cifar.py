@@ -113,7 +113,8 @@ def train(seed, train_bs, lr,):
                 train_loss.backward()
                 optimizer.step()
         '''
-            
+        if True:
+            print("")
             '''
             if e % test_freq == 0:
                 print(f"train_loss: {train_loss.item()}")    
