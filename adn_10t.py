@@ -86,7 +86,7 @@ if __name__ == "__main__":
                     # record latest trained task's test acc
                     if t == curr_task:
                         # hardcoded number of test examples per mnist digit/class
-                        single_acc.append(100 * lastest_correct / 10000)
+                        single_acc.append(100 * latest_correct / 10000)
                 # print(f"correct: {total_correct}")
                 acc = 100. * total_correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
                 print(f"[t:{t} e:{e}] test acc: {acc}%")
