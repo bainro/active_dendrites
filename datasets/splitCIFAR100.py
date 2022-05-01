@@ -74,7 +74,6 @@ def make_loaders(seed, batch_size, train):
             t_copy[t_copy == k] = j
             whole_dataset.targets = list(t_copy)
         #print(whole_dataset.targets)    
-        exit()
         dataset_subset = Subset(whole_dataset, subset)
         loader = DataLoader(
             dataset=dataset_subset,
@@ -86,7 +85,7 @@ def make_loaders(seed, batch_size, train):
             drop_last=train,
         )
         loaders.append(loader)
-
+    exit()
     del whole_loader
     
     return loaders
