@@ -375,9 +375,6 @@ class DendriticMLP(nn.Module):
             output_layer = nn.Sequential()
             output_linear = SparseWeights(module=nn.Linear(input_size, out_size),
                                           sparsity=weight_sparsity, allow_extremes=True)
-            if weight_init == "modified":
-                self._init_sparse_weights(
-                    output_linear, 1 - kw_percent_on if kw else 0.0)
             output_layer.add_module("output_linear", output_linear)
 
             if self.output_nonlinearity is not None:
