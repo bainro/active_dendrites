@@ -12,7 +12,7 @@ import torch
 from torch import nn
 from tqdm import tqdm
 
-num_epochs = 1000
+num_epochs = 10#00
 test_bs = 512
 test_freq = 1
 num_tasks = 10
