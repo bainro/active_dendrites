@@ -75,7 +75,7 @@ def make_loaders(seed, batch_size, train):
             whole_dataset.targets = copy.deepcopy(list(t_copy))
         #print(whole_dataset.targets)    
         dataset_subset = Subset(whole_dataset, subset)
-        loader = DataLoader(
+        loaders.append(DataLoader(
             dataset=dataset_subset,
             batch_size=batch_size,
             shuffle=True,
@@ -84,7 +84,7 @@ def make_loaders(seed, batch_size, train):
             pin_memory=torch.cuda.is_available(),
             drop_last=train,
         )
-        loaders.append(loader)
+        # loaders.append(loader)
         # print(next(iter(loader))[1])
     
     # del whole_loader
