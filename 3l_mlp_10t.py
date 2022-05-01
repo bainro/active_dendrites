@@ -63,7 +63,11 @@ class ModifiedInitMLP(nn.Module):
 
     
 if __name__ == "__main__":
-    for seed in range(10):
+    num_seeds = 2
+    # used for creating avg over all seed runs
+    all_single_acc = []
+    all_avg_acc = []
+    for seed in range(num_seeds):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = ModifiedInitMLP(**conf)
         model = model.to(device)
@@ -77,6 +81,7 @@ if __name__ == "__main__":
 
         # records latest task's test accuracy
         single_acc = []
+        avg_acc = []
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
             for e in range(num_epochs):
@@ -111,8 +116,18 @@ if __name__ == "__main__":
                         single_acc.append(100 * latest_correct / 10000)
                 # print(f"correct: {correct}")
                 acc = 100. * total_correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
-                print(f"[t:{t} e:{e}] test acc: {acc}%")
+                avg_acc.append(acc)
+                # print(f"[t:{t} e:{e}] test acc: {acc}%")
 
-        print("single accuracies: ", single_acc)
-                
+#         print("single accuracies: ", single_acc)
+#         print("running avg accuracies: ", avg_acc)
+        all_single_acc.append(single_acc)
+        all_avg_acc.append(avg_acc)
+    
+    # figure out average wrt all seeds
+    avg_seed_acc = list(map(lambda x: sum(x)/len(x), zip(*all_avg_acc)))
+    avg_single_acc = list(map(lambda x: sum(x)/len(x), zip(*all_single_acc)))
+    print("seed avg running avg accuracies: ", avg_seed_acc)
+    print("seed avg single accuracies: ", avg_single_acc)
+    
     print("SCRIPT FINISHED!")
