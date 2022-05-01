@@ -65,9 +65,10 @@ if __name__ == "__main__":
                     optimizer.step()
 
             model.eval()
-            correct = 0
+            total_correct = 0
             with torch.no_grad():
                 for t in range(curr_task+1):
+                    latest_correct = 0
                     test_loader.sampler.set_active_tasks(t)
                     for imgs, targets in test_loader:
                         imgs, targets = imgs.to(device), targets.to(device)
@@ -80,14 +81,14 @@ if __name__ == "__main__":
                         imgs = imgs.flatten(start_dim=1)
                         output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
-                        single_correct = pred.eq(targets.data.view_as(pred)).sum().item()
-                        correct += single_correct
+                        latest_correct += pred.eq(targets.data.view_as(pred)).sum().item()
+                    total_correct += latest_correct
                     # record latest trained task's test acc
                     if t == curr_task:
                         # hardcoded number of test examples per mnist digit/class
-                        single_acc.append(100 * single_correct / 10000)
-                # print(f"correct: {correct}")
-                acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
+                        single_acc.append(100 * lastest_correct / 10000)
+                # print(f"correct: {total_correct}")
+                acc = 100. * total_correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
                 print(f"[t:{t} e:{e}] test acc: {acc}%")
                 
         print("single accuracies: ", single_acc)
