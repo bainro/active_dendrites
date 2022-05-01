@@ -29,7 +29,7 @@ conf = dict(
 )    
 
 if __name__ == "__main__":
-    num_seeds = 2
+    num_seeds = 10
     # used for creating avg over all seed runs
     all_single_acc = []
     all_avg_acc = []
@@ -47,6 +47,7 @@ if __name__ == "__main__":
 
         # records latest task's test accuracy
         single_acc = []
+        avg_acc = []
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
             for e in range(num_epochs):
