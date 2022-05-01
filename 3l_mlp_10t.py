@@ -119,8 +119,8 @@ if __name__ == "__main__":
                 avg_acc.append(acc)
                 # print(f"[t:{t} e:{e}] test acc: {acc}%")
 
-#         print("single accuracies: ", single_acc)
-#         print("running avg accuracies: ", avg_acc)
+        # print("single accuracies: ", single_acc)
+        # print("running avg accuracies: ", avg_acc)
         all_single_acc.append(single_acc)
         all_avg_acc.append(avg_acc)
     
