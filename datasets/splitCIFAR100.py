@@ -82,8 +82,8 @@ def make_loaders(seed, batch_size, train):
             num_workers=4,
             sampler=None,
             pin_memory=torch.cuda.is_available(),
-            drop_last=train,
-        )
+            drop_last=train
+        ))
         # loaders.append(loader)
         # print(next(iter(loader))[1])
     
