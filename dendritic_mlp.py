@@ -206,8 +206,8 @@ class AbsoluteMaxGatingDendriticLayer(DendriticLayerBase):
         """Apply dendrites as a gating mechanism."""
         return self.dendritic_absolute_max_gate(y, dendrite_activations).values
     
-class AbsoluteMaxGatingDendriticLayer2d(DendriticLayerBase):
-    """This layer is similar to the class above but for conv layers."""
+class AbsoluteMaxGatingDendriticLayer2d(DendriticLayer2dBase):
+    """Conv version of `AbsoluteMaxGatingDendriticLayer`."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
