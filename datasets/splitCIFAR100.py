@@ -66,7 +66,6 @@ def make_loaders(seed, batch_size, train):
     
     # list of dataloaders. One for each task.
     loaders = []
-    t_copy = numpy.array(copy.deepcopy(whole_dataset.targets))
     for i, subset in enumerate(subsets):
         # @TODO NEED LONG TERM SOLUTION
         # If i gets larger than ~49 than the loaders' targets become
@@ -75,12 +74,11 @@ def make_loaders(seed, batch_size, train):
         if i > 40: break;
         # map the 100 class id's to [0, 9] or [0, 1] for binary classification
         for j, k in enumerate(label_subsets[i]):
-            # t_copy = numpy.array(whole_dataset.targets)
+            t_copy = numpy.array(whole_dataset.targets)
             t_copy[t_copy == k] = j
-            whole_dataset.targets = copy.deepcopy(list(t_copy))
-        #print(whole_dataset.targets)    
+            whole_dataset.targets = list(t_copy) 
         dataset_subset = Subset(whole_dataset, subset)
-        loaders.append(DataLoader(
+        loader = DataLoader(
             dataset=dataset_subset,
             batch_size=batch_size,
             shuffle=True,
@@ -88,11 +86,11 @@ def make_loaders(seed, batch_size, train):
             sampler=None,
             pin_memory=torch.cuda.is_available(),
             drop_last=train
-        ))
-        # loaders.append(loader)
+        )
+        loaders.append(loader)
         # print(next(iter(loader))[1])
     
-    # del whole_loader
+    del whole_loader
     # for loader in loaders:
         # print(next(iter(loader))[1])
     # exit()
