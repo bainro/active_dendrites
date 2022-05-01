@@ -190,6 +190,59 @@ class DendriticLayerBase(SparseWeights, metaclass=abc.ABCMeta):
     def segment_weights(self):
         return self.segments.weights
 
+class DendriticLayer2dBase(SparseWeights2d, metaclass=abc.ABCMeta):
+    """
+    Base class for all 2d Dendritic Layer modules.
+    Similar to the DendriticLayerBase class, the output from the dendrite segments
+    is applied to the output of each channel. Thus, each channel output gets
+    modulated by a set of dendritic segments.
+    """
+
+    def __init__(
+        self, module, num_segments, dim_context,
+        module_sparsity, dendrite_sparsity, dendrite_bias=None
+    ):
+        """
+        :param module: conv2d module which performs the forward pass
+        :param num_segments: number of dendrite segments per out-unit
+        :param dim_context: length of the context vector;
+                            the same context will be applied to each segment
+        :param module_sparsity: sparsity applied over linear module;
+        :param dendrite_sparsity: sparsity applied transformation per unit per segment
+        :param dendrite_bias: whether or not dendrite activations have an additive bias
+        """
+        self.segments = None
+        super().__init__(module, sparsity=module_sparsity)
+
+        self.segments = DendriteSegments(
+            num_units=module.out_channels,
+            num_segments=num_segments,
+            dim_context=dim_context,
+            sparsity=dendrite_sparsity,
+            bias=dendrite_bias,
+        )
+
+        self.rezero_weights()
+
+    def rezero_weights(self):
+        super().rezero_weights()
+        if self.segments is not None:  # only none at beginning of init
+            self.segments.rezero_weights()
+
+    @abc.abstractmethod
+    def apply_dendrites(self, y, dendrite_activations):
+        """Apply dendrites using function specified by subclass"""
+        raise NotImplementedError
+
+    def forward(self, x, context):
+        """
+        Computes the forward pass through the `torch.nn.Conv2d` module and applies the
+        output of the dendrite segments.
+        """
+        y = super().forward(x)
+        dendrite_activations = self.segments(context)  # num_units x num_segments
+        return self.apply_dendrites(y, dendrite_activations)
+    
 class AbsoluteMaxGatingDendriticLayer(DendriticLayerBase):
     """
     This layer is similar to `GatingDendriticLayer`, but selects dendrite activations
