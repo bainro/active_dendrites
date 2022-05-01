@@ -68,7 +68,7 @@ def make_loaders(seed, batch_size, train):
     loaders = []
     t_copy = numpy.array(copy.deepcopy(whole_dataset.targets))
     for i, subset in enumerate(subsets):
-        if i > 100: break;
+        if i > 40: break;
         # map the 100 class id's to [0, 9] or [0, 1] for binary classification
         for j, k in enumerate(label_subsets[i]):
             # t_copy = numpy.array(whole_dataset.targets)
@@ -80,7 +80,7 @@ def make_loaders(seed, batch_size, train):
             dataset=dataset_subset,
             batch_size=batch_size,
             shuffle=True,
-            num_workers=1,#4,
+            num_workers=4,
             sampler=None,
             pin_memory=torch.cuda.is_available(),
             drop_last=train
