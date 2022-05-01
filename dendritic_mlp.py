@@ -351,7 +351,20 @@ class DendriticMLP(nn.Module):
                 module_sparsity=self.weight_sparsity,
                 dendrite_sparsity=0.,
             )
+            
+            # Scale weights to be sampled from the new initialization U(-h, h) where
+            # h = sqrt(1 / (weight_density * previous_layer_percent_on))
+            if i == 0:
+                # first hidden layer can't have kw input
+                self._init_sparse_weights(curr_dend, 0.0)
+            else:
+                self._init_sparse_weights(
+                    curr_dend,
+                    1 - kw_percent_on if kw else 0.0
+                )
 
+            self._init_sparse_dendrites(curr_dend, 1 - context_percent_on)
+            
             if self.kw:
                 curr_activation = KWinners(n=hidden_sizes[i],
                                            percent_on=kw_percent_on,
