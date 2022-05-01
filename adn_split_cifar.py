@@ -13,7 +13,7 @@ import torch
 from torch import nn
 from tqdm import tqdm
 
-num_epochs = 10#00
+num_epochs = 100#0
 test_bs = 512
 test_freq = 1
 num_tasks = 10
@@ -180,6 +180,6 @@ def train(seed, train_bs, lr,):
     return acc, final_e, final_acc 
 
 if __name__ == "__main__":
-    _ = train(seed=15, train_bs=64, lr=1e-3)
+    _ = train(seed=15, train_bs=256, lr=1e-5)
     print(_)
     print("SCRIPT FINISHED!")
