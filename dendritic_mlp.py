@@ -329,7 +329,6 @@ class DendriticMLP(nn.Module):
         self.kw = kw
         self.kw_percent_on = kw_percent_on
         self.weight_sparsity = weight_sparsity
-        self.dendrite_weight_sparsity = dendrite_weight_sparsity
         self.output_nonlinearity = output_nonlinearity
 
         self._layers = nn.ModuleList()
