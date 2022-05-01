@@ -82,10 +82,10 @@ if __name__ == "__main__":
                         pred = output.data.max(1, keepdim=True)[1]
                         correct = pred.eq(targets.data.view_as(pred)).sum().item()
                         total_correct += correct
-                        # record latest trained task's test acc
-                        if t == curr_task:
-                            # hardcoded number of test examples per mnist digit/class
-                            single_acc.append(100 * correct / 10000)
+                    # record latest trained task's test acc
+                    if t == curr_task:
+                        # hardcoded number of test examples per mnist digit/class
+                        single_acc.append(100 * correct / 10000)
                 # print(f"correct: {total_correct}")
                 acc = 100. * total_correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
                 print(f"[t:{t} e:{e}] test acc: {acc}%")
