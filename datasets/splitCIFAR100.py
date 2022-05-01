@@ -68,7 +68,7 @@ def make_loaders(seed, batch_size, train):
     loaders = []
     t_copy = numpy.array(copy.deepcopy(whole_dataset.targets))
     for i, subset in enumerate(subsets):
-        if i > 3: break;
+        if i > 10: break;
         # map the 100 class id's to [0, 9] or [0, 1] for binary classification
         for j, k in enumerate(label_subsets[i]):
             # t_copy = numpy.array(whole_dataset.targets)
