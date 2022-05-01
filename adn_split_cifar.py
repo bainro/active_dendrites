@@ -112,6 +112,7 @@ def train(seed, train_bs, lr,):
                 train_loss.backward()
                 optimizer.step()
             
+            '''
             if e % test_freq == 0:
                 print(f"train_loss: {train_loss.item()}")    
                 model.eval()
@@ -161,7 +162,8 @@ def train(seed, train_bs, lr,):
             print(f"correct: {correct}")
             acc = 100. * correct / (curr_t+1) / len(test_loaders[t].dataset)
             print(f"\n\n[t:{t} e:{e}] test acc: {acc}%\n\n")
-        
+                '''
+
     # final task-avg accuracy
     # epochs that best test acc occurred 
     # best test acc for each task
