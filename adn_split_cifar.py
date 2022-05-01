@@ -98,6 +98,7 @@ def train(seed, train_bs, lr,):
             for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
+                print(f"targets: {targets}")
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_t] = 1
                 context = torch.FloatTensor(one_hot_vector)
@@ -107,8 +108,6 @@ def train(seed, train_bs, lr,):
                 output = model(imgs, context)
                 pred = output.data.max(1, keepdim=True)[1]
                 train_loss = criterion(output, targets)
-                print(f"output[0]: {output[0]}")
-                print(f"targets: {targets}")
                 train_loss.backward()
                 optimizer.step()
             
