@@ -168,7 +168,7 @@ class SparseWeights2d(SparseWeightsBase):
     """
 
     def __init__(self, module, weight_sparsity=None, sparsity=None,
-                 allow_extremes=False):
+                 allow_extremes=True):
         assert len(module.weight.shape) == 4, "Should resemble a nn.Conv2d"
         super(SparseWeights2d, self).__init__(
             module, weight_sparsity=weight_sparsity, sparsity=sparsity
