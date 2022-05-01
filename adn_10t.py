@@ -25,7 +25,7 @@ conf = dict(
     kw=True,
     kw_percent_on=0.05,
     weight_sparsity=0.5,
-    context_percent_on=0.01,
+    context_percent_on=0.1, # used for weight init, but paper reported using dense context...
     num_segments=num_tasks
 )    
 
