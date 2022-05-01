@@ -29,7 +29,11 @@ conf = dict(
 )    
 
 if __name__ == "__main__":
-    for seed in range(10):
+    num_seeds = 2
+    # used for creating avg over all seed runs
+    all_single_acc = []
+    all_avg_acc = []
+    for seed in range(num_seeds):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = D.DendriticMLP(**conf)
         model = model.to(device)    
@@ -92,5 +96,11 @@ if __name__ == "__main__":
                 print(f"[t:{t} e:{e}] test acc: {acc}%")
                 
         print("single accuracies: ", single_acc)
-
+        
+    # figure out average wrt all seeds
+    avg_seed_acc = list(map(lambda x: sum(x)/len(x), zip(*all_avg_acc)))
+    avg_single_acc = list(map(lambda x: sum(x)/len(x), zip(*all_single_acc)))
+    print("seed avg running avg accuracies: ", avg_seed_acc)
+    print("seed avg single accuracies: ", avg_single_acc)
+    
     print("SCRIPT FINISHED!")
