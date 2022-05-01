@@ -1,5 +1,4 @@
 import os
-import copy
 import random
 from collections import defaultdict
 import numpy
@@ -69,7 +68,7 @@ def make_loaders(seed, batch_size, train):
     for i, subset in enumerate(subsets):
         # map the 100 class id's to [0, 9] or [0, 1] for binary classification
         for j, k in enumerate(label_subsets[i]):
-            t_copy = numpy.array(copy.deepcopy(whole_dataset.targets))
+            t_copy = numpy.array(whole_dataset.targets)
             t_copy[t_copy == k] = j
             whole_dataset.targets = list(t_copy)
         #print(whole_dataset.targets)    
