@@ -67,7 +67,7 @@ def make_loaders(seed, batch_size, train):
     # list of dataloaders. One for each task.
     loaders = []
     for i, subset in enumerate(subsets):
-        # map the 100 class id's to [0, 9]
+        # map the 100 class id's to [0, 9] or [0, 1] for binary classification
         for j, k in enumerate(label_subsets[i]):
             # print(k)
             t_copy = numpy.array(whole_dataset.targets)
