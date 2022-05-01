@@ -7,6 +7,7 @@ from sparse_weights import SparseWeights
 from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer as dends1D
+from dendritic_mlp import AbsoluteMaxGatingDendriticLayer2d as dends2D
 import numpy
 import torch
 from torch import nn
@@ -23,14 +24,22 @@ class LeNet5(nn.Module):
         super(LeNet5, self).__init__()
         self.features = nn.ModuleList()
         layers = [
-            nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
+            dends2D(nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
+                    num_segments=10, # Testing! Should change back to num_tasks!
+                    dim_context=num_tasks,
+                    module_sparsity=0,
+                    dendrite_sparsity=0),
             KWinners2d(percent_on=0.2,
                        channels=64,
                        k_inference_factor=1.125,
                        boost_strength=0.75,
                        boost_strength_factor=0.4),
             nn.MaxPool2d(kernel_size=2),
-            nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
+            dends2D(nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
+                    num_segments=10, # Testing! Should change back to num_tasks!
+                    dim_context=num_tasks,
+                    module_sparsity=0,
+                    dendrite_sparsity=0),
             KWinners2d(percent_on=0.2,
                        channels=32,
                        k_inference_factor=1.125,
@@ -65,8 +74,13 @@ class LeNet5(nn.Module):
         self.final_l.append(nn.Linear(128, num_classes))
 
     def forward(self, x, context):
-        for l in self.features:
-            x = l(x)
+        for i, l in enumerate(self.features):
+            # @TODO will want to change for long term use
+            # conv layers that need dendritic context
+            if i == 0 or i == 3:
+                x = l(x, context)
+            else:
+                x = l(x)
         x = self.dends[0](x, context)
         x = self.activations[0](x)
         x = self.dends[1](x, context)
