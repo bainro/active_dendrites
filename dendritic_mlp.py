@@ -285,6 +285,7 @@ class DendriticMLP(nn.Module):
     :param dim_context: the size of the context input to the network
     :param kw: whether to apply k-Winners to the outputs of each hidden layer
     :param kw_percent_on: percent of hidden units activated by K-winners. If 0, use ReLU
+    :param context_percent_on: percent of non-zero units in the context input.
     :param weight_sparsity: the sparsity level of feed-forward weights.
     :param dendritic_layer_class: dendritic layer class to use for each hidden layer
     :param output_nonlinearity: nonlinearity to apply to final output layer.
@@ -307,7 +308,7 @@ class DendriticMLP(nn.Module):
     def __init__(
         self, input_size, output_size, hidden_sizes, num_segments, dim_context,
         kw, kw_percent_on=0.05, weight_sparsity=0.95, output_nonlinearity=None,
-        dendritic_layer_class=AbsoluteMaxGatingDendriticLayer
+        dendritic_layer_class=AbsoluteMaxGatingDendriticLayer, context_percent_on=1.0
     ):
 
         assert kw_percent_on is None or (kw_percent_on >= 0.0 and kw_percent_on < 1.0)
