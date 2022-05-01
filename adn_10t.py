@@ -94,6 +94,7 @@ if __name__ == "__main__":
                         single_acc.append(100 * latest_correct / 10000)
                 # print(f"correct: {total_correct}")
                 acc = 100. * total_correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
+                avg_acc.append(acc)
                 # print(f"[t:{t} e:{e}] test acc: {acc}%")
                 
         # print("single accuracies: ", single_acc)
