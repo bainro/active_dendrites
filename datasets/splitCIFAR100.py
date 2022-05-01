@@ -82,10 +82,12 @@ def make_loaders(seed, batch_size, train):
             pin_memory=torch.cuda.is_available(),
             drop_last=train,
         )
-        loaders.append(loader)
+        # loaders.append(loader)
         # print(next(iter(loader))[1])
     
-    # exit()
     # del whole_loader
+    for loader in loaders:
+        print(next(iter(loader))[1])
+    exit()
     
     return loaders
