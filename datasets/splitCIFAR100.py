@@ -68,6 +68,10 @@ def make_loaders(seed, batch_size, train):
     loaders = []
     t_copy = numpy.array(copy.deepcopy(whole_dataset.targets))
     for i, subset in enumerate(subsets):
+        # @TODO NEED LONG TERM SOLUTION
+        # If i gets larger than ~49 than the loaders' targets become
+        # all 0s, except for the last one appended to loaders :-/
+        # Could return Dataloader class and args & create on the fly? 
         if i > 40: break;
         # map the 100 class id's to [0, 9] or [0, 1] for binary classification
         for j, k in enumerate(label_subsets[i]):
@@ -89,8 +93,8 @@ def make_loaders(seed, batch_size, train):
         # print(next(iter(loader))[1])
     
     # del whole_loader
-    for loader in loaders:
-        print(next(iter(loader))[1])
-    exit()
+    # for loader in loaders:
+        # print(next(iter(loader))[1])
+    # exit()
     
     return loaders
