@@ -13,9 +13,9 @@ from tqdm import tqdm
 
 num_epochs = 1000
 test_bs = 512
-test_freq = 5
+test_freq = 1
 num_tasks = 10
-tolerance = test_freq * 6
+tolerance = test_freq * 3
 
 class SparseLeNet5(nn.Module):
     def __init__(self, c_a_s, f_a_s, f_w_s, boost_set, num_classes=10):
@@ -71,9 +71,9 @@ def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5, boost_set=(1.125,.7
         3) boost_strength_factor
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=10)
+    model = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=2)
     model = model.to(device)
-    backup = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=10)
+    backup = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=2)
     backup = backup.to(device)
     
     train_loaders = make_loaders(seed, train_bs, train=True)
