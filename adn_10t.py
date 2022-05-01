@@ -80,11 +80,12 @@ if __name__ == "__main__":
                         imgs = imgs.flatten(start_dim=1)
                         output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
-                        correct += pred.eq(targets.data.view_as(pred)).sum().item()
+                        single_correct = pred.eq(targets.data.view_as(pred)).sum().item()
+                        correct += single_correct
                     # record latest trained task's test acc
                     if t == curr_task:
                         # hardcoded number of test examples per mnist digit/class
-                        single_acc.append(100 * correct / 10000)
+                        single_acc.append(100 * single_correct / 10000)
                 # print(f"correct: {correct}")
                 acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
                 print(f"[t:{t} e:{e}] test acc: {acc}%")
