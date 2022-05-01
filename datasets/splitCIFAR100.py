@@ -80,7 +80,7 @@ def make_loaders(seed, batch_size, train):
             dataset=dataset_subset,
             batch_size=batch_size,
             shuffle=True,
-            num_workers=4,
+            num_workers=1,#4,
             sampler=None,
             pin_memory=torch.cuda.is_available(),
             drop_last=train
