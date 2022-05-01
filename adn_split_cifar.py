@@ -166,6 +166,6 @@ def train(seed, train_bs, lr,):
     return acc, final_e, final_acc 
 
 if __name__ == "__main__":
-    _ = train(seed=15, train_bs=64, lr=1e-3)
+    _ = train(seed=15, train_bs=256, lr=1e-4)
     print(_)
     print("SCRIPT FINISHED!")
