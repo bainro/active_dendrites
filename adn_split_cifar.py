@@ -93,13 +93,14 @@ def train(seed, train_bs, lr,):
         best_acc = 0.   # best task test acc so far
         best_e = 0      # epoch of best_acc
         # for e in tqdm(range(num_epochs)):
+        print(next(iter(train_loaders[curr_t]))[[1]])
+        '''
         for e in range(num_epochs):
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
                 print(f"targets: {targets}")
-                break
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_t] = 1
                 context = torch.FloatTensor(one_hot_vector)
@@ -111,6 +112,7 @@ def train(seed, train_bs, lr,):
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 optimizer.step()
+        '''
             
             '''
             if e % test_freq == 0:
