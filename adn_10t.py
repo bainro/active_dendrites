@@ -95,7 +95,10 @@ if __name__ == "__main__":
                 acc = 100. * total_correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
                 print(f"[t:{t} e:{e}] test acc: {acc}%")
                 
-        print("single accuracies: ", single_acc)
+        # print("single accuracies: ", single_acc)
+        # print("running avg accuracies: ", avg_acc)
+        all_single_acc.append(single_acc)
+        all_avg_acc.append(avg_acc)
         
     # figure out average wrt all seeds
     avg_seed_acc = list(map(lambda x: sum(x)/len(x), zip(*all_avg_acc)))
