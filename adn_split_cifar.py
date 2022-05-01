@@ -93,8 +93,6 @@ def train(seed, train_bs, lr,):
         best_acc = 0.   # best task test acc so far
         best_e = 0      # epoch of best_acc
         # for e in tqdm(range(num_epochs)):
-        print(next(iter(train_loaders[curr_t]))[1])
-        '''
         for e in range(num_epochs):
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
@@ -112,10 +110,7 @@ def train(seed, train_bs, lr,):
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 optimizer.step()
-        '''
-        if True:
-            print("")
-            '''
+
             if e % test_freq == 0:
                 print(f"train_loss: {train_loss.item()}")    
                 model.eval()
@@ -165,7 +160,6 @@ def train(seed, train_bs, lr,):
             print(f"correct: {correct}")
             acc = 100. * correct / (curr_t+1) / len(test_loaders[t].dataset)
             print(f"\n\n[t:{t} e:{e}] test acc: {acc}%\n\n")
-                '''
 
     # final task-avg accuracy
     # epochs that best test acc occurred 
