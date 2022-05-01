@@ -85,6 +85,7 @@ def make_loaders(seed, batch_size, train):
             drop_last=train,
         )
         loaders.append(loader)
+    print(whole_dataset.targets)
     exit()
     del whole_loader
     
