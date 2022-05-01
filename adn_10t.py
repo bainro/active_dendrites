@@ -41,7 +41,7 @@ if __name__ == "__main__":
         optimizer = torch.optim.Adam(model.parameters(), lr=5e-4, weight_decay=0)
         criterion = nn.CrossEntropyLoss()
 
-        # records individual task's test accuracy
+        # records latest task's test accuracy
         single_acc = []
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
@@ -81,8 +81,10 @@ if __name__ == "__main__":
                         output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
                         correct += pred.eq(targets.data.view_as(pred)).sum().item()
-                        # hardcoded number of test examples per mnist digit/class
-                        single_acc.append(100 * correct / 10000)
+                        # record latest trained task's test acc
+                        if t == curr_task:
+                            # hardcoded number of test examples per mnist digit/class
+                            single_acc.append(100 * correct / 10000)
                 # print(f"correct: {correct}")
                 acc = 100. * correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
                 print(f"[t:{t} e:{e}] test acc: {acc}%")
