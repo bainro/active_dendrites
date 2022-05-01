@@ -11,7 +11,7 @@ from torch import nn
 from tqdm import tqdm
 
 
-seed = 44
+seed = 42
 num_epochs = 3
 train_bs = 256
 test_bs = 512
@@ -24,9 +24,7 @@ conf = dict(
     dim_context=10,
     kw=True,
     kw_percent_on=0.05,
-    dendrite_weight_sparsity=0.0,
     weight_sparsity=0.5,
-    context_percent_on=0.1,
     num_segments=num_tasks
 )    
 
