@@ -99,6 +99,7 @@ def train(seed, train_bs, lr,):
                 optimizer.zero_grad()
                 imgs, targets = imgs.to(device), targets.to(device)
                 print(f"targets: {targets}")
+                break
                 one_hot_vector = torch.zeros([num_tasks])
                 one_hot_vector[curr_t] = 1
                 context = torch.FloatTensor(one_hot_vector)
