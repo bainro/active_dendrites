@@ -83,11 +83,11 @@ def make_loaders(seed, batch_size, train):
             drop_last=train,
         )
         loaders.append(loader)
-        # print(next(iter(loader))[1])
+        print(next(iter(loader))[1])
     
     # del whole_loader
-    for loader in loaders:
-        print(next(iter(loader))[1])
+#     for loader in loaders:
+#         print(next(iter(loader))[1])
     exit()
     
     return loaders
