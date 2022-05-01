@@ -352,12 +352,6 @@ class DendriticMLP(nn.Module):
                 dendrite_sparsity=0.,
             )
 
-            if freeze_dendrites:
-                # Dendritic weights will not be updated during backward pass
-                for name, param in curr_dend.named_parameters():
-                    if "segments" in name:
-                        param.requires_grad = False
-
             if self.kw:
                 curr_activation = KWinners(n=hidden_sizes[i],
                                            percent_on=kw_percent_on,
