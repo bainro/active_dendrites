@@ -63,11 +63,11 @@ class ModifiedInitMLP(nn.Module):
 
     
 if __name__ == "__main__":
-    num_seeds = 5
+    seeds = [33, 34, 35, 36, 37]
     # used for creating avg over all seed runs
     all_single_acc = []
     all_avg_acc = []
-    for seed in range(num_seeds):
+    for seed in seeds:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = ModifiedInitMLP(**conf)
         model = model.to(device)
