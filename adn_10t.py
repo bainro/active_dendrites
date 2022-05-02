@@ -55,7 +55,7 @@ if __name__ == "__main__":
                 for batch_idx, (imgs, targets) in enumerate(train_loader):
                     optimizer.zero_grad()
                     imgs, targets = imgs.to(device), targets.to(device)
-                    one_hot_vector = torch.zeros([curr_task])
+                    one_hot_vector = torch.zeros([num_tasks])
                     one_hot_vector[curr_task] = 1
                     context = torch.FloatTensor(one_hot_vector)
                     context = context.to(device)
@@ -77,7 +77,7 @@ if __name__ == "__main__":
                     test_loader.sampler.set_active_tasks(t)
                     for imgs, targets in test_loader:
                         imgs, targets = imgs.to(device), targets.to(device)
-                        one_hot_vector = torch.zeros([curr_task])
+                        one_hot_vector = torch.zeros([num_tasks])
                         one_hot_vector[t] = 1
                         context = torch.FloatTensor(one_hot_vector)
                         context = context.to(device)
