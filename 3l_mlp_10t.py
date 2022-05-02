@@ -14,7 +14,7 @@ seed = 42
 num_epochs = 5
 train_bs = 256
 test_bs = 512
-num_tasks = 10
+num_tasks = 100
 
 conf = dict(
     input_size=784,
@@ -63,7 +63,7 @@ class ModifiedInitMLP(nn.Module):
 
     
 if __name__ == "__main__":
-    num_seeds = 10
+    num_seeds = 5
     # used for creating avg over all seed runs
     all_single_acc = []
     all_avg_acc = []
