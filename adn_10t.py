@@ -14,7 +14,7 @@ from tqdm import tqdm
 num_epochs = 3
 train_bs = 256
 test_bs = 512
-num_tasks = 10
+num_tasks = 100
 
 conf = dict(
     input_size=784,
@@ -25,7 +25,7 @@ conf = dict(
     kw_percent_on=0.05,
     weight_sparsity=0.5,
     context_percent_on=0.1, # used for weight init, but paper reported using dense context...
-    num_segments=num_tasks
+    num_segments=10 # num_tasks
 )    
 
 if __name__ == "__main__":
