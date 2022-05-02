@@ -42,7 +42,7 @@ if __name__ == "__main__":
         test_loader = make_loader(num_tasks, seed, test_bs, train=False)
 
         # Optimizer and Loss
-        optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=0)
+        optimizer = torch.optim.Adam(model.parameters(), lr=7e-5, weight_decay=0)
         criterion = nn.CrossEntropyLoss()
 
         # records latest task's test accuracy
