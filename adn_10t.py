@@ -18,9 +18,9 @@ num_tasks = 100
 
 conf = dict(
     input_size=784,
-    output_size=10,  # Single output head shared by all tasks
+    output_size=10,
     hidden_sizes=[2048, 2048],
-    dim_context=100,
+    dim_context=784,
     kw=True,
     kw_percent_on=0.05,
     weight_sparsity=0.5,
@@ -50,15 +50,14 @@ if __name__ == "__main__":
         contexts = []
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
-            mean = 0
+            sum = 0
             for batch_idx, (imgs, _) in enumerate(train_loader):
                 imgs = imgs.to(device)
                 imgs = imgs.flatten(start_dim=1)
-                print(imgs.shape)
-                mean += imgs.mean(0).sum(0)
-                # imgs = torch.mean(imgs) #, 1)
-                print(mean.shape);exit()
-            context.append(mean /= len(train_loader.dataset))
+                sum += imgs.sum(0)
+            avg_task_input = mean /= len(train_loader.dataset)
+            avg_task_input = avg_task_input.to(device)
+            contexts.append(avg_task_input)
         # hardcoded for mnist train
         assert len(train_loader.dataset) == 50000
         
@@ -72,11 +71,7 @@ if __name__ == "__main__":
                 for batch_idx, (imgs, targets) in enumerate(train_loader):
                     optimizer.zero_grad()
                     imgs, targets = imgs.to(device), targets.to(device)
-                    one_hot_vector = torch.zeros([num_tasks])
-                    # one_hot_vector[curr_task] = 1
-                    context = torch.FloatTensor(one_hot_vector)
-                    context = context.to(device)
-                    context = context.unsqueeze(0)
+                    context = contexts[curr_task]
                     context = context.repeat(imgs.shape[0], 1)
                     imgs = imgs.flatten(start_dim=1)
                     output = model(imgs, context)
@@ -94,12 +89,7 @@ if __name__ == "__main__":
                     test_loader.sampler.set_active_tasks(t)
                     for imgs, targets in test_loader:
                         imgs, targets = imgs.to(device), targets.to(device)
-                        one_hot_vector = torch.zeros([num_tasks])
-                        # one_hot_vector[t] = 1
-                        context = torch.FloatTensor(one_hot_vector)
-                        context = context.to(device)
-                        context = context.unsqueeze(0)
-                        context = context.repeat(imgs.shape[0], 1)
+                        context = contexts[t]
                         imgs = imgs.flatten(start_dim=1)
                         output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
@@ -114,8 +104,8 @@ if __name__ == "__main__":
                 avg_acc.append(acc)
                 # print(f"[t:{t} e:{e}] test acc: {acc}%")
                 
-        # print("single accuracies: ", single_acc)
-        # print("running avg accuracies: ", avg_acc)
+        print("single accuracies: ", single_acc)
+        print("running avg accuracies: ", avg_acc)
         all_single_acc.append(single_acc)
         all_avg_acc.append(avg_acc)
         
