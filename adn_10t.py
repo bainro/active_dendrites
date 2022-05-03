@@ -99,7 +99,18 @@ if __name__ == "__main__":
                     test_loader.sampler.set_active_tasks(t)
                     for imgs, targets in test_loader:
                         imgs, targets = imgs.to(device), targets.to(device)
-                        context = None # contexts[t]
+                        
+                        """
+                        context = contexts[curr_task]
+                        context = context.repeat(imgs.shape[0], 1)
+                        """
+                        one_hot_vector = torch.zeros([num_tasks])
+                        one_hot_vector[t] = 1
+                        context = torch.FloatTensor(one_hot_vector)
+                        context = context.to(device)
+                        context = context.unsqueeze(0)
+                        context = context.repeat(imgs.shape[0], 1)
+                        
                         imgs = imgs.flatten(start_dim=1)
                         output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
