@@ -51,6 +51,7 @@ if __name__ == "__main__":
             train_loader.sampler.set_active_tasks(curr_task)
             for batch_idx, (imgs, _) in enumerate(train_loader):
                 imgs = imgs.to(device)
+                imgs = imgs.flatten(start_dim=1)
                 print(imgs.shape)
                 imgs = torch.mean(imgs, 1)
                 print(imgs.shape);exit()
