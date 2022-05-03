@@ -55,7 +55,7 @@ if __name__ == "__main__":
                 imgs = imgs.to(device)
                 imgs = imgs.flatten(start_dim=1)
                 sum += imgs.sum(0)
-            avg_task_input = mean /= len(train_loader.dataset)
+            avg_task_input = sum / len(train_loader.dataset)
             avg_task_input = avg_task_input.to(device)
             contexts.append(avg_task_input)
         # hardcoded for mnist train
