@@ -55,7 +55,7 @@ if __name__ == "__main__":
                 imgs = imgs.to(device)
                 imgs = imgs.flatten(start_dim=1)
                 print(imgs.shape)
-                mean += imgs.mean(1).sum(0)
+                mean += imgs.mean(0).sum(0)
                 # imgs = torch.mean(imgs) #, 1)
                 print(mean.shape);exit()
             context.append(mean /= len(train_loader.dataset))
