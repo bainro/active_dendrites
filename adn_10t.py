@@ -58,6 +58,7 @@ if __name__ == "__main__":
             # hardcoded for mnist train
             avg_task_input = sum / 6000 # len(train_loader.dataset)
             avg_task_input = avg_task_input.to(device)
+            print(avg_task_input.shape);exit()
             contexts.append(avg_task_input)
         
         # records latest task's test accuracy
