@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 for batch_idx, (imgs, targets) in enumerate(train_loader):
                     optimizer.zero_grad()
                     imgs, targets = imgs.to(device), targets.to(device)
-                    context = contexts[curr_task]
+                    context = torch.clone(contexts[curr_task])
                     context = context.repeat(imgs.shape[0], 1)
                     imgs = imgs.flatten(start_dim=1)
                     output = model(imgs, context)
@@ -88,7 +88,7 @@ if __name__ == "__main__":
                     test_loader.sampler.set_active_tasks(t)
                     for imgs, targets in test_loader:
                         imgs, targets = imgs.to(device), targets.to(device)
-                        context = contexts[t]
+                        context = torch.clone(contexts[t])
                         imgs = imgs.flatten(start_dim=1)
                         output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
