@@ -45,16 +45,22 @@ if __name__ == "__main__":
         optimizer = torch.optim.Adam(model.parameters(), lr=7e-5, weight_decay=0)
         criterion = nn.CrossEntropyLoss()
 
+        # @TODO use Euclidian distance to infer which task's input at test time
         # calculate all the context vectors, avg's of each tasks' inputs
         contexts = []
+        mean = 0
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
             for batch_idx, (imgs, _) in enumerate(train_loader):
                 imgs = imgs.to(device)
                 imgs = imgs.flatten(start_dim=1)
                 print(imgs.shape)
-                imgs = torch.mean(imgs) #, 1)
-                print(imgs.shape);exit()
+                mean += imgs.mean(2).sum(0)
+                # imgs = torch.mean(imgs) #, 1)
+                print(mean.shape);exit()
+        mean /= len(train_loader.dataset)
+        # hardcoded for mnist train
+        assert len(train_loader.dataset) == 50000
         
         # records latest task's test accuracy
         single_acc = []
