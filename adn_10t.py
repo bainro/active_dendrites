@@ -48,8 +48,6 @@ if __name__ == "__main__":
         # @TODO use Euclidian distance to infer which task's input at test time
         # calculate all the context vectors, avg's of each tasks' inputs
         contexts = []
-        # hardcoded for mnist train
-        assert len(train_loader.dataset) == 50000, f"{len(train_loader.dataset)}"
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
             sum = 0
@@ -57,7 +55,8 @@ if __name__ == "__main__":
                 imgs = imgs.to(device)
                 imgs = imgs.flatten(start_dim=1)
                 sum += imgs.sum(0)
-            avg_task_input = sum / len(train_loader.dataset)
+            # hardcoded for mnist train
+            avg_task_input = sum / 6000 # len(train_loader.dataset)
             avg_task_input = avg_task_input.to(device)
             contexts.append(avg_task_input)
         
