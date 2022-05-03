@@ -99,7 +99,7 @@ if __name__ == "__main__":
                     test_loader.sampler.set_active_tasks(t)
                     for imgs, targets in test_loader:
                         imgs, targets = imgs.to(device), targets.to(device)
-                        context = contexts[t]
+                        context = None # contexts[t]
                         imgs = imgs.flatten(start_dim=1)
                         output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
