@@ -58,7 +58,6 @@ if __name__ == "__main__":
             # hardcoded for mnist train
             avg_task_input = sum / 6000 # len(train_loader.dataset)
             avg_task_input = avg_task_input.to(device)
-            print(avg_task_input.shape);exit()
             contexts.append(avg_task_input)
         
         # records latest task's test accuracy
@@ -73,6 +72,7 @@ if __name__ == "__main__":
                     imgs, targets = imgs.to(device), targets.to(device)
                     context = torch.clone(contexts[curr_task])
                     context = context.repeat(imgs.shape[0], 1)
+                    print(context.shape);exit()
                     imgs = imgs.flatten(start_dim=1)
                     output = model(imgs, context)
                     pred = output.data.max(1, keepdim=True)[1]
