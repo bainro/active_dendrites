@@ -53,7 +53,7 @@ if __name__ == "__main__":
                 imgs = imgs.to(device)
                 imgs = imgs.flatten(start_dim=1)
                 print(imgs.shape)
-                imgs = torch.mean(imgs, 1)
+                imgs = torch.mean(imgs) #, 1)
                 print(imgs.shape);exit()
         
         # records latest task's test accuracy
