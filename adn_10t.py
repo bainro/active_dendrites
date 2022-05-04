@@ -14,7 +14,7 @@ from tqdm import tqdm
 num_epochs = 3
 train_bs = 256
 test_bs = 512
-num_tasks = 1#100
+num_tasks = 100
 
 conf = dict(
     input_size=784,
@@ -47,7 +47,6 @@ if __name__ == "__main__":
 
         # @TODO use Euclidian distance to infer which task's input at test time
         # calculate all the context vectors, avg's of each tasks' inputs
-        # """
         contexts = []
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
@@ -57,10 +56,8 @@ if __name__ == "__main__":
                 imgs = imgs.flatten(start_dim=1)
                 sum += imgs.sum(0)
             # hardcoded for mnist train
-            avg_task_input = sum / 6000 # len(train_loader.dataset)
-            # avg_task_input = avg_task_input.to(device)
+            avg_task_input = sum / 6000
             contexts.append(avg_task_input)
-        # """
         
         # records latest task's test accuracy
         single_acc = []
@@ -72,27 +69,16 @@ if __name__ == "__main__":
                 for batch_idx, (imgs, targets) in enumerate(train_loader):
                     optimizer.zero_grad()
                     imgs, targets = imgs.to(device), targets.to(device)
-                    #"""
                     context = contexts[curr_task]
-                    print(context)
-                    #context = torch.zeros([784])
                     context = context.to(device)
                     context = context.unsqueeze(0)
                     context = context.repeat(imgs.shape[0], 1)
-                    """
-                    one_hot_vector = torch.zeros([num_tasks])
-                    one_hot_vector[curr_task] = 1
-                    context = torch.FloatTensor(one_hot_vector)
-                    context = context.to(device)
-                    context = context.unsqueeze(0)
-                    context = context.repeat(imgs.shape[0], 1)
-                    """
                     imgs = imgs.flatten(start_dim=1)
                     output = model(imgs, context)
                     pred = output.data.max(1, keepdim=True)[1]
                     train_loss = criterion(output, targets)
                     train_loss.backward()
-                    print(f"train_loss: {train_loss.item()}")
+                    # print(f"train_loss: {train_loss.item()}")
                     optimizer.step()
 
             model.eval()
@@ -103,19 +89,10 @@ if __name__ == "__main__":
                     test_loader.sampler.set_active_tasks(t)
                     for imgs, targets in test_loader:
                         imgs, targets = imgs.to(device), targets.to(device)
-                        
-                        """
-                        context = contexts[curr_task]
-                        context = context.repeat(imgs.shape[0], 1)
-                        """
-                        # one_hot_vector = torch.zeros([num_tasks])
-                        one_hot_vector = torch.zeros([784])
-                        one_hot_vector[t] = 1
-                        context = torch.FloatTensor(one_hot_vector)
+                        context = contexts[t]
                         context = context.to(device)
                         context = context.unsqueeze(0)
                         context = context.repeat(imgs.shape[0], 1)
-                        
                         imgs = imgs.flatten(start_dim=1)
                         output = model(imgs, context)
                         pred = output.data.max(1, keepdim=True)[1]
