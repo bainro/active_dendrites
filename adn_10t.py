@@ -37,6 +37,7 @@ if __name__ == "__main__":
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = D.DendriticMLP(**conf)
         # 100 segment net too large to fit it in 2080 GPU's memory
+        model.cuda()
         model = nn.DataParallel(model, device_ids=[0, 1])
         # model = model.to(device)
 
