@@ -36,7 +36,9 @@ if __name__ == "__main__":
     for seed in seeds:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = D.DendriticMLP(**conf)
-        model = model.to(device)    
+        # 100 segment net too large to fit it in 2080 GPU's memory
+        model = nn.DataParallel(model, device_ids=[0, 1])
+        # model = model.to(device)
 
         train_loader = make_loader(num_tasks, seed, train_bs, train=True)
         test_loader = make_loader(num_tasks, seed, test_bs, train=False)
