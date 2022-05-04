@@ -20,12 +20,12 @@ conf = dict(
     input_size=784,
     output_size=10,
     hidden_sizes=[2048, 2048],
-    dim_context=784, #num_tasks
+    dim_context=784,
     kw=True,
     kw_percent_on=0.05,
     weight_sparsity=0.5,
-    context_percent_on=0.1, # used for weight init, but paper reported using dense context...
-    num_segments=80 # num_tasks
+    context_percent_on=0.05, # used for weight init, but paper reported using dense context
+    num_segments=10
 )    
 
 if __name__ == "__main__":
@@ -36,16 +36,18 @@ if __name__ == "__main__":
     for seed in seeds:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = D.DendriticMLP(**conf)
-        # 100 segment net too large to fit it in 2080 GPU's memory
+        """
+        # 80 segment net too large to fit it in 14GB of VRAM
         model.cuda()
         model = nn.DataParallel(model, device_ids=[0, 1])
-        # model = model.to(device)
+        """
+        model = model.to(device)
 
         train_loader = make_loader(num_tasks, seed, train_bs, train=True)
         test_loader = make_loader(num_tasks, seed, test_bs, train=False)
 
         # Optimizer and Loss
-        optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=0)
+        optimizer = torch.optim.Adam(model.parameters(), lr=5e-4, weight_decay=0)
         criterion = nn.CrossEntropyLoss()
 
         # @TODO use Euclidian distance to infer which task's input at test time
