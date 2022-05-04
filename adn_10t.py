@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
         # @TODO use Euclidian distance to infer which task's input at test time
         # calculate all the context vectors, avg's of each tasks' inputs
-        """
+        # """
         contexts = []
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
@@ -60,7 +60,7 @@ if __name__ == "__main__":
             avg_task_input = sum / 6000 # len(train_loader.dataset)
             # avg_task_input = avg_task_input.to(device)
             contexts.append(avg_task_input)
-        """
+        # """
         
         # records latest task's test accuracy
         single_acc = []
@@ -73,8 +73,9 @@ if __name__ == "__main__":
                     optimizer.zero_grad()
                     imgs, targets = imgs.to(device), targets.to(device)
                     #"""
-                    #context = contexts[curr_task]
-                    context = torch.zeros([784])
+                    context = contexts[curr_task]
+                    print(context)
+                    #context = torch.zeros([784])
                     context = context.to(device)
                     context = context.unsqueeze(0)
                     context = context.repeat(imgs.shape[0], 1)
