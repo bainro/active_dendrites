@@ -89,7 +89,7 @@ def make_loader(num_tasks, seed, batch_size, train):
         seed=seed,
         train=train,
         num_tasks=num_tasks,
-        normalize=True,
+        normalize=False,
     )
     
     # target -> all indices for that target
