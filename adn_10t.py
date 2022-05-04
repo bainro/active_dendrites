@@ -14,7 +14,7 @@ from tqdm import tqdm
 num_epochs = 3
 train_bs = 256
 test_bs = 512
-num_tasks = 100
+num_tasks = 1#100
 
 conf = dict(
     input_size=784,
