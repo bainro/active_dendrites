@@ -55,13 +55,13 @@ if __name__ == "__main__":
         contexts = []
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
-            sum = 0
+            _sum = 0
             for batch_idx, (imgs, _) in enumerate(train_loader):
                 imgs = imgs.to(device)
                 imgs = imgs.flatten(start_dim=1)
-                sum += imgs.sum(0)
+                _sum += imgs.sum(0)
             # hardcoded for mnist train
-            avg_task_input = sum / 6000
+            avg_task_input = _sum / 6000
             contexts.append(avg_task_input)
         
         # records latest task's test accuracy
