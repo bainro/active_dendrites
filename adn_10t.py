@@ -36,11 +36,6 @@ if __name__ == "__main__":
     for seed in seeds:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = D.DendriticMLP(**conf)
-        """
-        # 80 segment net too large to fit it in 14GB of VRAM
-        model.cuda()
-        model = nn.DataParallel(model, device_ids=[0, 1])
-        """
         model = model.to(device)
 
         train_loader = make_loader(num_tasks, seed, train_bs, train=True)
@@ -52,6 +47,7 @@ if __name__ == "__main__":
 
         # @TODO use Euclidian distance to infer which task's input at test time
         # calculate all the context vectors, avg's of each tasks' inputs
+        """
         contexts = []
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
@@ -63,6 +59,7 @@ if __name__ == "__main__":
             # hardcoded for mnist train
             avg_task_input = _sum / 6000
             contexts.append(avg_task_input)
+        """
         
         # records latest task's test accuracy
         single_acc = []
@@ -74,7 +71,8 @@ if __name__ == "__main__":
                 for batch_idx, (imgs, targets) in enumerate(train_loader):
                     optimizer.zero_grad()
                     imgs, targets = imgs.to(device), targets.to(device)
-                    context = contexts[curr_task]
+                    # context = contexts[curr_task]
+                    context = torch.zeros([784])
                     context = context.to(device)
                     context = context.unsqueeze(0)
                     context = context.repeat(imgs.shape[0], 1)
@@ -94,7 +92,8 @@ if __name__ == "__main__":
                     test_loader.sampler.set_active_tasks(t)
                     for imgs, targets in test_loader:
                         imgs, targets = imgs.to(device), targets.to(device)
-                        context = contexts[t]
+                        # context = contexts[t]
+                        context = torch.zeros([784])
                         context = context.to(device)
                         context = context.unsqueeze(0)
                         context = context.repeat(imgs.shape[0], 1)
