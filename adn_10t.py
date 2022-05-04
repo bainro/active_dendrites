@@ -20,7 +20,7 @@ conf = dict(
     input_size=784,
     output_size=10,
     hidden_sizes=[2048, 2048],
-    dim_context=num_tasks, #784,
+    dim_context=784, #num_tasks
     kw=True,
     kw_percent_on=0.05,
     weight_sparsity=0.5,
@@ -47,7 +47,6 @@ if __name__ == "__main__":
 
         # @TODO use Euclidian distance to infer which task's input at test time
         # calculate all the context vectors, avg's of each tasks' inputs
-        """
         contexts = []
         for curr_task in range(num_tasks):
             train_loader.sampler.set_active_tasks(curr_task)
@@ -58,9 +57,8 @@ if __name__ == "__main__":
                 sum += imgs.sum(0)
             # hardcoded for mnist train
             avg_task_input = sum / 6000 # len(train_loader.dataset)
-            avg_task_input = avg_task_input.to(device)
+            # avg_task_input = avg_task_input.to(device)
             contexts.append(avg_task_input)
-        """
         
         # records latest task's test accuracy
         single_acc = []
@@ -72,8 +70,9 @@ if __name__ == "__main__":
                 for batch_idx, (imgs, targets) in enumerate(train_loader):
                     optimizer.zero_grad()
                     imgs, targets = imgs.to(device), targets.to(device)
-                    """
+                    #"""
                     context = contexts[curr_task]
+                    context = context.to(device)
                     context = context.repeat(imgs.shape[0], 1)
                     """
                     one_hot_vector = torch.zeros([num_tasks])
@@ -82,7 +81,7 @@ if __name__ == "__main__":
                     context = context.to(device)
                     context = context.unsqueeze(0)
                     context = context.repeat(imgs.shape[0], 1)
-                    
+                    """
                     imgs = imgs.flatten(start_dim=1)
                     output = model(imgs, context)
                     pred = output.data.max(1, keepdim=True)[1]
