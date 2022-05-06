@@ -5,6 +5,7 @@ Script to train an active dendrite MLP on 10 tasks of PermutedMNIST.
 import os
 import dendritic_mlp as D
 from datasets.permutedMNIST import make_loader
+from sparse_weights import rezero_weights
 import numpy
 import torch
 from torch import nn
@@ -83,6 +84,7 @@ if __name__ == "__main__":
                     train_loss.backward()
                     # print(f"train_loss: {train_loss.item()}")
                     optimizer.step()
+                    model.apply(rezero_weights)
 
             model.eval()
             total_correct = 0
