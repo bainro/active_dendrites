@@ -9,7 +9,6 @@ from datasets.permutedMNIST import make_loader
 import numpy
 import torch
 from torch import nn
-from tqdm import tqdm
 
 
 class ModifiedInitMLP(nn.Module):  
