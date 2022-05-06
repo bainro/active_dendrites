@@ -61,6 +61,7 @@ class ModifiedInitMLP(nn.Module):
     
 if __name__ == "__main__":
     num_args = len(sys.argv)
+    print(f"num_args: {num_args}");exit()
     # gridsearch flag given
     if num_args == 2:
         init_DOFs = [0.01, 0.05, 0.1, 0.3, 0.5, 0.9, 0.95, 1.]
@@ -70,6 +71,7 @@ if __name__ == "__main__":
         init_DOFs = [1.]
         LRs = [1e-6]
         num_epochs = [3]
+        
     seeds = range(1) # [33, 34, 35, 36, 37]
     # used for creating avg over all seed runs
     all_single_acc = []
