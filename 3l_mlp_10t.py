@@ -59,7 +59,9 @@ class ModifiedInitMLP(nn.Module):
 
     
 if __name__ == "__main__":
-    # for init_dof in [0.01, 0.05, 0.1, 0.3, 0.5, 0.9, 0.95, 0.99]:
+    # for init_dof in [0.01, 0.05, 0.1, 0.3, 0.5, 0.9, 0.95, 1.]:
+    # LR: 7.5e-7, 1e-6, 2.5e-6, 5e-6, 7.5e-5, 1e-5
+    # num_epochs 2 <-> 7
     seeds = range(1) # [33, 34, 35, 36, 37]
     # used for creating avg over all seed runs
     all_single_acc = []
