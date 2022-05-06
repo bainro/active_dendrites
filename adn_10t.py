@@ -29,7 +29,7 @@ conf = dict(
 )    
 
 if __name__ == "__main__":
-    seeds = range(1) # [33, 34, 35, 36, 37]
+    seeds = range(10) # [33, 34, 35, 36, 37]
     # used for creating avg over all seed runs
     all_single_acc = []
     all_avg_acc = []
