@@ -30,7 +30,7 @@ conf = dict(
 )    
 
 if __name__ == "__main__":
-    seeds = range(10) # [33, 34, 35, 36, 37]
+    seeds = [33, 34, 35, 36, 37]
     # used for creating avg over all seed runs
     all_single_acc = []
     all_avg_acc = []
@@ -43,7 +43,7 @@ if __name__ == "__main__":
         test_loader = make_loader(num_tasks, seed, test_bs, train=False)
 
         # Optimizer and Loss
-        optimizer = torch.optim.Adam(model.parameters(), lr=5e-4, weight_decay=0)
+        optimizer = torch.optim.Adam(model.parameters(), lr=7e-5, weight_decay=0)
         criterion = nn.CrossEntropyLoss()
 
         # @TODO use Euclidian distance to infer which task's input at test time
