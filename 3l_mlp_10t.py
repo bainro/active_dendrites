@@ -23,8 +23,10 @@ conf = dict(
 )    
 
 class ModifiedInitMLP(nn.Module):  
-    def __init__(self, input_size, num_classes,
+    def __init__(self, input_size, num_classes, init_dof=1,
                  hidden_sizes=(100, 100)):
+        # init_dof: Used in modified Kaiming weight init.
+           
         super().__init__()
 
         layers = [
@@ -41,19 +43,13 @@ class ModifiedInitMLP(nn.Module):
 
         self.classifier = nn.Sequential(*layers)
         
-        # Modified Kaiming weight initialization which considers 1) the density of
-        # the input vector and 2) the weight density in addition to the fan-in
-
+        # Modified Kaiming weight initialization
+        # Numenta had this as a variable (ie degree of freedom) even when 
+        # context input was dense. Searching over it for a fair comparision
+        input_density = init_dof
         weight_density = 1.0
-        input_flag = False
         for layer in self.classifier:
             if isinstance(layer, nn.Linear):
-
-                # Assume input is fully dense, but hidden layer activations are only
-                # 50% dense due to ReLU
-                input_density = 1.0 if not input_flag else 0.5
-                input_flag = True
-
                 _, fan_in = layer.weight.size()
                 bound = 1.0 / numpy.sqrt(input_density * weight_density * fan_in)
                 nn.init.uniform_(layer.weight, -bound, bound)
@@ -63,7 +59,8 @@ class ModifiedInitMLP(nn.Module):
 
     
 if __name__ == "__main__":
-    seeds = [33, 34, 35, 36, 37]
+    # for init_dof in [0.01, 0.05, 0.1, 0.3, 0.5, 0.9, 0.95, 0.99]:
+    seeds = range(1) # [33, 34, 35, 36, 37]
     # used for creating avg over all seed runs
     all_single_acc = []
     all_avg_acc = []
