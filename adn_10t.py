@@ -124,4 +124,4 @@ if __name__ == "__main__":
     print("seed avg running avg accuracies: ", avg_seed_acc)
     print("seed avg single accuracies: ", avg_single_acc)
     
-    print("SCRIPT FINISHED!")
+    print("SCRIPT FINISHED!") 
