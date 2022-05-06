@@ -3,6 +3,7 @@ Script to train a fully connected, 3 layer MLP on 10 tasks of PermutedMNIST.
 '''
 
 import os
+import sys
 from datasets.permutedMNIST import make_loader
 import numpy
 import torch
@@ -59,9 +60,16 @@ class ModifiedInitMLP(nn.Module):
 
     
 if __name__ == "__main__":
-    # for init_dof in [0.01, 0.05, 0.1, 0.3, 0.5, 0.9, 0.95, 1.]:
-    # LR: 7.5e-7, 1e-6, 2.5e-6, 5e-6, 7.5e-5, 1e-5
-    # num_epochs 2 <-> 7
+    num_args = len(sys.argv)
+    # gridsearch flag given
+    if num_args == 2:
+        init_DOFs = [0.01, 0.05, 0.1, 0.3, 0.5, 0.9, 0.95, 1.]
+        LRs = [7.5e-7, 1e-6, 2.5e-6, 5e-6, 7.5e-5, 1e-5]
+        num_epochs = [2, 3, 4, 5, 6, 7, 8]
+    else:
+        init_DOFs = [1.]
+        LRs = [1e-6]
+        num_epochs = [3]
     seeds = range(1) # [33, 34, 35, 36, 37]
     # used for creating avg over all seed runs
     all_single_acc = []
@@ -75,7 +83,7 @@ if __name__ == "__main__":
         test_loader = make_loader(num_tasks, seed, test_bs, train=False)
 
         # Optimizer and Loss
-        optimizer = torch.optim.Adam(model.parameters(), lr=1e-6, weight_decay=0)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0)
         criterion = nn.CrossEntropyLoss()
 
         # records latest task's test accuracy
