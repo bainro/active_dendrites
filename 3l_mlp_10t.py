@@ -63,7 +63,7 @@ if __name__ == "__main__":
         SEEDs = [1]
     else:
         INIT_DOFs = [1.]
-        LRs = [1e-6]
+        LRs = [3e-7]
         NUM_EPOCHS = [3]
         TRAIN_BSs = [256]
         SEEDs = range(10) # [33, 34, 35, 36, 37]
