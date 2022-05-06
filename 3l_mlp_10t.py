@@ -48,12 +48,6 @@ class ModifiedInitMLP(nn.Module):
 
     
 if __name__ == "__main__":
-    
-    conf = dict(
-        input_size=784,
-        num_classes = 10,
-        hidden_sizes=[2048, 2048],
-    )
     test_bs = 512
     num_tasks = 100
     # used for creating avg over all seed runs
@@ -79,6 +73,13 @@ if __name__ == "__main__":
             for lr in LRs:
                 for init_dof in INIT_DOFs:    
                     for seed in SEEDs:
+                        conf = dict(
+                            input_size=784,
+                            num_classes = 10,
+                            hidden_sizes=[2048, 2048],
+                            init_dof=init_dof
+                        )
+                        
                         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
                         model = ModifiedInitMLP(**conf)
                         model = model.to(device)
