@@ -11,18 +11,6 @@ from torch import nn
 from tqdm import tqdm
 
 
-seed = 42
-num_epochs = 5
-train_bs = 256
-test_bs = 512
-num_tasks = 100
-
-conf = dict(
-    input_size=784,
-    num_classes = 10,
-    hidden_sizes=[2048, 2048],
-)    
-
 class ModifiedInitMLP(nn.Module):  
     def __init__(self, input_size, num_classes, init_dof=1,
                  hidden_sizes=(100, 100)):
@@ -60,83 +48,95 @@ class ModifiedInitMLP(nn.Module):
 
     
 if __name__ == "__main__":
+    
+    conf = dict(
+        input_size=784,
+        num_classes = 10,
+        hidden_sizes=[2048, 2048],
+    )
+    test_bs = 512
+    num_tasks = 100
+    # used for creating avg over all seed runs
+    all_single_acc = []
+    all_avg_acc = []
     num_args = len(sys.argv)
-    print(f"num_args: {num_args}");exit()
-    # gridsearch flag given
+    # gridsearch flag given on cmd line
     if num_args == 2:
-        init_DOFs = [0.01, 0.05, 0.1, 0.3, 0.5, 0.9, 0.95, 1.]
-        LRs = [7.5e-7, 1e-6, 2.5e-6, 5e-6, 7.5e-5, 1e-5]
-        num_epochs = [2, 3, 4, 5, 6, 7, 8]
+        init_DOFs = [0.05, 0.1, 0.5]
+        LRs = [5e-7, 1e-6, 5e-6, 1e-5]
+        num_epochs = [3, 4, 5, 6]
+        train_BSs = [64, 128, 256]
+        seeds = [1]
     else:
         init_DOFs = [1.]
         LRs = [1e-6]
         num_epochs = [3]
+        train_BSs = [256]
+        seeds = range(10) # [33, 34, 35, 36, 37]
         
-    seeds = range(1) # [33, 34, 35, 36, 37]
-    # used for creating avg over all seed runs
-    all_single_acc = []
-    all_avg_acc = []
-    for seed in seeds:
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = ModifiedInitMLP(**conf)
-        model = model.to(device)
+    for init_dof in init_DOFs:    
+        for seed in seeds:
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            model = ModifiedInitMLP(**conf)
+            model = model.to(device)
 
-        train_loader = make_loader(num_tasks, seed, train_bs, train=True)
-        test_loader = make_loader(num_tasks, seed, test_bs, train=False)
+            train_loader = make_loader(num_tasks, seed, train_bs, train=True)
+            test_loader = make_loader(num_tasks, seed, test_bs, train=False)
 
-        # Optimizer and Loss
-        optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0)
-        criterion = nn.CrossEntropyLoss()
+            # Optimizer and Loss
+            optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=0)
+            criterion = nn.CrossEntropyLoss()
 
-        # records latest task's test accuracy
-        single_acc = []
-        avg_acc = []
-        for curr_task in range(num_tasks):
-            train_loader.sampler.set_active_tasks(curr_task)
-            for e in range(num_epochs):
-                model.train()
-                for batch_idx, (imgs, targets) in enumerate(train_loader):
-                    optimizer.zero_grad()
-                    imgs, targets = imgs.to(device), targets.to(device)
-                    imgs = imgs.flatten(start_dim=1)
-                    output = model(imgs)
-                    pred = output.data.max(1, keepdim=True)[1]
-                    train_loss = criterion(output, targets)
-                    train_loss.backward()
-                    # print(f"train_loss: {train_loss.item()}")
-                    optimizer.step()
-
-            model.eval()
-            total_correct = 0
-            with torch.no_grad():
-                for t in range(curr_task+1):
-                    latest_correct = 0
-                    test_loader.sampler.set_active_tasks(t)
-                    for imgs, targets in test_loader:
+            # records latest task's test accuracy
+            single_acc = []
+            avg_acc = []
+            for curr_task in range(num_tasks):
+                train_loader.sampler.set_active_tasks(curr_task)
+                for e in range(num_epochs):
+                    model.train()
+                    for batch_idx, (imgs, targets) in enumerate(train_loader):
+                        optimizer.zero_grad()
                         imgs, targets = imgs.to(device), targets.to(device)
                         imgs = imgs.flatten(start_dim=1)
                         output = model(imgs)
                         pred = output.data.max(1, keepdim=True)[1]
-                        latest_correct += pred.eq(targets.data.view_as(pred)).sum().item()
-                    total_correct += latest_correct
-                    # record latest trained task's test acc
-                    if t == curr_task:
-                        # hardcoded number of test examples per mnist digit/class
-                        single_acc.append(100 * latest_correct / 10000)
-                # print(f"correct: {correct}")
-                acc = 100. * total_correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
-                avg_acc.append(acc)
-                # print(f"[t:{t} e:{e}] test acc: {acc}%")
+                        train_loss = criterion(output, targets)
+                        train_loss.backward()
+                        # print(f"train_loss: {train_loss.item()}")
+                        optimizer.step()
 
-        # print("single accuracies: ", single_acc)
-        # print("running avg accuracies: ", avg_acc)
-        all_single_acc.append(single_acc)
-        all_avg_acc.append(avg_acc)
-    
-    # figure out average wrt all seeds
-    avg_seed_acc = list(map(lambda x: sum(x)/len(x), zip(*all_avg_acc)))
-    avg_single_acc = list(map(lambda x: sum(x)/len(x), zip(*all_single_acc)))
-    print("seed avg running avg accuracies: ", avg_seed_acc)
-    print("seed avg single accuracies: ", avg_single_acc)
-    
+                model.eval()
+                total_correct = 0
+                with torch.no_grad():
+                    for t in range(curr_task+1):
+                        latest_correct = 0
+                        test_loader.sampler.set_active_tasks(t)
+                        for imgs, targets in test_loader:
+                            imgs, targets = imgs.to(device), targets.to(device)
+                            imgs = imgs.flatten(start_dim=1)
+                            output = model(imgs)
+                            pred = output.data.max(1, keepdim=True)[1]
+                            latest_correct += pred.eq(targets.data.view_as(pred)).sum().item()
+                        total_correct += latest_correct
+                        # record latest trained task's test acc
+                        if t == curr_task:
+                            # hardcoded number of test examples per mnist digit/class
+                            single_acc.append(100 * latest_correct / 10000)
+                    # print(f"correct: {correct}")
+                    acc = 100. * total_correct * num_tasks / (curr_task+1) / len(test_loader.dataset)
+                    avg_acc.append(acc)
+                    # print(f"[t:{t} e:{e}] test acc: {acc}%")
+
+            # print("single accuracies: ", single_acc)
+            # print("running avg accuracies: ", avg_acc)
+            all_single_acc.append(single_acc)
+            all_avg_acc.append(avg_acc)
+
+        # figure out average wrt all seeds
+        avg_seed_acc = list(map(lambda x: sum(x)/len(x), zip(*all_avg_acc)))
+        avg_single_acc = list(map(lambda x: sum(x)/len(x), zip(*all_single_acc)))
+        print("\n", f"init_dof: {init_dof}, lr: {lr}, num_tasks: {num_tasks}, epochs: {epochs}")
+        print("seed avg running avg accuracies: ", avg_seed_acc)
+        print("seed avg single accuracies: ", avg_single_acc)
+
     print("SCRIPT FINISHED!")
