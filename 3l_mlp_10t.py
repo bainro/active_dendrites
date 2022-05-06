@@ -139,7 +139,7 @@ if __name__ == "__main__":
                     # figure out average wrt all seeds
                     avg_seed_acc = list(map(lambda x: sum(x)/len(x), zip(*all_avg_acc)))
                     avg_single_acc = list(map(lambda x: sum(x)/len(x), zip(*all_single_acc)))
-                    print("\n", f"init_dof: {init_dof}, lr: {lr}, num_tasks: {num_tasks}, epochs: {epochs}")
+                    print("\n", f"init_dof: {init_dof}, lr: {lr}, num_tasks: {num_tasks}, num_epochs: {num_epochs}, train_bs: {train_bs}")
                     print("seed avg running avg accuracies: ", avg_seed_acc)
                     print("seed avg single accuracies: ", avg_single_acc)
 
