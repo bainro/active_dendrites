@@ -83,14 +83,21 @@ def make_loader(num_tasks, seed, batch_size, train):
     num_classes = 10 * num_tasks
     num_classes_per_task = math.floor(num_classes / num_tasks)
     
-    dataset = PermutedMNIST(
-        root=os.path.expanduser("~/datasets/permutedMNIST"),
-        download=False,  # Change to True if running for the first time
-        seed=seed,
-        train=train,
-        num_tasks=num_tasks,
-        normalize=True,
-    )
+    conf = {
+        "root": os.path.expanduser("~/datasets/permutedMNIST"),
+        "download": False,
+        "seed": seed,
+        "train": train,
+        "num_tasks": num_tasks,
+        "normalize": True
+    }
+    
+    # will throw error if dataset isn't already downloaded
+    try:
+        dataset = PermutedMNIST(**conf)  
+    except:
+        conf.update({'download': True})
+        dataset = PermutedMNIST(**conf)
     
     # target -> all indices for that target
     class_indices = defaultdict(list)
