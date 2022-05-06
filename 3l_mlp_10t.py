@@ -49,7 +49,7 @@ class ModifiedInitMLP(nn.Module):
     
 if __name__ == "__main__":
     test_bs = 512
-    num_tasks = 1
+    num_tasks = 100
     # used for creating avg over all seed runs
     all_single_acc = []
     all_avg_acc = []
