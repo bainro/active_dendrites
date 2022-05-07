@@ -34,25 +34,7 @@ def rezero_weights(m):
     """
     if isinstance(m, HasRezeroWeights):
         m.rezero_weights()
-
-
-def normalize_sparse_weights(m):
-    """Initialize the weights using kaiming_uniform initialization normalized
-    to the number of non-zeros in the layer instead of the whole input size.
-    Similar to torch.nn.Linear.reset_parameters() but applying weight
-    sparsity to the input size
-    """
-    if isinstance(m, SparseWeightsBase):
-        _, input_size = m.module.weight.shape
-        fan = int(input_size * (1.0 - m.sparsity))
-        gain = nn.init.calculate_gain("leaky_relu", math.sqrt(5))
-        std = gain / np.math.sqrt(fan)
-        bound = math.sqrt(3.0) * std  # Calculate uniform bounds from standard deviation
-        nn.init.uniform_(m.module.weight, -bound, bound)
-        if m.module.bias is not None:
-            bound = 1 / math.sqrt(fan)
-            nn.init.uniform_(m.module.bias, -bound, bound)
-
+        
 
 class HasRezeroWeights(metaclass=abc.ABCMeta):
 
