@@ -3,13 +3,12 @@ Trains sparse lenet 5 on CIFAR100 split into 10-way classification tasks.
 '''
 
 import os
-from sparse_weights import SparseWeights
+from sparse_weights import SparseWeights, rezero_weights
 from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
 import numpy
 import torch
 from torch import nn
-from tqdm import tqdm
 
 num_epochs = 1000
 test_bs = 512
@@ -60,7 +59,7 @@ class SparseLeNet5(nn.Module):
         x = self.classifier(x)
         return x
     
-def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5, boost_set=(1.125,.75,.4)):
+def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5, boost_set=(1.,0.,0.)):
     """
     c_a_s: convolutional layer's 2D WTA activation sparsity
     f_a_s: fully connected layer's 1D WTA activation sparsity
@@ -87,7 +86,6 @@ def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5, boost_set=(1.125,.7
     for curr_t in range(num_tasks):        
         best_acc = 0.   # best task test acc so far
         best_e = 0      # epoch of best_acc
-        # for e in tqdm(range(num_epochs)):
         for e in range(num_epochs):
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
@@ -98,6 +96,7 @@ def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5, boost_set=(1.125,.7
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 optimizer.step()
+                model.apply(rezero_weights)
             
             if e % test_freq == 0:
                 print(f"train_loss: {train_loss.item()}")    
