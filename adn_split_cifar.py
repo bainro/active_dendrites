@@ -3,7 +3,6 @@ Trains lenet 5 with active dendrite FC layers on CIFAR100 split into 10-way clas
 '''
 
 import os
-from sparse_weights import SparseWeights
 from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer as dends1D
@@ -11,9 +10,9 @@ from dendritic_mlp import AbsoluteMaxGatingDendriticLayer2d as dends2D
 import numpy
 import torch
 from torch import nn
-from tqdm import tqdm
 
-num_epochs = 100#0
+
+num_epochs = 100
 test_bs = 512
 test_freq = 1
 num_tasks = 10
@@ -106,7 +105,6 @@ def train(seed, train_bs, lr,):
     for curr_t in range(num_tasks):        
         best_acc = 0.   # best task test acc so far
         best_e = 0      # epoch of best_acc
-        # for e in tqdm(range(num_epochs)):
         for e in range(num_epochs):
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
