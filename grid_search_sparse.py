@@ -16,7 +16,7 @@ if __name__ == "__main__":
                     for f_w_s in fc_w_sparsities:
                         conf = dict(seed=seed, train_bs=bs, 
                                     lr=lr, c_a_s=c_a_s, f_a_s=f_a_s,
-                                    f_w_s=f_w_s, boost_set=boosting_set}
+                                    f_w_s=f_w_s, boost_set=boosting_set)
                         avg_acc, final_epochs, final_single_acc = train(**conf)
                         print(f"seed: {seed}")
                         print(f"lr: {lr}")
