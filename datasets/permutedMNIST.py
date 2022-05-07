@@ -1,13 +1,33 @@
 import os
 import math
-from collections import defaultdict
-from samplers import TaskRandomSampler
+from collections import defaultdict, Iterable
 import numpy
 import torch
 from torchvision import transforms
 from torchvision.datasets import MNIST
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Sampler 
 
+
+class TaskRandomSampler(Sampler):
+    # Samples elements randomly from a given list of indices, without replacement.
+    # indices (sequence): a sequence of indices
+
+    def __init__(self, task_indices):
+        self.task_indices = task_indices
+        self.num_classes = len(task_indices)
+        self.set_active_tasks(0)
+
+    def set_active_tasks(self, tasks):
+        self.active_tasks = tasks
+        if not isinstance(self.active_tasks, Iterable):
+            self.active_tasks = [tasks]
+        self.indices = numpy.concatenate([self.task_indices[t] for t in self.active_tasks])
+
+    def __iter__(self):
+        return (self.indices[i] for i in numpy.random.permutation(len(self.indices)))
+
+    def __len__(self):
+        return len(self.indices)
 
 class PermutedMNIST(MNIST):
     """
