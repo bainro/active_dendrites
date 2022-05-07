@@ -10,7 +10,6 @@ from torch import nn
 from torch.nn import init
 from k_winners import KWinners
 from sparse_weights import SparseWeights, SparseWeights2d, rezero_weights, HasRezeroWeights
-from dendrite_segments import DendriteSegments
 
 
 dendrite_output = namedtuple("dendrite_output", ["values", "indices"])
