@@ -6,6 +6,7 @@ import os
 from sparse_weights import SparseWeights, rezero_weights
 from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
+from dendritic_mlp import DendriticMLP as D
 import numpy
 import torch
 from torch import nn
@@ -35,16 +36,20 @@ class SparseLeNet5(nn.Module):
                        boost_strength_factor=boost_set[2]),
             nn.MaxPool2d(kernel_size=2),
         )
+        sparse_w_1 = SparseWeights(module=nn.Linear(32*8*8, 256),
+                                   sparsity=f_w_s, allow_extremes=True)
+        D._init_sparse_weights(sparse_w_1, 1 - f_w_s)
+        sparse_w_2 = SparseWeights(module=nn.Linear(256, 128),
+                                   sparsity=f_w_s, allow_extremes=True)
+        D._init_sparse_weights(sparse_w_2, 1 - f_w_s)
         self.classifier = nn.Sequential(
-            SparseWeights(module=nn.Linear(32*8*8, 256),
-                          sparsity=f_w_s, allow_extremes=True),
+            sparse_w_1,
             KWinners(n=256,
                      percent_on=f_a_s,
                      k_inference_factor=boost_set[0],
                      boost_strength=boost_set[1],
                      boost_strength_factor=boost_set[2]),
-            SparseWeights(module=nn.Linear(256, 128),
-                          sparsity=f_w_s, allow_extremes=True),
+            sparse_w_2,
             KWinners(n=128,
                      percent_on=f_a_s,
                      k_inference_factor=boost_set[0],
