@@ -48,6 +48,7 @@ class ModifiedInitMLP(nn.Module):
 
     
 if __name__ == "__main__":
+    # only do test acc calc's on these tasks
     tasks_to_eval = [0, 49, 99]
     test_bs = 512
     num_tasks = 100
