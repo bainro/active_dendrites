@@ -5,7 +5,7 @@ if __name__ == "__main__":
     BSs = [64, 128, 256]
     conv_act_sparsities = [0.05, 0.1, 0.2]
     fc_act_sparsities = [0.1, 0.2]
-    fc_w_sparsities = [0.5, 1]
+    fc_w_sparsities = [0.5, 0.99]
     boosting_set = (1, 0, 0)
     seed = 42
     
