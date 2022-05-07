@@ -1,5 +1,5 @@
 '''
-Script to train an active dendrite MLP on 10 tasks of PermutedMNIST.
+Script to train active dendrite neuron networks on 10 tasks of PermutedMNIST.
 '''
 
 import os
