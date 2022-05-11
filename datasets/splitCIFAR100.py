@@ -1,7 +1,7 @@
 import os
-import copy
 import random
 from collections import defaultdict
+from samplers import TaskRandomSampler
 import numpy
 import torch
 from torchvision import transforms as trans
@@ -36,12 +36,11 @@ def make_loaders(seed, batch_size, train):
     # deterministically shuffle the tasks' classes
     all_labels = list(range(0,100))
     random.Random(seed).shuffle(all_labels)
-    n_c_per_task = 2 # binary classification
     # split shuffled classes into 10 lists
-    label_subsets = [all_labels[x:x+n_c_per_task] for x in range(0, 100, n_c_per_task)]
+    label_subsets = [all_labels[x:x+10] for x in range(0, 100, 10)]
     
     # list of indexes for each task's example subset
-    subsets = [[] for _ in range(100//n_c_per_task)]
+    subsets = [[] for _ in range(10)]
     # should be parallel lists
     assert len(subsets) == len(label_subsets)
     targets = []
@@ -57,7 +56,7 @@ def make_loaders(seed, batch_size, train):
     for idx, target in enumerate(targets):
         # find index of label_subset that this class belongs to
         label_sub_idx = None
-        for _idx in range(len(label_subsets)):
+        for _idx in range(10):
             if target in label_subsets[_idx]:
                 label_sub_idx = _idx
                 break
@@ -67,16 +66,11 @@ def make_loaders(seed, batch_size, train):
     # list of dataloaders. One for each task.
     loaders = []
     for i, subset in enumerate(subsets):
-        # @TODO NEED LONG TERM SOLUTION
-        # If i gets larger than ~49 than the loaders' targets become
-        # all 0s, except for the last one appended to loaders :-/
-        # Could return Dataloader class and args & create on the fly? 
-        if i > 40: break;
-        # map the 100 class id's to [0, 9] or [0, 1] for binary classification
+        # map the 100 class id's to [0, 9]
         for j, k in enumerate(label_subsets[i]):
             t_copy = numpy.array(whole_dataset.targets)
             t_copy[t_copy == k] = j
-            whole_dataset.targets = list(t_copy) 
+            whole_dataset.targets = list(t_copy)
         dataset_subset = Subset(whole_dataset, subset)
         loader = DataLoader(
             dataset=dataset_subset,
@@ -85,14 +79,10 @@ def make_loaders(seed, batch_size, train):
             num_workers=4,
             sampler=None,
             pin_memory=torch.cuda.is_available(),
-            drop_last=train
+            drop_last=train,
         )
         loaders.append(loader)
-        # print(next(iter(loader))[1])
-    
+
     del whole_loader
-    # for loader in loaders:
-        # print(next(iter(loader))[1])
-    # exit()
     
     return loaders
