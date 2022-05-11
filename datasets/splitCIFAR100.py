@@ -13,14 +13,20 @@ def make_loaders(seed, batch_size, train):
     CIFAR-100 split into 10-way classification tasks. Returns 10 loaders, 
     each with 10 random classes. Setting the seed allows the validation 
     data to be of the same classes as training.
-    """
+    """ 
     
-    t = trans.Compose([trans.RandomHorizontalFlip(p=0.5),
-                       trans.RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75)),
-                       trans.ToTensor(),
-                       trans.Normalize((0.4914, 0.4822, 0.4465), 
-                                       (0.2023, 0.1994, 0.2010))
-                      ])
+    if train:
+        t = trans.Compose(
+                [trans.RandomHorizontalFlip(p=0.5),
+                 trans.RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75)),
+                 trans.ToTensor(),
+                 trans.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]
+        )
+    else:
+        t = trans.Compose(
+                [trans.ToTensor(),
+                 trans.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]
+        )
     
     conf = {"root": os.path.expanduser("~/datasets/CIFAR100"),
             "download": False, "train": train, "transform": t}
