@@ -15,7 +15,7 @@ num_epochs = 1000
 test_bs = 512
 test_freq = 1
 num_tasks = 10
-tolerance = test_freq * 3
+tolerance = test_freq * 30
 
 class SparseLeNet5(nn.Module):
     def __init__(self, c_a_s, f_a_s, f_w_s, boost_set, num_classes=10):
