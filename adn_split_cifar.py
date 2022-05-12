@@ -6,6 +6,7 @@ import os
 from sparse_weights import rezero_weights
 from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
+from dendritic_mlp import DendriticMLP as D
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer as dends1D
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer2d as dends2D
 import numpy
