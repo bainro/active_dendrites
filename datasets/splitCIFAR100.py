@@ -17,8 +17,8 @@ def make_loaders(seed, batch_size, train):
     
     if train:
         t = trans.Compose(
-                [#trans.RandomHorizontalFlip(p=0.5),
-                 #trans.RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75)),
+                [trans.RandomHorizontalFlip(p=0.5),
+                 trans.RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75)),
                  trans.ToTensor(),
                  trans.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]
         )
