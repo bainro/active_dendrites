@@ -26,7 +26,7 @@ class LeNet5(nn.Module):
         self.features = nn.ModuleList()
         layers = [
             dends2D(nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding="same"),
-                    num_segments=10, # Testing! Should change back to num_tasks!
+                    num_segments=10,
                     dim_context=num_tasks,
                     module_sparsity=c_w_s,
                     dendrite_sparsity=0),
@@ -37,7 +37,7 @@ class LeNet5(nn.Module):
                        boost_strength_factor=0.),
             nn.MaxPool2d(kernel_size=2),
             dends2D(nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding="same"),
-                    num_segments=10, # Testing! Should change back to num_tasks!
+                    num_segments=10,
                     dim_context=num_tasks,
                     module_sparsity=c_w_s,
                     dendrite_sparsity=0),
@@ -58,7 +58,7 @@ class LeNet5(nn.Module):
         self.activations = nn.ModuleList()
         self.final_l = nn.ModuleList()
         self.dends.append(dends1D(nn.Linear(32*8*8, 256),
-                          num_segments=10, # Testing! Should change back to num_tasks!
+                          num_segments=10,
                           dim_context=num_tasks,
                           module_sparsity=f_w_s,
                           dendrite_sparsity=0))
@@ -68,7 +68,7 @@ class LeNet5(nn.Module):
                                          boost_strength=0.0,
                                          boost_strength_factor=0.0))
         self.dends.append(dends1D(nn.Linear(256, 128),
-                          num_segments=10, # Testing! Should change back to num_tasks!
+                          num_segments=10,
                           dim_context=num_tasks,
                           module_sparsity=f_w_s,
                           dendrite_sparsity=0))
