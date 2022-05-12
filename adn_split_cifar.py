@@ -20,27 +20,27 @@ num_tasks = 10
 tolerance = test_freq * 30
 
 class LeNet5(nn.Module):
-    def __init__(self, device, num_classes=10):
+    def __init__(self, device, c_a_s, f_a_s, f_w_s, num_classes=10):
         super(LeNet5, self).__init__()
         self.features = nn.ModuleList()
         layers = [
             dends2D(nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
-                    num_segments=10, # Testing! Should change back to num_tasks!
+                    num_segments=10,
                     dim_context=num_tasks,
                     module_sparsity=0,
                     dendrite_sparsity=0),
-            KWinners2d(percent_on=0.2,
+            KWinners2d(percent_on=c_a_s,
                        channels=64,
                        k_inference_factor=1.,
                        boost_strength=0.,
                        boost_strength_factor=0.),
             nn.MaxPool2d(kernel_size=2),
             dends2D(nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
-                    num_segments=10, # Testing! Should change back to num_tasks!
+                    num_segments=10,
                     dim_context=num_tasks,
                     module_sparsity=0,
                     dendrite_sparsity=0),
-            KWinners2d(percent_on=0.2,
+            KWinners2d(percent_on=c_a_s,
                        channels=32,
                        k_inference_factor=1.,
                        boost_strength=0.,
@@ -53,21 +53,25 @@ class LeNet5(nn.Module):
         self.dends = nn.ModuleList()
         self.activations = nn.ModuleList()
         self.final_l = nn.ModuleList()
-        self.dends.append(dends1D(nn.Linear(32*8*8, 256),
-                          num_segments=10, # Testing! Should change back to num_tasks!
-                          dim_context=num_tasks,
-                          module_sparsity=0.5,
-                          dendrite_sparsity=0))
-        self.activations.append(KWinners(256, percent_on=0.1,
+        fc_1 = nn.Linear(32*8*8, 256)
+        D._init_sparse_weights(fc_1, 1 - f_w_s)
+        self.dends.append(dends1D(fc_1,
+                                  num_segments=10,
+                                  dim_context=num_tasks,
+                                  module_sparsity=f_w_s,
+                                  dendrite_sparsity=0))
+        self.activations.append(KWinners(256, percent_on=f_a_s,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
                                          boost_strength_factor=0.0))
-        self.dends.append(dends1D(nn.Linear(256, 128),
-                          num_segments=10, # Testing! Should change back to num_tasks!
-                          dim_context=num_tasks,
-                          module_sparsity=0.5,
-                          dendrite_sparsity=0))
-        self.activations.append(KWinners(128, percent_on=0.1,
+        fc_2 = nn.Linear(256, 128)
+        D._init_sparse_weights(fc_2, 1 - f_w_s)
+        self.dends.append(dends1D(fc_2,
+                                  num_segments=10,
+                                  dim_context=num_tasks,
+                                  module_sparsity=f_w_s,
+                                  dendrite_sparsity=0))
+        self.activations.append(KWinners(128, percent_on=f_a_s,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
                                          boost_strength_factor=0.0))
@@ -88,11 +92,11 @@ class LeNet5(nn.Module):
         x = self.final_l[0](x)
         return x
     
-def train(seed, train_bs, lr,):
+def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = LeNet5(device, num_classes=10)
+    model = LeNet5(device, c_a_s, f_a_s, f_w_s, num_classes=10)
     model = model.to(device)
-    backup = LeNet5(device, num_classes=10)
+    backup = LeNet5(device, c_a_s, f_a_s, f_w_s, num_classes=10)
     backup = backup.to(device)
     
     train_loaders = make_loaders(seed, train_bs, train=True)
