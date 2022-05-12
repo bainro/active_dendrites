@@ -13,7 +13,7 @@ num_epochs = 1000
 test_bs = 512
 test_freq = 1
 num_tasks = 10
-tolerance = test_freq * 3
+tolerance = test_freq * 30
 
 class LeNet5(nn.Module):
     def __init__(self, num_classes=10):
