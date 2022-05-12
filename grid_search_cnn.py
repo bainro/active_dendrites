@@ -1,9 +1,9 @@
 from cnn_split_cifar import train
 
 if __name__ == "__main__":
-    LRs = [5e-6, 1e-5, 5e-5, 1e-4]
-    BSs = [64, 128, 256, 512]
-    decays = [0, 1e-5, 5e-5, 1e-4]
+    LRs = [1e-5, 1e-4, 1e-3]
+    BSs = [32, 64, 128]
+    decays = [0, 1e-5, 1e-4]
     seeds = [42]
     
     for lr in LRs:
