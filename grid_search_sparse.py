@@ -17,13 +17,12 @@ if __name__ == "__main__":
                         conf = dict(seed=seed, train_bs=bs, 
                                     lr=lr, c_a_s=c_a_s, f_a_s=f_a_s,
                                     f_w_s=f_w_s, boost_set=boosting_set)
-                        avg_acc, final_epochs, final_single_acc = train(**conf)
+                        running_acc, single_acc = train(**conf)
                         print(f"seed: {seed}")
                         print(f"lr: {lr}")
                         print(f"batch size: {bs}")
                         print(f"conv act sparsity: {c_a_s}")
                         print(f"fc act sparsity: {f_a_s}")
                         print(f"fc weight sparsity: {f_w_s}")
-                        print(f"avg_acc: {avg_acc}%")
-                        print(f"final_epochs: {final_epochs}") 
-                        print(f"final_single_acc: {final_single_acc}")
+                        print(f"running avg test acc: {running_acc}") 
+                        print(f"each task's individual acc: {single_acc}")
