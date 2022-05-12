@@ -6,7 +6,6 @@ import os
 from sparse_weights import rezero_weights
 from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
-from dendritic_mlp import DendriticMLP as D
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer as dends1D
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer2d as dends2D
 import numpy
@@ -54,9 +53,7 @@ class LeNet5(nn.Module):
         self.dends = nn.ModuleList()
         self.activations = nn.ModuleList()
         self.final_l = nn.ModuleList()
-        fc_1 = nn.Linear(32*8*8, 256)
-        D._init_sparse_weights(fc_1, 1 - f_w_s)
-        self.dends.append(dends1D(fc_1,
+        self.dends.append(dends1D(nn.Linear(32*8*8, 256),
                                   num_segments=10,
                                   dim_context=num_tasks,
                                   module_sparsity=f_w_s,
@@ -65,9 +62,7 @@ class LeNet5(nn.Module):
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
                                          boost_strength_factor=0.0))
-        fc_2 = nn.Linear(256, 128)
-        D._init_sparse_weights(fc_2, 1 - f_w_s)
-        self.dends.append(dends1D(fc_2,
+        self.dends.append(dends1D(nn.Linear(256, 128),
                                   num_segments=10,
                                   dim_context=num_tasks,
                                   module_sparsity=f_w_s,
