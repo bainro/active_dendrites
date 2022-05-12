@@ -53,11 +53,10 @@ def train(seed, train_bs, lr, w_decay):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=w_decay)
     criterion = nn.CrossEntropyLoss()
 
-    final_e, final_acc = [], []
+    running_acc, single_acc = [], []
     
     for curr_t in range(num_tasks):        
         best_acc = 0.   # best task test acc so far
-        best_e = 0      # epoch of best_acc
         # for e in tqdm(range(num_epochs)):
         for e in range(num_epochs):
             model.train()
@@ -85,14 +84,12 @@ def train(seed, train_bs, lr, w_decay):
                     print(f"[t:{curr_t} e:{e}] test acc: {acc}%")
                     if acc > best_acc:
                         best_acc = acc
-                        best_e = e
                         backup.load_state_dict(model.state_dict())
                     elif best_e + tolerance <= e:
                         # haven't improved test acc recently
                         # reload best checkpoint & stop early
                         model.load_state_dict(backup.state_dict())
-                        final_e.append(best_e)
-                        final_acc.append(best_acc)
+                        single_acc.append(best_acc)
                         break
                         
         model.eval()
@@ -106,12 +103,12 @@ def train(seed, train_bs, lr, w_decay):
                     correct += pred.eq(targets.data.view_as(pred)).sum().item()
             print(f"correct: {correct}")
             acc = 100. * correct / (curr_t+1) / len(test_loaders[t].dataset)
+            running_acc.append(acc)
             print(f"\n\n[t:{t} e:{e}] test acc: {acc}%\n\n")
         
-    # final task-avg accuracy
-    # epochs that best test acc occurred 
+    # running avg task test acc
     # best test acc for each task
-    return acc, final_e, final_acc 
+    return running_acc, single_acc 
 
 if __name__ == "__main__":
     _ = train(seed=15, train_bs=32, lr=5e-4, w_decay=0)
