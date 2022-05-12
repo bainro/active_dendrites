@@ -1,11 +1,11 @@
 from sparse_split_cifar import train
 
 if __name__ == "__main__":
-    LRs = [5e-5, 1e-4, 5e-4, 1e-3]
-    BSs = [64, 128, 256]
-    conv_act_sparsities = [0.05, 0.1, 0.2]
-    fc_act_sparsities = [0.1, 0.2]
-    fc_w_sparsities = [0.5, 0.99]
+    LRs = [1e-5, 1e-4, 1e-3]
+    BSs = [32, 64, 128]
+    conv_act_sparsities = [0.1, 0.2, 0.3]
+    fc_act_sparsities = [0.1, 0.3]
+    fc_w_sparsities = [0.3, 0.5, 0.7]
     boosting_set = (1, 0, 0)
     seed = 42
     
