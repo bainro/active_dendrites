@@ -57,7 +57,7 @@ def train(seed, train_bs, lr, w_decay):
     
     for curr_t in range(num_tasks):        
         best_acc = 0.   # best task test acc so far
-        # for e in tqdm(range(num_epochs)):
+        best_e = 0
         for e in range(num_epochs):
             model.train()
             for batch_idx, (imgs, targets) in enumerate(train_loaders[curr_t]):
@@ -84,6 +84,7 @@ def train(seed, train_bs, lr, w_decay):
                     print(f"[t:{curr_t} e:{e}] test acc: {acc}%")
                     if acc > best_acc:
                         best_acc = acc
+                        best_e = e
                         backup.load_state_dict(model.state_dict())
                     elif best_e + tolerance <= e:
                         # haven't improved test acc recently
