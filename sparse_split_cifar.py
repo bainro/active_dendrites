@@ -75,9 +75,9 @@ def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5, boost_set=(1.,0.,0.
         3) boost_strength_factor
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=2)
+    model = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=10)
     model = model.to(device)
-    backup = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=2)
+    backup = SparseLeNet5(c_a_s, f_a_s, f_w_s, boost_set, num_classes=10)
     backup = backup.to(device)
     
     train_loaders = make_loaders(seed, train_bs, train=True)
