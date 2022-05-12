@@ -9,19 +9,13 @@ if __name__ == "__main__":
     for lr in LRs:
         for bs in BSs:
             for w_d in decays:
-                #per_seed_acc = []
                 for seed in seeds:
                     conf = {"seed": seed, "train_bs": bs, 
                             "lr": lr, "w_decay": w_d}
-                    avg_acc, final_epochs, final_single_acc = train(**conf)
-                    # per_seed_acc.append(avg_acc)
+                    running_acc, single_acc = train(**conf)
                     print(f"seed: {seed}")
                     print(f"lr: {lr}")
                     print(f"batch size: {bs}")
                     print(f"weight decay: {w_d}")
-                    print(f"avg_acc: {avg_acc}%")
-                    print(f"final_epochs: {final_epochs}") 
-                    print(f"final_single_acc: {final_single_acc}")
-                 # avg_across_seeds = sum(per_seed_acc) / len(per_seed_acc)
-                 # print(f"seed avg acc: {avg_across_seeds}")
-                 # print("\n\n")
+                    print(f"running avg test acc: {running_acc}") 
+                    print(f"each task's individual acc: {single_acc}")
