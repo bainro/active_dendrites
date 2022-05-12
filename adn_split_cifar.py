@@ -21,7 +21,7 @@ num_tasks = 10
 tolerance = test_freq * 30
 
 class LeNet5(nn.Module):
-    def __init__(self, device, num_classes=10, f_w_s=0.5, c_w_s=0.8):
+    def __init__(self, device, num_classes=10, f_w_s=0.5, c_w_s=0.):
         super(LeNet5, self).__init__()
         self.features = nn.ModuleList()
         layers = [
@@ -50,8 +50,8 @@ class LeNet5(nn.Module):
             nn.Flatten(1)
         ]
         # @TODO verify correct 2nd parameter value
-        D._init_sparse_weights(layers[0], 1 - c_w_s)
-        D._init_sparse_weights(layers[3], 1 - c_w_s)
+        # D._init_sparse_weights(layers[0], 1 - c_w_s)
+        # D._init_sparse_weights(layers[3], 1 - c_w_s)
         for l in layers:
             self.features.append(l)
         self.dends = nn.ModuleList()
@@ -62,7 +62,7 @@ class LeNet5(nn.Module):
                           dim_context=num_tasks,
                           module_sparsity=f_w_s,
                           dendrite_sparsity=0))
-        D._init_sparse_weights(self.dends[-1], 1 - f_w_s)
+        # D._init_sparse_weights(self.dends[-1], 1 - f_w_s)
         self.activations.append(KWinners(256, percent_on=0.05,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
@@ -72,7 +72,7 @@ class LeNet5(nn.Module):
                           dim_context=num_tasks,
                           module_sparsity=f_w_s,
                           dendrite_sparsity=0))
-        D._init_sparse_weights(self.dends[-1], 1 - f_w_s)
+        # D._init_sparse_weights(self.dends[-1], 1 - f_w_s)
         self.activations.append(KWinners(128, percent_on=0.05,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
