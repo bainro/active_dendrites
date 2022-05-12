@@ -3,10 +3,12 @@ Trains lenet 5 with active dendrite FC layers on CIFAR100 split into 10-way clas
 '''
 
 import os
+from sparse_weights import SparseWeights, rezero_weights
 from k_winners import KWinners, KWinners2d
 from datasets.splitCIFAR100 import make_loaders
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer as dends1D
 from dendritic_mlp import AbsoluteMaxGatingDendriticLayer2d as dends2D
+from dendritic_mlp import DendriticMLP as D
 import numpy
 import torch
 from torch import nn
@@ -19,34 +21,37 @@ num_tasks = 10
 tolerance = test_freq * 30
 
 class LeNet5(nn.Module):
-    def __init__(self, device, num_classes=10):
+    def __init__(self, device, num_classes=10, f_w_s=0.5, c_w_s=0.8):
         super(LeNet5, self).__init__()
         self.features = nn.ModuleList()
         layers = [
-            dends2D(nn.Conv2d(3, 64, kernel_size=(3, 3), stride=1, padding=1),
+            dends2D(nn.Conv2d(3, 64, kernel_size=(3, 3), stride=2, padding="same"),
                     num_segments=10, # Testing! Should change back to num_tasks!
                     dim_context=num_tasks,
-                    module_sparsity=0,
+                    module_sparsity=c_w_s,
                     dendrite_sparsity=0),
             KWinners2d(percent_on=0.2,
                        channels=64,
-                       k_inference_factor=1.125,
-                       boost_strength=0.75,
-                       boost_strength_factor=0.4),
+                       k_inference_factor=1.,
+                       boost_strength=0.,
+                       boost_strength_factor=0.),
             nn.MaxPool2d(kernel_size=2),
-            dends2D(nn.Conv2d(64, 32, kernel_size=(3, 3), stride=1, padding=1),
+            dends2D(nn.Conv2d(64, 32, kernel_size=(3, 3), stride=2, padding="same"),
                     num_segments=10, # Testing! Should change back to num_tasks!
                     dim_context=num_tasks,
-                    module_sparsity=0,
+                    module_sparsity=c_w_s,
                     dendrite_sparsity=0),
             KWinners2d(percent_on=0.2,
                        channels=32,
-                       k_inference_factor=1.125,
-                       boost_strength=0.75,
-                       boost_strength_factor=0.4),
+                       k_inference_factor=1.0,
+                       boost_strength=0.,
+                       boost_strength_factor=0.),
             nn.MaxPool2d(kernel_size=2),
             nn.Flatten(1)
         ]
+        # @TODO verify correct 2nd parameter value
+        D._init_sparse_weights(layers[0], 1 - c_w_s)
+        D._init_sparse_weights(layers[3], 1 - c_w_s)
         for l in layers:
             self.features.append(l)
         self.dends = nn.ModuleList()
@@ -55,8 +60,9 @@ class LeNet5(nn.Module):
         self.dends.append(dends1D(nn.Linear(32*8*8, 256),
                           num_segments=10, # Testing! Should change back to num_tasks!
                           dim_context=num_tasks,
-                          module_sparsity=0.5,
+                          module_sparsity=f_w_s,
                           dendrite_sparsity=0))
+        D._init_sparse_weights(self.dends[-1], 1 - f_w_s)
         self.activations.append(KWinners(256, percent_on=0.05,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
@@ -64,8 +70,9 @@ class LeNet5(nn.Module):
         self.dends.append(dends1D(nn.Linear(256, 128),
                           num_segments=10, # Testing! Should change back to num_tasks!
                           dim_context=num_tasks,
-                          module_sparsity=0.5,
+                          module_sparsity=f_w_s,
                           dendrite_sparsity=0))
+        D._init_sparse_weights(self.dends[-1], 1 - f_w_s)
         self.activations.append(KWinners(128, percent_on=0.05,
                                          k_inference_factor=1.0,
                                          boost_strength=0.0,
@@ -122,6 +129,7 @@ def train(seed, train_bs, lr,):
                 train_loss = criterion(output, targets)
                 train_loss.backward()
                 optimizer.step()
+                model.apply(rezero_weights)
 
             if e % test_freq == 0:
                 print(f"train_loss: {train_loss.item()}")    
