@@ -74,7 +74,7 @@ if __name__ == "__main__":
                     imgs, targets = imgs.to(device), targets.to(device)
                     #context = contexts[curr_task]
                     context = torch.zeros([num_tasks])
-                    #context[curr_task] = 1
+                    context[curr_task] = 1
                     context = context.to(device)
                     context = context.unsqueeze(0)
                     context = context.repeat(imgs.shape[0], 1)
@@ -97,7 +97,7 @@ if __name__ == "__main__":
                         imgs, targets = imgs.to(device), targets.to(device)
                         #context = contexts[t]
                         context = torch.zeros([num_tasks])
-                        #context[t] = 1
+                        context[t] = 1
                         context = context.to(device)
                         context = context.unsqueeze(0)
                         context = context.repeat(imgs.shape[0], 1)
