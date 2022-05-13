@@ -15,7 +15,7 @@ from tqdm import tqdm
 num_epochs = 3
 train_bs = 256
 test_bs = 512
-num_tasks = 100
+num_tasks = 10
 
 conf = dict(
     input_size=784,
@@ -43,7 +43,7 @@ if __name__ == "__main__":
         test_loader = make_loader(num_tasks, seed, test_bs, train=False)
 
         # Optimizer and Loss
-        optimizer = torch.optim.Adam(model.parameters(), lr=7e-5, weight_decay=0)
+        optimizer = torch.optim.Adam(model.parameters(), lr=5e-4, weight_decay=0)
         criterion = nn.CrossEntropyLoss()
 
         # @TODO use Euclidian distance to infer which task's input at test time
