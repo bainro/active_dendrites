@@ -118,6 +118,16 @@ def train(seed, train_bs, lr, w_decay):
     return running_acc, single_acc 
 
 if __name__ == "__main__":
-    _ = train(seed=15, train_bs=32, lr=5e-4, w_decay=0)
-    print(_)
+    all_running = []
+    all_latest = []
+    for s in range(5):
+        running, latest = train(seed=s, train_bs=64, lr=1e-3, w_decay=1e-5)
+        all_running.append(running)
+        all_latest.append(latest)
+    
+    # figure out average wrt all seeds
+    avg_running = list(map(lambda x: sum(x)/len(x), zip(*all_running)))
+    avg_latest = list(map(lambda x: sum(x)/len(x), zip(*all_latest)))
+    print("avg running: ", avg_running)
+    print("avg latest: ", avg_latest)
     print("SCRIPT FINISHED!")
