@@ -13,7 +13,7 @@ import torch
 from torch import nn
 
 
-num_epochs = 100
+num_epochs = 1000
 test_bs = 512
 test_freq = 1
 num_tasks = 10
