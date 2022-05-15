@@ -146,12 +146,8 @@ def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5):
                     acc = 100. * correct / len(test_loaders[curr_t].dataset)
                     print(f"[t:{curr_t} e:{e}] test acc: {acc}%")
                     if acc > best_acc:
-                        print("old best_acc: ", best_acc)
                         best_acc = acc
-                        print("newest best_acc: ", best_acc)
-                        print("old best_e: ", best_e)
                         best_e = e
-                        print("new best_e: ", best_e)
                         backup.load_state_dict(model.state_dict())
                     elif best_e + tolerance <= e:
                         # haven't improved test acc recently
