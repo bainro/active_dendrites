@@ -154,8 +154,8 @@ def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5):
                         # reload best checkpoint & stop early
                         model.load_state_dict(backup.state_dict())
                         single_acc.append(best_acc)
-                        if best_acc < 60:
-                            break_early = True
+                        # if best_acc < 60:
+                            # break_early = True
                         break
                         
         model.eval()
@@ -178,8 +178,8 @@ def train(seed, train_bs, lr, c_a_s=.2, f_a_s=.2, f_w_s=0.5):
             running_acc.append(acc)
             print(f"\n\n[t:{t} e:{e}] test acc: {acc}%\n\n")
             # let's speed this grid search up!
-            if acc < 20 or break_early:
-                break
+            # if acc < 20 or break_early:
+                # break
 
     # running avg task test acc
     # best test acc for each task
@@ -189,7 +189,7 @@ if __name__ == "__main__":
     all_running = []
     all_latest = []
     for s in range(5):
-        running, latest = train(seed=s, train_bs=128, lr=1e-3, c_a_s=.3, f_a_s=.3, f_w_s=0.5)
+        running, latest = train(seed=s, train_bs=128, lr=1e-3, c_a_s=.2, f_a_s=.3, f_w_s=0.5)
         all_running.append(running)
         all_latest.append(latest)
     
